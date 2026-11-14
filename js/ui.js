@@ -261,22 +261,52 @@
   };
 
   /* bug journal (SPEC §7.2e) */
-  UI.journal = function () {
+  UI.journal = function (tab) {
     G.paused = true;
     const ov = UI.overlay(true), card = U.el('div', 'card journal'), n = G.MEAD.count();
-    card.appendChild(U.el('h2', '', '📖 My bug journal <small>' + n + ' of 10 bugs</small>'));
-    const grid = U.el('div', 'jgrid'); card.appendChild(grid);
-    const hint = U.el('div', 'hint', n ? 'Tap a bug to hear about it.' : 'Find bugs in Bugglemead and they will live here!'); card.appendChild(hint);
-    for (const k of G.MEAD.KINDS) {
-      const b = G.BUGS[k], got = G.S.bugs[k], cell = U.el('button', 'jbug' + (got ? '' : ' unk'));
-      cell.appendChild(G.MEAD.bugCanvas(k, 130, { sil: !got, still: true }));
-      cell.appendChild(U.el('div', 'jname', got ? b.name : '?'));
-      cell.onclick = () => { G.sfx('pop'); const m = got ? 'The ' + b.name + '. ' + b.fact : 'Not found yet. Keep looking!'; hint.textContent = m; G.say(m, true); };
-      grid.appendChild(cell);
+    const tabs = U.el('div', 'jtabs'); card.appendChild(tabs);
+    const body = U.el('div', 'jbody'); card.appendChild(body);
+    const hint = U.el('div', 'hint', ''); card.appendChild(hint);
+    const tell = m => { hint.textContent = m; G.say(m, true); };
+    const bugs = () => {
+      body.innerHTML = '';
+      body.appendChild(U.el('h2', '', '📖 My bug journal <small>' + n + ' of 10 bugs</small>'));
+      const grid = U.el('div', 'jgrid'); body.appendChild(grid);
+      for (const k of G.MEAD.KINDS) {
+        const b = G.BUGS[k], got = G.S.bugs[k], cell = U.el('button', 'jbug' + (got ? '' : ' unk'));
+        cell.appendChild(G.MEAD.bugCanvas(k, 130, { sil: !got, still: true }));
+        cell.appendChild(U.el('div', 'jname', got ? b.name : '?'));
+        cell.onclick = () => { G.sfx('pop'); tell(got ? 'The ' + b.name + '. ' + b.fact : 'Not found yet. Keep looking!'); };
+        grid.appendChild(cell);
+      }
+      return n ? 'Tap a bug to hear about it.' : 'Find bugs in Bugglemead and they will live here!';
+    };
+    const writing = () => {
+      body.innerHTML = '';
+      const hw = G.S.handwriting || {}, stars = ch => { const b = hw[ch] ? hw[ch].best : 0; return b >= 0.85 ? 3 : b >= 0.7 ? 2 : b >= 0.5 ? 1 : 0; };
+      const rows = ['abcdefghijklmnopqrstuvwxyz'];
+      if ([...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].some(ch => hw[ch])) rows.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+      if ([...'0123456789'].some(ch => hw[ch])) rows.push('0123456789');
+      let total = 0; for (const r of rows) for (const ch of r) total += stars(ch);
+      body.appendChild(U.el('h2', '', '✏️ My writing <small>' + total + ' ⭐</small>'));
+      const wrap = U.el('div', 'lgrid'); body.appendChild(wrap);
+      for (const r of rows) for (const ch of r) {
+        const st = stars(ch), cell = U.el('button', 'lcell' + (hw[ch] ? '' : ' unk'), '<b>' + ch + '</b><span>' + '★'.repeat(st) + '<i>' + '★'.repeat(3 - st) + '</i></span>');
+        cell.onclick = () => { G.sfx('pop'); tell(hw[ch] ? (st === 3 ? 'Super ' + ch + '! Three stars!' : 'Your ' + ch + '. Practise in Writing Wood for more stars!') : 'Try ' + ch + ' in Writing Wood!'); };
+        wrap.appendChild(cell);
+      }
+      return total ? 'Tap a letter. Practise for more stars!' : 'Write letters in Writing Wood to earn stars!';
+    };
+    const show = which => {
+      tabs.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === which));
+      tell(which === 'writing' ? writing() : bugs());
+    };
+    for (const [t, label] of [['bugs', '🐞 Bugs'], ['writing', '✏️ Writing']]) {
+      const b = U.el('button', 'jtab', label); b.dataset.t = t; b.onclick = () => { G.sfx('tap'); show(t); }; tabs.appendChild(b);
     }
     const close = U.el('button', 'closex', '✕'); close.onclick = () => { G.sfx('tap'); G.hush(); UI.overlay(false); G.paused = false; }; card.appendChild(close);
     ov.appendChild(card);
-    G.say(hint.textContent, true);
+    show(tab || 'bugs');
   };
 
   UI.bindHud = function () {

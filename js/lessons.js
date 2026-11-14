@@ -1,6 +1,6 @@
 /* Hazelnut Hollow — handwriting lessons (SPEC §7.3). A "letter tree" or "word stone" in Writing Wood runs a short
    chain of write-puzzles. Mode per letter follows the ladder trace → fade → memory using S.handwriting[ch].best.
-   G.LS.run(e) where e = {id, title, say, letters?:'cadg', words?:[['cat','🐱'],...], gem?:'blue'} */
+   G.LS.run(e) where e = {id, title, say, letters?:'cadg', words?:[['cat','🐱'],...], sentences?:[['I can run.','🏃'],...], gem?:'blue'} */
 (function () {
   'use strict';
   const G = window.G, U = G.U;
@@ -23,6 +23,10 @@
         U.shuffle(e.words).slice(0, 3).forEach(([w, pic], i) => {
           const m = i === 0 ? 'trace' : 'fade';
           steps.push({ q: pic + ' Write <b>' + w + '</b>', say: 'Write the word ' + w + '. ' + w.split('').join(', ') + '.', write: { text: w, mode: m } });
+        });
+      } else if (e.sentences) {
+        U.shuffle(e.sentences).slice(0, 2).forEach(([t, pic], i) => {
+          steps.push({ q: pic + ' Write <b>' + t + '</b><br><small>Capital letter, finger spaces, full stop!</small>', say: 'Write: ' + t.replace('.', '') + '. Start with a capital letter. Leave finger spaces. Finish with a full stop.', write: { text: t, mode: i === 0 ? 'trace' : 'fade' } });
         });
       }
       let n = 0;

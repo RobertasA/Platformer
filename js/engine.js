@@ -296,13 +296,13 @@
     } else if (e.k === 'door') {
       G.drawDoor(c, e.px, e.py, { style: 'door', icon: e.icon, col: e.col }, t);
     } else if (e.k === 'lesson') {
-      const stone = !!e.words, done = G.S.quests['lesson:' + e.id];
+      const stone = !!(e.words || e.sentences), done = G.S.quests['lesson:' + e.id];
       if (!stone) G.drawDecor(c, { k: 'tree', x: e.px, y: e.py, col: e.col || '#7ed16a', s: 1.1 }, t);
-      const w = stone ? 150 : 170, y = e.py - (stone ? 62 : 120);
+      const w = e.sentences ? 200 : stone ? 150 : 170, y = e.py - (stone ? 62 : 120);
       c.fillStyle = '#8d5a3b'; if (!stone) c.fillRect(e.px - 5, y + 30, 10, e.py - y - 30);
       G.rr(c, e.px - w / 2, y - 34, w, 64, 14); c.fillStyle = stone ? '#cfd6e6' : '#f3d9ac'; c.fill(); c.strokeStyle = stone ? '#8f9ab3' : '#8d5a3b'; c.lineWidth = 4; c.stroke();
       c.fillStyle = '#3b3350'; c.font = '600 30px ' + G.FONT; c.textAlign = 'center'; c.textBaseline = 'middle';
-      c.fillText(stone ? e.words.slice(0, 2).map(x => x[0]).join(' ') : e.letters.slice(0, 6).split('').join(' '), e.px + 10, y);
+      c.fillText(e.sentences ? 'I can …' : stone ? e.words.slice(0, 2).map(x => x[0]).join(' ') : e.letters.slice(0, 6).split('').join(' '), e.px + 10, y);
       G.emoji(c, e.icon, e.px - w / 2 + 6, y - 30, 30);
       if (done) G.emoji(c, '⭐', e.px + w / 2 - 6, y - 30, 30);
       else { const bob = Math.sin(t * 4) * 3; G.circ(c, e.px + w / 2 - 6, y - 32 + bob, 16, '#4aa8ff'); G.drawGem(c, 'blue', e.px + w / 2 - 6, y - 32 + bob, 9, t); }

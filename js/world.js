@@ -92,10 +92,11 @@
       ],
     },
     writing: {
-      name: 'Writing Wood', theme: 'woods', music: 'woods', w: 64, h: 15,
+      name: 'Writing Wood', theme: 'woods', music: 'woods', w: 80, h: 15,
       fills: [
-        [0, 0, 0, 14, '#'], [63, 0, 63, 14, '#'],
-        [0, 12, 63, 14, '#'],
+        [0, 0, 0, 14, '#'], [79, 0, 79, 14, '#'],
+        [0, 12, 79, 14, '#'],
+        [68, 9, 70, 9, '='],                 // Sentence Shore leaf
         [30, 12, 34, 13, '~'],               // ink pond
         [9, 9, 11, 9, '='], [20, 10, 22, 10, '='], [24, 8, 26, 8, '='],
         [36, 11, 38, 11, '#'], [39, 10, 41, 11, '#'],          // mossy bank
@@ -107,6 +108,7 @@
         { k: 'lamp', x: 900 }, { k: 'rock', x: 1250 }, { k: 'emoji', x: 1530, icon: '🦢', size: 34, up: 2 },
         { k: 'campfire', x: 2470 }, { k: 'tent', x: 2380 }, { k: 'bigtree', x: 1120 }, { k: 'mushroom', x: 2300 }, { k: 'pine', x: 2560 },
         { k: 'bush', x: 2700 }, { k: 'lamp', x: 2860 }, { k: 'pine', x: 3000, s: 0.9 },
+        { k: 'flower', x: 3250 }, { k: 'rock', x: 3420 }, { k: 'emoji', x: 3600, icon: '🐚', size: 30 }, { k: 'pine', x: 3700, s: 1.1 },
       ],
       ents: [
         { id: 'ww-back', k: 'door', x: 1.6, row: 12, icon: '🏡', col: '#8d5a3b', to: 'village', at: { x: 66, row: 12 } },
@@ -126,6 +128,11 @@
         { id: 'g-ww-blue2', k: 'gem', col: 'blue', x: 51, row: 7 },
         { id: 'g-ww-yellow1', k: 'gem', col: 'yellow', x: 56, row: 10 },
         { id: 'ws-cvc2', k: 'lesson', x: 60, row: 12, icon: '🪨', title: 'Big word stone', words: [['fish', '🐟'], ['shop', '🏪'], ['ship', '🚢'], ['frog', '🐸'], ['duck', '🦆'], ['milk', '🥛'], ['tree', '🌳'], ['star', '⭐']], say: 'A big word stone! These words have four letters. Take your time.' },
+        { id: 'lt-caps', k: 'lesson', x: 37, row: 11, icon: '🏰', col: '#c79bff', title: 'Capital castle', letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', say: 'Capital letters are tall. They start at the top line.' },
+        { id: 'lt-digits', k: 'lesson', x: 65, row: 12, icon: '🪺', col: '#ffb36b', title: 'Number nest', letters: '0123456789', say: 'Number letters! Start at the top, and take your time.' },
+        { id: 'g-ww-blue3', k: 'gem', col: 'blue', x: 69, row: 8 },
+        { id: 'ww-sign2', k: 'sign', x: 70.5, row: 12, text: 'Sentence Shore ✏️' },
+        { id: 'ss-1', k: 'lesson', x: 75, row: 12, icon: '✏️', title: 'Sentence stone', sentences: [['I can run.', '🏃'], ['A cat sat.', '🐱'], ['I see a bus.', '🚌'], ['The dog ran.', '🐶'], ['I am six.', '🎂'], ['Mum is up.', '☀️']], say: 'A sentence stone! A sentence starts with a capital letter, has finger spaces, and ends with a full stop.' },
       ],
     },
     /* Hush House (SPEC §7.3): tiptoe to Mum's bed without waking her. hush:true turns on the noise meter.

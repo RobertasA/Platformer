@@ -25,6 +25,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `cafe` area + `js/cafe.js` order cards (Twiggy Spoon Café, §7.2d) | [done] iter4 |
 | Wardrobe polish (NEW badges, lock hints, undo, My outfits) + Pip's toy shop `G.UI.shop` (§9) | [done] iter5 |
 | `meadow` Bugglemead + `js/meadow.js` + `js/bugart.js` (§7.2e) | [done] iter6 |
+| Sentence Shore, capitals & digits trees, journal Writing tab (§7.2f) | [done] iter7 |
 | Areas tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
@@ -246,6 +247,14 @@ Area `writing` (woods theme, 64×15) reached through the village gate (blue×2).
 - **Bug journal** (📖 HUD button) `G.UI.journal()`: grid of all 10 bugs — found ones drawn in colour with name (tap: name + fact read aloud); unfound ones as silhouettes with "?". Header "N of 10 bugs".
 - Gems: green×3 (nature puzzles), red, yellow, purple on the platforms.
 
+### 7.2f Sentence Shore + capitals & digits (iter7) [done] — east end of `writing` (area widened 64 → 80)
+- **Full stop glyph** `'.'` (w 20, one dot at the baseline). Recogniser: a glyph with no main strokes passes when any small mark (bbox < 30 units) lands near the dot; nothing drawn → "Don't forget the full stop!".
+- **Capital castle** tree (`lt-caps`, x37 on the mossy bank): `letters:` all of A–Z (4 picked per visit); same trace → fade → memory ladder per letter. Say: "Capital letters are tall. They start at the top line."
+- **Number nest** tree (`lt-digits`, x65): `letters:'0123456789'`. Say: "Number letters! Start at the top."
+- **Sentence stone** (`ss-1`, x75, a big stone with a ✏️): `sentences:[[text, emoji], …]` — e.g. "I can run.", "A cat sat.", "I see a bus.", "The dog ran.", "I am six.", "Mum is up.". 2 sentences per visit: first traced, second faded. Prompt reminds: capital at the start, finger spaces, full stop at the end. Finger spaces are the pad's existing 36-unit gaps (drawn as a pale finger-tip oval under the line in each gap). First finish → blue gem; repeats +2 coins.
+- **Journal Writing tab**: 📖 journal gets two tabs, 🐞 Bugs | ✏️ Writing. Writing shows a grid of a–z (and A–Z, 0–9 rows when any tried): each cell the letter + 0–3 stars from `S.handwriting[ch].best` (≥0.5 ★, ≥0.7 ★★, ≥0.85 ★★★); untried letters faint. Tap → says the letter. No percentages (grown-up detail stays for the grown-up page, #12).
+- Area: right wall moves to x79; a leaf platform at 68–70 row 9 with a blue gem; a sign "Sentence Shore" at x70.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -330,7 +339,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 5. **[done iter4] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox (§7.2d). Cooking mini-game → later.
 6. **[done iter5] Wardrobe/creator UI polish** with locked-item hints, NEW badges, undo, saved outfits + Pip's toy shop (coins finally buy things) (§9).
 7. **[done iter6] Bugglemead** + bug journal + science puzzles (§7.2e).
-8. **[todo] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
+8. **[done iter7] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[todo] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[todo] Playrooms**: vet, witch kitchen, dolls' house, art easel.
 11. **[todo] Woods, Caves, Clouds** + final gates, finale, golden crown.
@@ -351,4 +360,6 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter4 — Twiggy Spoon Café.** Feedback: 0 issues. Built the `cafe` area (§7.2d): Mrs Bramble, Wilf, four customers with order cards in `js/cafe.js` — count cakes onto a plate, read an order ticket, pay with coins into a purse, write the order on a notepad (handwriting pad). Never-fail rules and adaptive levels as for puzzles. Serving all four → blue gem + chef hat, then "Run the café" free play (customers re-order with random kinds). New decor: counter with cake dome and till, chalkboard menu; new theme `cafe` (gingham wallpaper). Debug steps `cafe`, `order-count/read/money/write`, `cafe2`; a scripted run checked rewards and re-orders. Next: wardrobe polish (#6), Bugglemead (#7).
 
 **iter5 — wardrobe polish + Pip's toy shop.** Feedback: 0 issues. Coins now buy things: Pip's shop sells the four shop-locked items (8–15 coins) with a "you need N more" subtraction message. Wardrobe: `G.unlock` + ✨NEW badges, lock hints that say where to win an item, tab names, ↩️ undo, 🧺 My outfits (3 hangers). Fixed the Done button wrapping and the shop wrapping on phone. Debug steps `shop`, `shop-poor`, `wardrobe-new`, `outfits`; a scripted run checked buy → wear → NEW badge → undo. Next: Bugglemead (#7).
-- **iter6 — Bugglemead.** New area `meadow` (90 wide: flowers, hive, logs, pond, leaf platforms; gate to Teapot Tower). `js/bugart.js` (Sonnet sub-agent): 10 procedural bugs with countable legs/wings + silhouettes. `js/meadow.js`: bug data (`G.BUGS`), magnifier card (legs → wings → legs/wings/home by `level.nature`, never fails), milestone prizes (6 → antennae + green, 10 → bee wings + purple), sorting hoops (always one bug per hoop), Bettina's progress lines. 📖 HUD button now opens the bug journal. Scripted test: 6 looks → prize; woodlouse wings reveal; sort with 3 misses auto-places, green gem; no page errors. Fix found in test: sort set could miss the "No legs" bug — now built per hoop. Feedback: none open. Next: #8 sentences on lines / capitals & digits.
+**iter6 — Bugglemead.** New area `meadow` (90 wide: flowers, hive, logs, pond, leaf platforms; gate to Teapot Tower). `js/bugart.js` (Sonnet sub-agent): 10 procedural bugs with countable legs/wings + silhouettes. `js/meadow.js`: bug data (`G.BUGS`), magnifier card (legs → wings → legs/wings/home by `level.nature`, never fails), milestone prizes (6 → antennae + green, 10 → bee wings + purple), sorting hoops (always one bug per hoop), Bettina's progress lines. 📖 HUD button now opens the bug journal. Scripted test: 6 looks → prize; woodlouse wings reveal; sort with 3 misses auto-places, green gem; no page errors. Fix found in test: sort set could miss the "No legs" bug — now built per hoop. Feedback: none open. Next: #8 sentences on lines / capitals & digits.
+
+**iter7 — Sentence Shore, capitals & digits, writing stars.** Writing Wood widened to 80. New `'.'` glyph + recogniser rule (any small mark near the line). Pad draws a finger-tip oval in each word gap. `G.LS.run` takes `sentences` (2 per visit: trace then fade). New lessons: Capital castle (A–Z), Number nest (0–9), Sentence stone (6 short sentences) + blue gem on a leaf. 📖 journal now has 🐞 Bugs | ✏️ Writing tabs; Writing shows 0–3 stars per letter from `S.handwriting` (capitals/digits rows appear once tried). Scripted test: drew 'I can run.' stroke-by-stroke on a real pad → all 8 slots 1.00, ok; leaving out the full stop holds on the '.' slot; sentence stone gives a gem; no page errors. Feedback: none open. Next: #9 Teapot Tower.

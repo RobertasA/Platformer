@@ -105,6 +105,10 @@
     { name: 'bug-wings', run: () => { G.debug.close(); G.S.level.nature = 1; G.MEAD.look('bee'); setTimeout(() => document.querySelectorAll('.bugcard .ans')[0].click(), 50); } },
     { name: 'sort', run: () => { G.debug.close(); G.S.level.nature = 0; G.MEAD.sort(); setTimeout(() => document.querySelector('.sortbug').click(), 50); } },
     { name: 'journal', run: () => { G.debug.close(); G.S.bugs = { ladybird: true, bee: true, spider: true, snail: true }; G.UI.journal(); } },
+    { name: 'journal-write', run: () => { G.debug.close(); G.S.handwriting = Object.assign({ a: { best: 0.9, tries: 4 }, c: { best: 0.75, tries: 2 }, d: { best: 0.55, tries: 1 }, s: { best: 0.3, tries: 1 }, A: { best: 0.8, tries: 2 }, '3': { best: 0.9, tries: 3 } }, G.S.handwriting); G.UI.journal('writing'); } },
+    { name: 'shore', run: () => { G.debug.close(); G.E.load('writing'); G.debug.warp(70); } },
+    { name: 'sentence', run: () => { G.debug.close(); G.PZ.run({ colour: 'blue', noAdapt: true, puzzle: { q: '🏃 Write <b>I can run.</b><br><small>Capital letter, finger spaces, full stop!</small>', say: 'Write I can run', type: 'write', write: { text: 'I can run.', mode: 'trace' } } }); } },
+    { name: 'caps', run: () => { G.debug.close(); G.debug.warp(36); } },
     { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];
 })();

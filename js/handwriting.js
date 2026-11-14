@@ -42,6 +42,7 @@
   def('j', 28, [J(L([20, 50], [20, -18]), E(9, -18, 11, 11, 0, -150)), [[20, 72]]]);
   def('k', 48, [L([6, 100], [6, 0]), L([40, 50], [8, 22], [42, 0])]);
   def('l', 20, [L([10, 100], [10, 0])]);
+  def('.', 20, [[[10, 5]]]);                                           // full stop: one dot on the line
   def('m', 72, [L([6, 50], [6, 0]), arch(6, 34), arch(34, 62)]);
   def('n', 52, [L([6, 50], [6, 0]), arch(6, 44)]);
   def('o', 54, [E(27, 25, 21, 25, 60, 420)]);
@@ -164,6 +165,8 @@
     tooSmall: 'Make it a bit bigger!',
     dot: "Don't forget the dot!",
     dotPlace: 'Put the dot just above.',
+    stop: "Don't forget the full stop!",
+    stopPlace: 'Put a little dot on the line.',
     fewer: 'Keep going! There is more to draw.',
   };
 
@@ -180,6 +183,11 @@
     const R = (issue, msg, score, extra) => Object.assign({ score: issue ? Math.min(score, 0.49) : score, issue, ok: !issue && score >= 0.5, msg: issue ? msg : '' }, extra || {});
     const sc = m => clamp(1 - m / (36 * T), 0, 1);
 
+    if (n === 0 && expDot) { // full stop: any small mark near the dot
+      if (!Dall.length) return R('stroke-count', MSG.stop, 0, { few: true });
+      const near = Dall.some(d => { const b = bbox([d]); return Math.hypot(b.w, b.h) < 30 && dist([(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2], expDot[0]) < 40 * T; });
+      return near ? R(null, '', 1) : R('shape', MSG.stopPlace, 0.3);
+    }
     if (k === 0) return R('stroke-count', MSG.fewer, 0, { few: true });
     if (k > n) return R('stroke-count', 'Try to draw it in just ' + n + (n === 1 ? ' line.' : ' lines.'), 0.2, { many: true });
 
@@ -353,6 +361,12 @@
       for (const y of [100, -40]) { c.beginPath(); c.moveTo(x1, Y(y)); c.lineTo(x2, Y(y)); c.stroke(); }
       c.setLineDash([9, 8]); c.strokeStyle = '#c9def2'; c.beginPath(); c.moveTo(x1, Y(50)); c.lineTo(x2, Y(50)); c.stroke(); c.setLineDash([]);
       c.strokeStyle = '#f0627e'; c.lineWidth = 3.5; c.beginPath(); c.moveTo(x1, Y(0)); c.lineTo(x2, Y(0)); c.stroke();
+      // finger spaces: a little finger-tip oval in each gap between words
+      for (const it of items) if (it.space) {
+        const cx = X(it.ox + it.w / 2), cy = Y(-16);
+        c.fillStyle = 'rgba(240,180,150,.55)'; c.beginPath(); c.ellipse(cx, cy, 7 * S.s, 11 * S.s, 0, 0, 6.3); c.fill();
+        c.fillStyle = 'rgba(255,255,255,.7)'; c.beginPath(); c.ellipse(cx, cy - 4 * S.s, 4 * S.s, 4 * S.s, 0, 0, 6.3); c.fill();
+      }
     }
     function drawGuides(t) {
       const em = effMode();
