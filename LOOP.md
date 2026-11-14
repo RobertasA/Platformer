@@ -21,7 +21,7 @@ feedback issues ─► read AIM.md ─► read SPEC.md (status + backlog) ─►
 5. **Verify** – `./tools/check.sh` (loads the page in headless Chromium, fails on any console error, takes screenshots into `shots/`, which is git-ignored). Look at the screenshots. For layout/touch work, test at 1180×820 (tablet landscape) and 844×390 (phone).
 6. **Reconcile** – anything the code does that the spec doesn't say, add to the spec; anything the spec says that the code doesn't do, either do it or mark `[todo]`. Flip `[building]` → `[done]`.
 7. **Log** – append to `SPEC.md` § Iteration log (what shipped, what was learnt, what's next) and re-rank the Backlog.
-8. **Ship** – commit with a message of the form `iterN: <what the player can now do>`, push to the working branch. CI deploys to GitHub Pages (see `.github/workflows/pages.yml`).
+8. **Ship** – commit with a message of the form `iterN: <what the player can now do>`, push to the working branch, then fast-forward `main` to it and push `main` (`git push origin HEAD:main`). Only `main` deploys to GitHub Pages (see `.github/workflows/pages.yml`). Afterwards check the Actions run succeeded; a failed deploy is fixed before the next iteration.
 
 ## Giving feedback (for the owner)
 
