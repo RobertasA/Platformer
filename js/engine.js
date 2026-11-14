@@ -16,7 +16,7 @@
     const a = G.AREAS[id]; if (!a) return false;
     E.area = a; E.id = id; G.S.area = id; G.S.areas[id] = true;
     E.ents = a.ents.map(d => Object.assign({ cool: 0, t: Math.random() * 6 }, d, { px: d.x * T, py: d.row * T }))
-      .filter(e => !(e.k === 'gem' && G.S.taken[id + ':' + e.id]));
+      .filter(e => !(e.k === 'gem' && G.S.taken[id + ':' + e.id]) && !(e.k === 'curio' && G.S.curios[e.cid]));
     const s = at || a.spawn;
     P.x = s.x * T; P.y = s.row * T; P.vx = P.vy = 0; P.safe = { x: P.x, y: P.y }; P.jumps = 0;
     E.cam.x = U.clamp(P.x - G.VW / 2, 0, a.w * T - G.VW); E.cam.y = U.clamp(P.y - G.VH * 0.6, 0, a.h * T - G.VH);
@@ -136,6 +136,11 @@
         else if (touch) e.cool = Math.max(e.cool, 0.6);   // stay quiet until she steps away
         continue;
       }
+      if (e.k === 'curio') {
+        const gy = e.py - 30 + Math.sin(e.t * 3) * 5;
+        if (!G.paused && !e.gone && Math.abs(e.px - P.x) < 40 && gy > P.y - PH.h - 30 && gy < P.y + 20) { e.gone = true; G.TOWER.pickCurio(e.cid); E.burst(e.px, gy, '#ffe9a8', 18); }
+        continue;
+      }
       if (e.k === 'bug' && !G.paused) {
         if (e.fly) { e.px = e.x * T + Math.sin(e.t * 0.7) * 70; e.py = e.row * T + Math.sin(e.t * 2.1) * 18; e.dir = Math.cos(e.t * 0.7) > 0 ? 1 : -1; }
         else if (e.x1) { e.dir = e.dir || 1; e.px += e.dir * dt * 26; if (e.px > e.x1 * T) e.dir = -1; if (e.px < e.x0 * T) e.dir = 1; }
@@ -144,6 +149,7 @@
       const d = Math.abs(e.px - P.x);
       if (near(e, 80) && d < best) { best = d; E.near = e; }
     }
+    if (E.ents.some(e => e.gone)) E.ents = E.ents.filter(e => !e.gone);
     if (!G.paused && G.input.actHit && E.near) E.interact(E.near);
   }
 
@@ -159,7 +165,7 @@
   };
 
   E.interact = function (e) {
-    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.lines === 'bettina' ? G.MEAD.bettinaLines() : e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
+    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.lines === 'bettina' ? G.MEAD.bettinaLines() : e.lines === 'tuft' ? G.TOWER.tuftLines() : e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
     else if (e.k === 'lesson') G.LS.run(e);
     else if (e.k === 'sign') G.UI.toast('📜 ' + e.text, true);
     else if (e.k === 'gate') G.UI.gate(e);
@@ -168,6 +174,10 @@
     else if (e.k === 'cust') E.serve(e);
     else if (e.k === 'bug') G.MEAD.look(e.kind);
     else if (e.k === 'sorter') G.MEAD.sort();
+    else if (e.k === 'shoes') G.TOWER.shoes();
+    else if (e.k === 'post') G.TOWER.postcard();
+    else if (e.k === 'case') G.TOWER.case();
+    else if (e.k === 'cabinet') G.TOWER.cabinet();
     else if (e.k === 'door') {
       G.sfx('door');
       if (e.act === 'wardrobe') G.UI.creator(false);
@@ -271,9 +281,40 @@
     for (const p of E.parts) { c.globalAlpha = Math.max(0, p.life / p.max); if (p.kind === 'text') { c.fillStyle = p.col; c.strokeStyle = '#3b3350'; c.lineWidth = 4; c.font = '700 ' + p.r * 1.5 + 'px ' + G.FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.strokeText(p.txt, p.x, p.y); c.fillText(p.txt, p.x, p.y); } else if (p.kind === 'spark') G.star(c, p.x, p.y, p.r * 1.4, p.col); else G.circ(c, p.x, p.y, p.r, p.col); }
     c.globalAlpha = 1;
     // "press ✋" hint over the nearest thing
-    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' ? 150 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
+    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' || e.k === 'shoes' || e.k === 'post' ? 150 : e.k === 'case' ? 170 : e.k === 'cabinet' ? 210 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
     c.restore();
   };
+
+  /* Teapot Tower furniture (SPEC §7.2g) */
+  const TQ = { shoes: ['shoes', 'purple'], post: ['post', 'blue'], case: ['case', 'yellow'], cabinet: ['curios', 'green'] };
+  function towerProp(c, e, t) {
+    const x = e.px, y = e.py, wood = '#a8714a', dark = '#7d5230';
+    if (e.k === 'shoes') {          // a shoe rack: three shelves of odd shoes
+      G.rr(c, x - 70, y - 120, 140, 120, 10); c.fillStyle = wood; c.fill(); c.strokeStyle = dark; c.lineWidth = 4; c.stroke();
+      ['👟👠🥾', '👞🩰👡', '🧦🩴👟'].forEach((row, r) => { c.fillStyle = dark; c.fillRect(x - 62, y - 82 + r * 38, 124, 5); [...row].forEach((ch, i) => G.emoji(c, ch, x - 42 + i * 42, y - 98 + r * 38, 28)); });
+    } else if (e.k === 'post') {    // a writing desk with a postcard and a quill
+      c.fillStyle = dark; c.fillRect(x - 60, y - 60, 10, 60); c.fillRect(x + 50, y - 60, 10, 60);
+      G.rr(c, x - 74, y - 72, 148, 18, 6); c.fillStyle = wood; c.fill();
+      c.save(); c.translate(x - 10, y - 96); c.rotate(-0.12); G.rr(c, -36, -22, 72, 46, 4); c.fillStyle = '#fff6e0'; c.fill(); c.strokeStyle = '#e0b97a'; c.lineWidth = 3; c.stroke(); G.emoji(c, '🏖️', -14, 0, 24); c.fillStyle = '#ff7eb6'; c.fillRect(18, -16, 12, 14); c.restore();
+      G.emoji(c, '🪶', x + 44, y - 96, 30); G.emoji(c, '📮', x - 90, y - 30, 40);
+    } else if (e.k === 'case') {    // a pin board with clues and a magnifying glass
+      c.fillStyle = dark; c.fillRect(x - 6, y - 50, 12, 50);
+      G.rr(c, x - 78, y - 150, 156, 104, 10); c.fillStyle = '#c99a6b'; c.fill(); c.strokeStyle = dark; c.lineWidth = 5; c.stroke();
+      c.strokeStyle = '#e04a4a'; c.lineWidth = 2; c.beginPath(); c.moveTo(x - 46, y - 120); c.lineTo(x + 6, y - 92); c.lineTo(x + 50, y - 124); c.stroke();
+      G.emoji(c, '🔺', x - 46, y - 120, 22); G.emoji(c, '🟦', x + 6, y - 92, 22); G.emoji(c, '🔺', x + 50, y - 124, 22); G.emoji(c, '❓', x + 50, y - 72, 24);
+      G.emoji(c, '🔍', x - 50, y - 72 + Math.sin(t * 2) * 3, 30);
+    } else {                        // the curio cabinet: 3 × 2 cubbies
+      G.rr(c, x - 80, y - 170, 160, 170, 10); c.fillStyle = wood; c.fill(); c.strokeStyle = dark; c.lineWidth = 5; c.stroke();
+      (G.TOWER.CURIOS || []).forEach((cu, i) => {
+        const cx = x - 48 + (i % 3) * 48, cy = y - 140 + Math.floor(i / 3) * 56;
+        G.rr(c, cx - 20, cy - 22, 40, 46, 6); c.fillStyle = '#5c3a22'; c.fill();
+        if (G.S.curios[cu.id]) G.emoji(c, cu.icon, cx, cy, 30); else { c.fillStyle = 'rgba(255,255,255,.35)'; c.font = '700 24px ' + G.FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('?', cx, cy + 1); }
+      });
+      G.rr(c, x - 60, y - 30, 120, 22, 6); c.fillStyle = dark; c.fill();
+    }
+    const [q, col] = TQ[e.k];
+    if (!G.S.quests[q]) { const bob = Math.sin(t * 4) * 3, by = y - (e.k === 'cabinet' ? 186 : e.k === 'case' ? 162 : e.k === 'post' ? 126 : 136) + bob; G.circ(c, x + 64, by, 16, G.GEM_INFO[col].col); G.drawGem(c, col, x + 64, by, 9, t); }
+  }
 
   function drawEnt(c, e, t) {
     if (e.k === 'gem') {
@@ -339,6 +380,12 @@
       for (let i = 0; i < 3; i++) { c.strokeStyle = cols[i]; c.lineWidth = 8; c.beginPath(); c.ellipse(e.px - 50 + i * 50, e.py - 10, 26, 10, 0, 0, Math.PI * 2); c.stroke(); }
       G.drawDecor(c, { k: 'sign', x: e.px, y: e.py - 18, icon: '🔍' }, t);
       if (!G.S.quests.sort) { const bob = Math.sin(t * 4) * 3; G.circ(c, e.px + 40, e.py - 104 + bob, 16, '#7ed16a'); G.drawGem(c, 'green', e.px + 40, e.py - 104 + bob, 9, t); }
+    } else if (e.k === 'curio') {
+      const y = e.py - 30 + Math.sin(e.t * 3) * 5;
+      G.circ(c, e.px, y, 32 + Math.sin(t * 4) * 3, 'rgba(160,120,210,.35)'); G.circ(c, e.px, y, 24, 'rgba(255,255,255,.6)'); c.fillStyle = '#000'; G.emoji(c, e.icon, e.px, y, 40);
+      if (Math.random() < 0.05) E.parts.push({ x: e.px + U.rnd(-20, 20), y: y + U.rnd(-20, 20), vx: 0, vy: -20, life: 0.6, max: 0.6, col: '#fff', kind: 'spark', r: 3 });
+    } else if (e.k === 'shoes' || e.k === 'post' || e.k === 'case' || e.k === 'cabinet') {
+      towerProp(c, e, t);
     } else if (e.k === 'sign' && !e.hidden) {
       G.drawDecor(c, { k: 'sign', x: e.px, y: e.py, icon: e.icon || '📜' }, t);
     }

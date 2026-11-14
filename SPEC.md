@@ -26,7 +26,8 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | Wardrobe polish (NEW badges, lock hints, undo, My outfits) + Pip's toy shop `G.UI.shop` (§9) | [done] iter5 |
 | `meadow` Bugglemead + `js/meadow.js` + `js/bugart.js` (§7.2e) | [done] iter6 |
 | Sentence Shore, capitals & digits trees, journal Writing tab (§7.2f) | [done] iter7 |
-| Areas tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
+| `tower` Teapot Tower + `js/tower.js` (§7.2g) | [done] iter8 |
+| Areas woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -255,6 +256,17 @@ Area `writing` (woods theme, 64×15) reached through the village gate (blue×2).
 - **Journal Writing tab**: 📖 journal gets two tabs, 🐞 Bugs | ✏️ Writing. Writing shows a grid of a–z (and A–Z, 0–9 rows when any tried): each cell the letter + 0–3 stars from `S.handwriting[ch].best` (≥0.5 ★, ≥0.7 ★★, ≥0.85 ★★★); untried letters faint. Tap → says the letter. No percentages (grown-up detail stays for the grown-up page, #12).
 - Area: right wall moves to x79; a leaf platform at 68–70 row 9 with a blue gem; a sign "Sentence Shore" at x70.
 
+### 7.2g Teapot Tower (iter8) — `tower` in world.js (32×48, vertical); cards in `js/tower.js` (`G.TOWER`)
+A tall, cosy collector's house (Ottoline homage). Five floors joined by zig-zag stairwells of shelf steps (2 rows apart, so one jump each). Feet rows: ground 45, F1 37, F2 29, F3 21, balcony 13 (open sky above). Arrive at ground floor from the meadow gate; 🏡 door back to the meadow.
+- **Mr Tuft** (`G.PEOPLE.tuft`, hairy creature `cre:'tuft'`) on the ground floor: friendly, shy, loves curios. Lines depend on progress (`G.TOWER.tuftLines()`).
+- **Curios** `k:'curio'` (6: 🐚 shell, 🗝️ key, 🪶 feather, 🧭 compass, 🔮 marble, 🦴 fossil) tucked on every floor and step. Touch to collect (no puzzle) → `S.curios[id]`, sparkle, toast "You found a shell!". Drawn bobbing with a glow.
+- **F1 Odd shoes shelf** `k:'shoes'` → `G.TOWER.shoes()`: memory pairs. Cards face down; tap two; matching shoe pair stays up. L0 (`level.patterns` 0) 3 pairs, L1 4 pairs, L2+ 6 pairs. Shoes are emoji (👟 👞 👠 🥾 👡 🩰 🧦 🩴). No fail state; after 4 mismatches in a row the next pair glows briefly. Finish: first time purple gem (`quests.shoes`), later +2 coins.
+- **F2 Postcard desk** `k:'post'` → `G.TOWER.postcard()`: a postcard from a friend (picture + 1–2 short sentences, read aloud): question with 3 picture answers (hint → hint → reveal), then "Write back!" one word from the card on the pad (fade mode, `G.HW.mount`). First time blue gem (`quests.post`), later +2 coins.
+- **F3 Detective case** `k:'case'` → `G.TOWER.case()`: "Crack the code!" 3 pattern puzzles in a row via `G.PZ.run({colour:'purple', subject:'patterns'})`. First time: `hat:detective` + yellow gem (`quests.case`), later +2 coins.
+- **Balcony curio cabinet** `k:'cabinet'` → `G.TOWER.cabinet()`: 6 shelf cubbies; found curios shown, missing as "?". All 6 found (first time) → unlock `pet:tuft` ("a little Tuft") + green gem (`quests.curios`).
+- Gems on steps/shelves: red, blue, green, yellow, purple ×1 each.
+- Save: `S.curios` (new key in `blank()`).
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -340,7 +352,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 6. **[done iter5] Wardrobe/creator UI polish** with locked-item hints, NEW badges, undo, saved outfits + Pip's toy shop (coins finally buy things) (§9).
 7. **[done iter6] Bugglemead** + bug journal + science puzzles (§7.2e).
 8. **[done iter7] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
-9. **[todo] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
+9. **[done iter8] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[todo] Playrooms**: vet, witch kitchen, dolls' house, art easel.
 11. **[todo] Woods, Caves, Clouds** + final gates, finale, golden crown.
 12. **[todo] Grown-up page**, offline PWA, accessibility settings, polish pass (juice, music, particles).
@@ -363,3 +375,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter6 — Bugglemead.** New area `meadow` (90 wide: flowers, hive, logs, pond, leaf platforms; gate to Teapot Tower). `js/bugart.js` (Sonnet sub-agent): 10 procedural bugs with countable legs/wings + silhouettes. `js/meadow.js`: bug data (`G.BUGS`), magnifier card (legs → wings → legs/wings/home by `level.nature`, never fails), milestone prizes (6 → antennae + green, 10 → bee wings + purple), sorting hoops (always one bug per hoop), Bettina's progress lines. 📖 HUD button now opens the bug journal. Scripted test: 6 looks → prize; woodlouse wings reveal; sort with 3 misses auto-places, green gem; no page errors. Fix found in test: sort set could miss the "No legs" bug — now built per hoop. Feedback: none open. Next: #8 sentences on lines / capitals & digits.
 
 **iter7 — Sentence Shore, capitals & digits, writing stars.** Writing Wood widened to 80. New `'.'` glyph + recogniser rule (any small mark near the line). Pad draws a finger-tip oval in each word gap. `G.LS.run` takes `sentences` (2 per visit: trace then fade). New lessons: Capital castle (A–Z), Number nest (0–9), Sentence stone (6 short sentences) + blue gem on a leaf. 📖 journal now has 🐞 Bugs | ✏️ Writing tabs; Writing shows 0–3 stars per letter from `S.handwriting` (capitals/digits rows appear once tried). Scripted test: drew 'I can run.' stroke-by-stroke on a real pad → all 8 slots 1.00, ok; leaving out the full stop holds on the '.' slot; sentence stone gives a gem; no page errors. Feedback: none open. Next: #9 Teapot Tower.
+
+**iter8 — Teapot Tower.** New vertical area `tower` (32×48, five floors joined by zig-zag shelf steps) behind the meadow gate, with Mr Tuft (`G.PEOPLE.tuft`, progress-aware lines). `js/tower.js` (`G.TOWER`, written by a Sonnet sub-agent): odd-shoes memory pairs (3/4/6 pairs by patterns level, glow hint after 4 misses), postcard read-and-write-back (3 picture answers, then one word in fade mode), detective case (3 pattern puzzles → `hat:detective`), curio cabinet (6 curios touched to collect → `pet:tuft`). `S.curios` added to the save. Engine: curio pickup, furniture art with gem badges until the quest is done, `warp(x, row)` debug. Fix: emoji drawn after a translucent `fillStyle` inherit its alpha — reset `fillStyle` first. Scripted test: curio pickup + persistence, shoes win → purple gem, case → hat + yellow, all six → Little Tuft + green; no page errors. Feedback: none open. Next: #10 Playrooms.

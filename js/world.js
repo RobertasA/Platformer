@@ -24,6 +24,7 @@
     barnaby: { name: 'Barnaby Bear', look: { cre: 'bear', s: 1.7, acc: 'scarf' } },
     hettie: { name: 'Hettie Hedgehog', look: { cre: 'hedgehog', s: 1.3, acc: 'bowtie' } },
     ogden: { name: 'Ogden', look: { cre: 'ogre', s: 1.8, acc: 'napkin' } },
+    tuft: { name: 'Mr Tuft', look: { cre: 'tuft', s: 1.5, acc: 'bowtie' } },
   };
 
   G.AREAS = {
@@ -269,6 +270,51 @@
         { id: 'g-bm-purple1', k: 'gem', col: 'purple', x: 80, row: 8 },
         { id: 'bm-sign', k: 'sign', x: 83, row: 12, text: 'Teapot Tower is up the hill. Bring two green gems and one purple gem.' },
         { id: 'gate-tower', k: 'gate', x: 86, row: 12, to: 'tower', label: 'Teapot Tower', icon: '🫖', needs: { green: 2, purple: 1 } },
+      ],
+    },
+    /* Teapot Tower (SPEC §7.2g): five floors joined by zig-zag shelf steps. Feet rows: ground 45, F1 37, F2 29, F3 21, balcony 13.
+       curio = touch to collect (js/tower.js); shoes/post/case/cabinet = G.TOWER cards. */
+    tower: {
+      name: 'Teapot Tower', theme: 'tower', music: 'tower', w: 32, h: 48,
+      fills: [
+        [0, 0, 0, 47, '#'], [31, 0, 31, 47, '#'],
+        [0, 45, 31, 47, '#'],                                              // ground floor
+        [26, 43, 28, 43, '='], [28, 41, 30, 41, '='], [25, 39, 27, 39, '='],   // stairs up (right)
+        [1, 37, 24, 38, '#'],                                              // F1: odd shoes
+        [3, 35, 5, 35, '='], [1, 33, 3, 33, '='], [4, 31, 6, 31, '='],         // stairs up (left)
+        [7, 29, 30, 30, '#'],                                              // F2: postcards
+        [26, 27, 28, 27, '='], [28, 25, 30, 25, '='], [25, 23, 27, 23, '='],   // stairs up (right)
+        [1, 21, 24, 22, '#'],                                              // F3: detective case
+        [3, 19, 5, 19, '='], [1, 17, 3, 17, '='], [4, 15, 6, 15, '='],         // stairs up (left)
+        [7, 13, 30, 14, '#'],                                              // balcony: curio cabinet
+      ],
+      spawn: { x: 3, row: 45 },
+      decor: [
+        { k: 'plant', x: 230, row: 45 }, { k: 'grandclock', x: 700, row: 45 }, { k: 'window', x: 1000, row: 42 },
+        { k: 'window', x: 300, row: 34 }, { k: 'plant', x: 1050, row: 37 }, { k: 'clock', x: 820, row: 34 },
+        { k: 'window', x: 1250, row: 26 }, { k: 'plant', x: 500, row: 29 }, { k: 'stove', x: 1300, row: 29 },
+        { k: 'window', x: 330, row: 18 }, { k: 'plant', x: 1000, row: 21 }, { k: 'clock', x: 760, row: 18 },
+        { k: 'teapot', x: 1390, row: 13 }, { k: 'plant', x: 600, row: 13 }, { k: 'lamp', x: 1150, row: 13 },
+      ],
+      ents: [
+        { id: 'tw-back', k: 'door', x: 1.6, row: 45, icon: '🐞', col: '#8d5a3b', to: 'meadow', at: { x: 85, row: 12 } },
+        { id: 'tuft', k: 'npc', who: 'tuft', x: 7, row: 45, lines: 'tuft', talk: [] },
+        { id: 'tw-sign', k: 'sign', x: 11, row: 45, text: 'Teapot Tower. Climb the stairs! Six curios are hidden here.' },
+        { id: 'cu-shell', k: 'curio', cid: 'shell', icon: '🐚', x: 17, row: 45 },
+        { id: 'g-tw-red1', k: 'gem', col: 'red', x: 29, row: 41 },
+        { id: 'cu-key', k: 'curio', cid: 'key', icon: '🗝️', x: 3, row: 37 },
+        { id: 'tw-shoes', k: 'shoes', x: 13, row: 37 },
+        { id: 'cu-feather', k: 'curio', cid: 'feather', icon: '🪶', x: 2, row: 33 },
+        { id: 'cu-compass', k: 'curio', cid: 'compass', icon: '🧭', x: 10, row: 29 },
+        { id: 'tw-post', k: 'post', x: 18, row: 29 },
+        { id: 'g-tw-blue1', k: 'gem', col: 'blue', x: 28, row: 29 },
+        { id: 'cu-marble', k: 'curio', cid: 'marble', icon: '🔮', x: 29, row: 25 },
+        { id: 'g-tw-green1', k: 'gem', col: 'green', x: 3, row: 21 },
+        { id: 'tw-case', k: 'case', x: 13, row: 21 },
+        { id: 'g-tw-yellow1', k: 'gem', col: 'yellow', x: 2, row: 17 },
+        { id: 'cu-fossil', k: 'curio', cid: 'fossil', icon: '🦴', x: 10, row: 13 },
+        { id: 'tw-cabinet', k: 'cabinet', x: 20, row: 13 },
+        { id: 'g-tw-purple1', k: 'gem', col: 'purple', x: 25.5, row: 13 },
       ],
     },
   };

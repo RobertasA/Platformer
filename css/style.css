@@ -192,3 +192,36 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 .lcell b { font-size: 34px; line-height: 1; color: #1d3a8a; }
 .lcell span { font-size: 15px; color: #f2a90f; letter-spacing: -1px; } .lcell span i { font-style: normal; color: #ddd3c0; }
 .lcell.unk { background: #f6f2ea; } .lcell.unk b { color: #b9ae9c; }
+
+/* iter8: Teapot Tower cards */
+.twcard { border-color: #d9a066; background: #fff8ec; max-height: 660px; }
+.twcard .q small { font-size: 24px; color: #8d5a3b; }
+.shoegrid { display: grid; gap: 14px; justify-content: center; margin: 4px 0; }
+.shoegrid.cols3 { grid-template-columns: repeat(3, 150px); }
+.shoegrid.cols4 { grid-template-columns: repeat(4, 150px); }
+.shoegrid.cols6 { grid-template-columns: repeat(6, 128px); }
+.shoe { position: relative; min-width: 110px; min-height: 110px; aspect-ratio: 1; padding: 0; border: 0; border-radius: 22px; font: inherit; background: #c58a50; box-shadow: 0 6px 0 #8d5a3b; font-size: 54px; transition: transform .15s; }
+.shoe .bk, .shoe .fc { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; border-radius: 22px; }
+.shoe .bk { background: repeating-linear-gradient(90deg, #d49a5c 0 16px, #c58a50 16px 32px); font-size: 44px; }
+.shoe .fc { background: #fff; font-size: 62px; opacity: 0; }
+.shoe.up .bk { opacity: 0; } .shoe.up .fc { opacity: 1; }
+.shoe.got { box-shadow: 0 6px 0 #4fae6a; } .shoe.got .fc { background: #b6f5c9; }
+.shoe.wob { animation: wob .4s; }
+.shoe.peek { animation: shoepeek .6s ease-in-out 2; box-shadow: 0 0 0 6px #ffd95e, 0 0 24px 8px #ffe98a; }
+@keyframes shoepeek { 50% { transform: scale(1.1); } }
+.postcard { position: relative; width: 640px; background: #fffbea; border: 4px solid #e9d8a6; border-radius: 12px; padding: 10px 24px 12px; box-shadow: 0 5px 0 rgba(0,0,0,.14); transform: rotate(-1deg); display: grid; grid-template-columns: 110px 1fr; align-items: center; column-gap: 16px; text-align: left; }
+.postcard .stamp { position: absolute; right: 10px; top: 6px; font-size: 40px; border: 3px dashed #d98a8a; border-radius: 6px; padding: 0 6px; background: #fff; }
+.postcard .pic { font-size: 84px; line-height: 1; grid-row: 1 / span 2; }
+.postcard .ptext { font-size: 34px; line-height: 1.2; padding-right: 70px; margin-top: 30px; }
+.postcard .from { font-size: 26px; font-style: italic; color: #8d5a3b; text-align: right; }
+.postcard.small { width: 520px; padding: 4px 18px; }
+.postcard.small .pic { font-size: 54px; } .postcard.small .ptext { font-size: 24px; margin-top: 6px; } .postcard.small .stamp { display: none; }
+.postcardcard .answers .ans { min-width: 130px; min-height: 90px; }
+.postcardcard .answers.writing { display: block; }
+.twcard .pad { width: 900px; height: 290px; }
+.cabinet { width: 860px; background: #f3dcb8; border: 10px solid #8d5a3b; }
+.cabtitle { margin: 0; font-size: 40px; } .cabtitle small { font-size: 26px; color: #8d5a3b; margin-left: 12px; }
+.cubgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+.cubby { min-height: 150px; border: 0; border-radius: 14px; font: inherit; background: #fff6e4; box-shadow: inset 0 6px 14px rgba(90,50,10,.35), 0 8px 0 #b0703a; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cubby .ci { font-size: 64px; line-height: 1.1; } .cubby .cn { font-size: 26px; font-weight: 600; text-transform: capitalize; }
+.cubby.unk { background: #e6d3b3; } .cubby.unk .ci { color: #b9a07a; opacity: .6; }

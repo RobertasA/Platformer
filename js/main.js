@@ -68,7 +68,7 @@
   /* ---------- debug hooks (used by tools/check.js) ---------- */
   G.debug = {
     tour() { if (title) { title.remove(); title = null; } G.S.created = true; G.S.name = 'Tester'; G.E.load('village'); G.UI.hud(true); G.UI.gembar(); },
-    warp(tx) { const P = G.E.player; P.x = tx * G.TILE; P.y = 12 * G.TILE; P.vx = P.vy = 0; G.E.cam.x = U.clamp(P.x - G.VW / 2, 0, G.E.area.w * G.TILE - G.VW); },
+    warp(tx, row = 12) { const P = G.E.player; P.x = tx * G.TILE; P.y = row * G.TILE; P.vx = P.vy = 0; G.E.cam.x = U.clamp(P.x - G.VW / 2, 0, G.E.area.w * G.TILE - G.VW); G.E.cam.y = U.clamp(P.y - G.VH * 0.6, 0, G.E.area.h * G.TILE - G.VH); },
     gem(col, subject, level) { return G.PZ.run({ colour: col, subject, level }); },
     give(col, n) { G.S.gems[col] += n; G.UI.gembar(); },
     close() { G.UI.overlay(false); $('#dialogue').classList.add('hidden'); G.paused = false; },
@@ -109,6 +109,13 @@
     { name: 'shore', run: () => { G.debug.close(); G.E.load('writing'); G.debug.warp(70); } },
     { name: 'sentence', run: () => { G.debug.close(); G.PZ.run({ colour: 'blue', noAdapt: true, puzzle: { q: '🏃 Write <b>I can run.</b><br><small>Capital letter, finger spaces, full stop!</small>', say: 'Write I can run', type: 'write', write: { text: 'I can run.', mode: 'trace' } } }); } },
     { name: 'caps', run: () => { G.debug.close(); G.debug.warp(36); } },
+    { name: 'tower', run: () => { G.debug.close(); G.E.load('tower'); G.debug.warp(8, 45); } },
+    { name: 'tower-f2', run: () => { G.debug.warp(16, 29); } },
+    { name: 'tower-top', run: () => { G.S.curios = { shell: true, key: true, compass: true }; G.debug.warp(18, 13); } },
+    { name: 'shoes', run: () => { G.debug.close(); G.S.level.patterns = 1; G.TOWER.shoes(); setTimeout(() => { const s = document.querySelectorAll('.shoe'); s[0].click(); s[1].click(); }, 50); } },
+    { name: 'postcard', run: () => { G.debug.close(); G.TOWER.postcard(); } },
+    { name: 'case', run: () => { G.debug.close(); G.TOWER.case(); } },
+    { name: 'cabinet', run: () => { G.debug.close(); G.TOWER.cabinet(); } },
     { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];
 })();
