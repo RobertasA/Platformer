@@ -1,1 +1,74 @@
-/* placeholder */
+/* Music Room playroom (SPEC §8.2) */
+.sb-music { background: #3a1f5e; user-select: none; -webkit-user-select: none; }
+.sb-music .bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 30%, #7a4fc0 0%, #4b2a85 55%, #2d1850 100%); }
+.sb-music .floor { position: absolute; left: 0; right: 0; top: 580px; bottom: 0; background: linear-gradient(#c98a4b, #a9693a); box-shadow: inset 0 8px 0 #e0a766; }
+.sb-music .floor::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 118px, rgba(0,0,0,.12) 118px 120px); }
+.sb-music .lights { position: absolute; left: 0; right: 0; top: 0; height: 120px; pointer-events: none; }
+.sb-music .lamp { position: absolute; top: 26px; width: 120px; height: 540px; margin-left: -60px; background: linear-gradient(var(--c), transparent 85%); clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); opacity: .22; animation: sbm-sway 4s ease-in-out infinite; transform-origin: 50% 0; }
+.sb-music .curtain { position: absolute; top: 0; width: 110px; height: 580px; background: repeating-linear-gradient(90deg, #d8334f 0 22px, #b01f3a 22px 44px); box-shadow: 0 0 30px rgba(0,0,0,.5); }
+.sb-music .cl { left: 0; border-radius: 0 0 90px 0; } .sb-music .cr { right: 0; border-radius: 0 0 0 90px; }
+.sb-music .valance { position: absolute; left: 0; right: 0; top: 0; height: 22px; background: linear-gradient(#ffd23c, #e6a915); box-shadow: 0 6px 0 #b01f3a, 0 10px 14px rgba(0,0,0,.4); }
+.sb-music .bandstand { position: absolute; left: 130px; right: 130px; top: 262px; height: 18px; border-radius: 10px; background: linear-gradient(#e6b36c, #b57a3c); box-shadow: 0 8px 14px rgba(0,0,0,.35); }
+.sb-music .animal { position: absolute; top: 112px; width: 160px; height: 160px; transform-origin: 50% 100%; margin-left: -80px; }
+.sb-music .animal canvas { width: 160px; height: 160px; display: block; }
+.sb-music .animal.hop { animation: sbm-hop .45s cubic-bezier(.3,1.6,.5,1); }
+.sb-music .animal.big { animation-name: sbm-hopbig; }
+
+.sb-music .ctrl { position: absolute; left: 124px; top: 14px; height: 88px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-radius: 44px; background: rgba(255,255,255,.18); box-shadow: inset 0 0 0 3px rgba(255,255,255,.25); z-index: 5; }
+.sb-music .cb { width: 76px; height: 76px; border: 0; border-radius: 50%; background: linear-gradient(#fff, #e7e0f5); font-size: 38px; box-shadow: 0 6px 0 rgba(0,0,0,.25); touch-action: none; color: #3b3350; padding: 0; line-height: 1; transition: transform .1s; flex: none; }
+.sb-music .cb:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.sb-music .cb.rec { color: #e23b4e; }
+.sb-music .cb.on { background: linear-gradient(#ffd6dc, #ff9aa8); }
+.sb-music .cb.pulse { animation: sbm-pulse .8s ease-in-out infinite; }
+.sb-music .slot { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 24px; }
+.sb-music .slot span { font-size: 30px; } .sb-music .slot b { font-size: 22px; margin-top: 2px; }
+.sb-music .slot.full { background: linear-gradient(#e9ffd8, #a8ecbf); }
+.sb-music .sep { width: 4px; height: 50px; border-radius: 2px; background: rgba(255,255,255,.3); flex: none; }
+.sb-music .reclight { position: absolute; left: 1170px; top: 24px; width: 56px; height: 56px; border-radius: 50%; background: #ff2d4a; box-shadow: 0 0 30px 10px rgba(255,45,74,.8); opacity: 0; pointer-events: none; z-index: 6; }
+.sb-music .reclight.on { opacity: 1; animation: sbm-blink 1s ease-in-out infinite; }
+
+.sb-music .strip { position: absolute; left: 150px; top: 106px; width: 980px; height: 76px; display: flex; align-items: center; gap: 14px; padding: 0 10px 0 24px; box-sizing: border-box; border-radius: 40px; background: rgba(255,255,255,.93); box-shadow: 0 6px 0 rgba(0,0,0,.2); z-index: 7; }
+.sb-music .strip[hidden], .sb-music .menu[hidden] { display: none; }
+.sb-music .sname { font-size: 24px; font-weight: 800; color: #4b2a85; white-space: nowrap; }
+.sb-music .dots { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.sb-music .dot { width: 20px; height: 20px; border-radius: 50%; background: #d9d1ea; transition: transform .2s, background .2s; }
+.sb-music .dot.done { background: #ffc93c; } .sb-music .dot.cur { background: #ff7eb6; transform: scale(1.35); }
+.sb-music .sx, .sb-music .mx { width: 72px; height: 72px; border: 0; border-radius: 50%; background: #ffd0d6; font-size: 34px; color: #b01f3a; box-shadow: 0 5px 0 rgba(0,0,0,.2); flex: none; touch-action: none; padding: 0; }
+.sb-music .menu { position: absolute; left: 330px; top: 112px; width: 620px; padding: 18px 22px 22px; box-sizing: border-box; border-radius: 30px; background: rgba(255,255,255,.96); box-shadow: 0 10px 0 rgba(0,0,0,.2); z-index: 8; display: flex; flex-direction: column; gap: 12px; animation: sbm-pop .3s cubic-bezier(.3,1.6,.5,1); }
+.sb-music .mt { font-size: 28px; font-weight: 800; color: #4b2a85; text-align: center; margin-right: 80px; height: 60px; line-height: 60px; }
+.sb-music .sg { height: 80px; border: 0; border-radius: 26px; background: var(--c); color: #fff; font-size: 27px; font-weight: 800; text-shadow: 0 2px 0 rgba(0,0,0,.25); box-shadow: 0 6px 0 rgba(0,0,0,.22); display: flex; align-items: center; gap: 14px; padding: 0 24px; touch-action: none; }
+.sb-music .sg span { font-size: 38px; }
+.sb-music .mx { position: absolute; right: 14px; top: 10px; }
+
+.sb-music .xylo { position: absolute; left: 100px; top: 296px; width: 1080px; height: 280px; touch-action: none; }
+.sb-music .rail { position: absolute; left: -12px; right: -12px; height: 16px; border-radius: 8px; background: linear-gradient(#e6b36c, #a8702f); box-shadow: 0 4px 6px rgba(0,0,0,.35); }
+.sb-music .r1 { top: 46px; } .sb-music .r2 { top: 200px; }
+.sb-music .bar { position: absolute; top: 0; border-radius: 26px; background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,0) 35%, rgba(0,0,0,.12)), var(--c); box-shadow: 0 10px 0 rgba(0,0,0,.28), inset 0 3px 0 rgba(255,255,255,.5); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 12px; box-sizing: border-box; touch-action: none; transform-origin: 50% 0; }
+.sb-music .bar::before, .sb-music .bar::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; left: 50%; margin-left: -8px; background: rgba(0,0,0,.28); box-shadow: inset 0 2px 0 rgba(255,255,255,.4); }
+.sb-music .bar::before { top: 38px; } .sb-music .bar::after { top: 192px; }
+.sb-music .bar b { font-size: 44px; color: #fff; text-shadow: 0 3px 0 rgba(0,0,0,.3); pointer-events: none; }
+.sb-music .bar.hit { animation: sbm-bar .38s ease-out; filter: brightness(1.35) saturate(1.2); }
+.sb-music .bar.want { animation: sbm-want .7s ease-in-out infinite; filter: brightness(1.3); box-shadow: 0 10px 0 rgba(0,0,0,.28), 0 0 0 6px #fff, 0 0 40px 14px #fff6b0; z-index: 3; }
+.sb-music.songmode .bar:not(.want) { filter: saturate(.7) brightness(.92); }
+
+.sb-music .drums { position: absolute; left: 140px; top: 590px; width: 480px; height: 124px; }
+.sb-music .drum { position: absolute; top: 0; width: 124px; height: 124px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #fff 0 52%, #f0e8dc 53%); border: 12px solid var(--c); box-sizing: border-box; box-shadow: 0 8px 0 rgba(0,0,0,.3); display: flex; align-items: center; justify-content: center; color: #4b2a85; font-weight: 800; font-size: 22px; touch-action: none; }
+.sb-music .drum span { pointer-events: none; }
+.sb-music .drum.hit { animation: sbm-drum .3s ease-out; box-shadow: 0 8px 0 rgba(0,0,0,.3), 0 0 30px 10px var(--c); }
+.sb-music .bells { position: absolute; left: 700px; top: 598px; width: 540px; height: 110px; }
+.sb-music .bell { position: absolute; top: 0; width: 96px; height: 106px; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55) 0, transparent 40%), var(--c); box-shadow: 0 8px 0 rgba(0,0,0,.3), inset 0 -8px 0 rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; touch-action: none; transform-origin: 50% 0; }
+.sb-music .bell .bi { font-size: 48px; pointer-events: none; }
+.sb-music .bell.hit { animation: sbm-ring .45s ease-out; filter: brightness(1.25); }
+.sb-music .fnote { position: absolute; font-size: 34px; pointer-events: none; z-index: 20; animation: sbm-float 1.2s ease-out forwards; }
+
+@keyframes sbm-sway { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+@keyframes sbm-hop { 0% { transform: translateY(0) scale(1, 1); } 25% { transform: translateY(0) scale(1.1, .85); } 55% { transform: translateY(-34px) scale(.95, 1.1); } 100% { transform: translateY(0) scale(1, 1); } }
+@keyframes sbm-hopbig { 0% { transform: scale(1, 1); } 20% { transform: scale(1.14, .82); } 50% { transform: translateY(-14px) scale(.96, 1.06) rotate(5deg); } 100% { transform: scale(1, 1); } }
+@keyframes sbm-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+@keyframes sbm-blink { 0%, 100% { transform: scale(1); box-shadow: 0 0 30px 10px rgba(255,45,74,.8); } 50% { transform: scale(.8); box-shadow: 0 0 12px 2px rgba(255,45,74,.5); } }
+@keyframes sbm-bar { 0% { transform: translateY(8px) scaleY(.96); } 40% { transform: translateY(-5px) rotate(-1.2deg); } 100% { transform: none; } }
+@keyframes sbm-want { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+@keyframes sbm-drum { 0% { transform: scale(.88); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+@keyframes sbm-ring { 0% { transform: rotate(0); } 20% { transform: rotate(-22deg); } 50% { transform: rotate(16deg); } 75% { transform: rotate(-8deg); } 100% { transform: rotate(0); } }
+@keyframes sbm-float { 0% { transform: translate(-50%, 0) scale(.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(calc(-50% + 20px), -150px) scale(1.1) rotate(14deg); opacity: 0; } }
+@keyframes sbm-pop { 0% { transform: scale(.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }

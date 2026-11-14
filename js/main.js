@@ -145,6 +145,7 @@
     { name: 'play-vet', run: () => { G.SB.open('vet'); } },
     { name: 'play-dolls', run: () => { G.SB.open('dolls'); } },
     { name: 'play-art', run: () => { G.SB.open('art'); } },
+    { name: 'play-music', run: () => { G.SB.open('music'); } },
     { name: 'play-end', run: () => { G.SB.close(); } },
     { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];

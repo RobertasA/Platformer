@@ -230,12 +230,12 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 .sbwrap { position: absolute; inset: 0; background: #fff7e8; overflow: hidden; }
 .sbwrap.toybox { background: radial-gradient(circle at 50% 0, #fff3d6, #ffd9a8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
 .sbtitle { font-size: 56px; font-weight: 700; color: #6b4226; }
-.sbgrid { display: flex; flex-wrap: wrap; gap: 26px; justify-content: center; max-width: 1180px; }
-.sbroom { width: 260px; height: 300px; border: 0; border-radius: 34px; background: var(--col); box-shadow: 0 10px 0 rgba(0,0,0,.18); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px; }
+.sbgrid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; max-width: 1240px; }
+.sbroom { width: 224px; height: 290px; border: 0; border-radius: 34px; background: var(--col); box-shadow: 0 10px 0 rgba(0,0,0,.18); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px; }
 .sbroom:active { transform: translateY(6px); box-shadow: 0 4px 0 rgba(0,0,0,.18); }
-.sbroom .ic { font-size: 110px; line-height: 1.1; }
-.sbroom .nm { font-size: 30px; font-weight: 700; color: #3b3350; }
-.sbroom .bl { font-size: 20px; color: #3b3350; opacity: .8; }
+.sbroom .ic { font-size: 96px; line-height: 1.1; }
+.sbroom .nm { font-size: 26px; font-weight: 700; color: #3b3350; }
+.sbroom .bl { font-size: 18px; color: #3b3350; opacity: .8; }
 .sbwrap .closex { right: 22px; top: 22px; }
 .sbstage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; overflow: hidden; }
 .sbback { position: absolute; left: 14px; top: 12px; width: 84px; height: 84px; border-radius: 50%; border: 0; background: #fff; font-size: 40px; box-shadow: 0 6px 0 rgba(0,0,0,.18); z-index: 50; }
