@@ -260,6 +260,25 @@
     row.appendChild(reset); row.appendChild(close); card.appendChild(row); ov.appendChild(card);
   };
 
+  /* bug journal (SPEC §7.2e) */
+  UI.journal = function () {
+    G.paused = true;
+    const ov = UI.overlay(true), card = U.el('div', 'card journal'), n = G.MEAD.count();
+    card.appendChild(U.el('h2', '', '📖 My bug journal <small>' + n + ' of 10 bugs</small>'));
+    const grid = U.el('div', 'jgrid'); card.appendChild(grid);
+    const hint = U.el('div', 'hint', n ? 'Tap a bug to hear about it.' : 'Find bugs in Bugglemead and they will live here!'); card.appendChild(hint);
+    for (const k of G.MEAD.KINDS) {
+      const b = G.BUGS[k], got = G.S.bugs[k], cell = U.el('button', 'jbug' + (got ? '' : ' unk'));
+      cell.appendChild(G.MEAD.bugCanvas(k, 130, { sil: !got, still: true }));
+      cell.appendChild(U.el('div', 'jname', got ? b.name : '?'));
+      cell.onclick = () => { G.sfx('pop'); const m = got ? 'The ' + b.name + '. ' + b.fact : 'Not found yet. Keep looking!'; hint.textContent = m; G.say(m, true); };
+      grid.appendChild(cell);
+    }
+    const close = U.el('button', 'closex', '✕'); close.onclick = () => { G.sfx('tap'); G.hush(); UI.overlay(false); G.paused = false; }; card.appendChild(close);
+    ov.appendChild(card);
+    G.say(hint.textContent, true);
+  };
+
   UI.bindHud = function () {
     document.querySelectorAll('.hbtn').forEach(b => b.addEventListener('click', () => {
       if (G.paused) return; G.audioUnlock(); G.sfx('tap');
@@ -268,7 +287,7 @@
       else if (a === 'settings') UI.settings();
       else if (a === 'map') UI.soon('The map');
       else if (a === 'play') UI.soon('The playroom');
-      else if (a === 'journal') UI.soon('The journal');
+      else if (a === 'journal') UI.journal();
     }));
   };
 })();

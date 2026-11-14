@@ -218,6 +218,52 @@
         { id: 'gate-woods', k: 'gate', x: 52, row: 12, to: 'woods', label: 'Whispering Woods', icon: '🌲', needs: { red: 2, blue: 1 } },
       ],
     },
+    /* Bugglemead (SPEC §7.2e): bug = a minibeast to look at (js/meadow.js); sorter = Bettina's sorting hoops. */
+    meadow: {
+      name: 'Bugglemead', theme: 'meadow', music: 'meadow', w: 90, h: 15,
+      fills: [
+        [0, 0, 0, 14, '#'], [89, 0, 89, 14, '#'],
+        [0, 12, 89, 14, '#'],
+        [17, 9, 20, 9, '='],                      // leaf over the butterfly flowers
+        [27, 10, 29, 10, '='], [31, 8, 33, 8, '='],   // up to the hive
+        [44, 10, 47, 10, '='],                    // grasshopper leaf
+        [49, 7, 51, 7, '='],                      // high leaf (yellow gem)
+        [62, 12, 69, 13, '~'],                    // dragonfly pond
+        [64, 9, 67, 9, '='],                      // lily leaf over the pond
+        [75, 10, 77, 10, '='], [79, 8, 81, 8, '='],   // last climb (purple gem)
+      ],
+      spawn: { x: 3, row: 12 },
+      decor: [
+        { k: 'bigflower', x: 300, h: 170 }, { k: 'bush', x: 450 }, { k: 'flower', x: 700 }, { k: 'bigflower', x: 860, h: 230 }, { k: 'bigflower', x: 980, h: 150 },
+        { k: 'flower', x: 1100 }, { k: 'mushroom', x: 1180 }, { k: 'mushroom', x: 1215, s: 0.6, col: '#ffb13c' }, { k: 'hive', x: 1490 }, { k: 'tree', x: 1580 },
+        { k: 'rock', x: 1720 }, { k: 'bigflower', x: 1850, h: 200 }, { k: 'bush', x: 2000, v: 1 }, { k: 'flower', x: 2150 }, { k: 'tree', x: 2400, col: '#9be05c' },
+        { k: 'bigflower', x: 2560, h: 180 }, { k: 'logpile', x: 2800 }, { k: 'logpile', x: 2850 }, { k: 'mushroom', x: 2920 }, { k: 'bigflower', x: 3420, h: 160 },
+        { k: 'flower', x: 3500 }, { k: 'bush', x: 3650 }, { k: 'bigflower', x: 3800, h: 240 }, { k: 'rock', x: 3950, s: 0.8 }, { k: 'tree', x: 4100 },
+      ],
+      ents: [
+        { id: 'bm-back', k: 'door', x: 1.6, row: 12, icon: '🏡', col: '#8d5a3b', to: 'village', at: { x: 55.5, row: 12 } },
+        { id: 'bettina2', k: 'npc', who: 'bettina', x: 6, row: 12, lines: 'bettina', talk: [] },
+        { id: 'bm-sort', k: 'sorter', x: 9.5, row: 12 },
+        { id: 'bug-ladybird', k: 'bug', kind: 'ladybird', x: 14, row: 12, x0: 13, x1: 15.5 },
+        { id: 'g-bm-green1', k: 'gem', col: 'green', x: 18.5, row: 9 },
+        { id: 'bug-butterfly', k: 'bug', kind: 'butterfly', x: 21, row: 9.5, fly: true },
+        { id: 'bug-snail', k: 'bug', kind: 'snail', x: 24, row: 12, x0: 23.5, x1: 25 },
+        { id: 'bug-bee', k: 'bug', kind: 'bee', x: 32, row: 6.5, fly: true },
+        { id: 'g-bm-red1', k: 'gem', col: 'red', x: 28, row: 10 },
+        { id: 'bug-worm', k: 'bug', kind: 'worm', x: 36, row: 12, x0: 35, x1: 37 },
+        { id: 'bug-ant', k: 'bug', kind: 'ant', x: 40, row: 12, x0: 39, x1: 42 },
+        { id: 'bug-grasshopper', k: 'bug', kind: 'grasshopper', x: 46, row: 10, x0: 44.5, x1: 47 },
+        { id: 'g-bm-yellow1', k: 'gem', col: 'yellow', x: 50, row: 7 },
+        { id: 'bug-spider', k: 'bug', kind: 'spider', x: 54, row: 12, x0: 53, x1: 55 },
+        { id: 'g-bm-green2', k: 'gem', col: 'green', x: 57, row: 12 },
+        { id: 'bug-woodlouse', k: 'bug', kind: 'woodlouse', x: 59, row: 12, x0: 58.5, x1: 60 },
+        { id: 'bug-dragonfly', k: 'bug', kind: 'dragonfly', x: 66, row: 10.5, fly: true },
+        { id: 'g-bm-green3', k: 'gem', col: 'green', x: 72, row: 12 },
+        { id: 'g-bm-purple1', k: 'gem', col: 'purple', x: 80, row: 8 },
+        { id: 'bm-sign', k: 'sign', x: 83, row: 12, text: 'Teapot Tower is up the hill. Bring two green gems and one purple gem.' },
+        { id: 'gate-tower', k: 'gate', x: 86, row: 12, to: 'tower', label: 'Teapot Tower', icon: '🫖', needs: { green: 2, purple: 1 } },
+      ],
+    },
   };
   for (const id in G.AREAS) G.AREAS[id].map = G.buildMap(G.AREAS[id].w, G.AREAS[id].h, G.AREAS[id].fills);
 })();

@@ -46,8 +46,8 @@
   G.LOCKED = { 'hat:goldcrown': 'finale', 'back:rainbowcape': 'shop', 'pet:dragon': 'quest', 'pet:unicorn': 'shop', 'pet:tuft': 'quest', 'hat:antennae': 'quest', 'back:beewings': 'quest', 'hat:detective': 'quest', 'hat:chef': 'quest', 'held:lantern': 'quest', 'back:dragonwings': 'shop', 'hat:unicorn': 'shop' };
   G.isOwned = key => !G.LOCKED[key] || (G.S && G.S.owned[key]);
   G.PRICE = { 'hat:unicorn': 8, 'back:dragonwings': 10, 'back:rainbowcape': 12, 'pet:unicorn': 15 };
-  G.ITEM_NAME = { 'hat:unicorn': 'Unicorn horn', 'back:dragonwings': 'Dragon wings', 'back:rainbowcape': 'Rainbow cape', 'pet:unicorn': 'Baby unicorn', 'hat:chef': 'Chef hat', 'held:lantern': 'Night lantern' };
-  G.UNLOCK_HINT = { 'hat:chef': 'Serve the customers at the café!', 'held:lantern': 'Tuck Mum in at Hush House!', 'hat:goldcrown': 'Finish the whole adventure!' };
+  G.ITEM_NAME = { 'hat:unicorn': 'Unicorn horn', 'back:dragonwings': 'Dragon wings', 'back:rainbowcape': 'Rainbow cape', 'pet:unicorn': 'Baby unicorn', 'hat:chef': 'Chef hat', 'held:lantern': 'Night lantern', 'hat:antennae': 'Bug antennae', 'back:beewings': 'Bee wings' };
+  G.UNLOCK_HINT = { 'hat:chef': 'Serve the customers at the café!', 'held:lantern': 'Tuck Mum in at Hush House!', 'hat:antennae': 'Find six bugs in Bugglemead!', 'back:beewings': 'Find all ten bugs in Bugglemead!', 'hat:goldcrown': 'Finish the whole adventure!' };
   G.lockHint = key => G.LOCKED[key] === 'shop' ? 'Pip sells this in the toy shop for ' + G.PRICE[key] + ' coins!' : G.UNLOCK_HINT[key] || 'Help a friend to win this!';
   /* win an item: owned + NEW badge in the wardrobe */
   G.unlock = key => { G.S.owned[key] = true; (G.S.fresh = G.S.fresh || {})[key] = true; };

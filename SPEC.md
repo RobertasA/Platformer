@@ -24,7 +24,8 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `house` area (Hush House: noise meter, creaky boards, squeaky toys, maths doors, tuck Mum in) | [done] iter3 |
 | `cafe` area + `js/cafe.js` order cards (Twiggy Spoon Café, §7.2d) | [done] iter4 |
 | Wardrobe polish (NEW badges, lock hints, undo, My outfits) + Pip's toy shop `G.UI.shop` (§9) | [done] iter5 |
-| Areas meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
+| `meadow` Bugglemead + `js/meadow.js` + `js/bugart.js` (§7.2e) | [done] iter6 |
+| Areas tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -223,6 +224,28 @@ Area `writing` (woods theme, 64×15) reached through the village gate (blue×2).
 - Gems on the café shelves: blue, red, green, purple. Music: `village`. On finishing the story the other customers re-order after 8 s.
 - [todo] cooking mini-game (stir, pour, decorate cakes).
 
+### 7.2e Bugglemead (iter6) — `meadow` in world.js; bug cards, sorting hoops, journal in `js/meadow.js` (`G.MEAD`); bug art in `js/bugart.js` (`G.drawBug`)
+- Area `meadow` (90×15, theme `meadow`, giant flowers, leaf platforms, a hive, log pile, pond). Door 🏡 back to the village (arrives by the Bugglemead gate). Gate 🫖 `gate-tower` (green×2, purple×1) → Teapot Tower (not built yet).
+- **Bettina Bugbright** (bug-lover, net, glasses): "Hello! I am Bettina Bugbright. I love bugs!" / "Bugs live all over the meadow. Tap a bug to look at it with your magnifier." / "Count their legs, then let them go home. Find six bugs for a prize!" Later visits: progress line ("You have found N bugs. M more to find!").
+- **Bugs** `k:'bug'` (10 kinds, `G.BUGS`): crawlers walk to and fro in a small range; flyers (`fly:true`) bob in the air. Data (curriculum-checked):
+  | kind | legs | wings | home | fact |
+  |---|---|---|---|---|
+  | ladybird | 6 | yes | leaves | Ladybirds eat tiny greenfly. |
+  | bee | 6 | yes (4) | hive | Bees visit flowers and make honey. |
+  | butterfly | 6 | yes (4) | flowers | A butterfly was once a caterpillar. |
+  | snail | 0 | no | damp leaves | A snail carries its shell on its back. |
+  | worm | 0 | no | soil | Worms mix the soil and help plants grow. |
+  | spider | 8 | no | web | A spider is not an insect. It has eight legs. |
+  | ant | 6 | no | nest | Ants work together in a big team. |
+  | grasshopper | 6 | yes | long grass | Grasshoppers can jump a long way. |
+  | woodlouse | 14 | no | under logs | A woodlouse rolls into a ball to stay safe. |
+  | dragonfly | 6 | yes (4) | pond | Dragonflies lay their eggs in ponds. |
+- **Magnifier card** `G.MEAD.look(kind)`: big animated bug in a magnifier ring, name (read aloud), one question by `S.level.nature`: L0 legs ("How many legs?" 3 number choices), L1 wings (Yes/No), L2+ legs, wings or home (3 picture choices). Never fails (hint → hint → reveal). Then the fact is read and a "Let it go 🍃" button. First look → `S.bugs[kind]=true`, "New bug for your journal!", +1 coin. Repeat looks → +0, still fine.
+- Rewards: 6 kinds → `G.unlock('hat:antennae')` + green gem; all 10 → `G.unlock('back:beewings')` + purple gem; banners "Bug spotter! 🐞" / "Bug expert! 🐝".
+- **Sorting hoops** `k:'sorter'` next to Bettina → `G.MEAD.sort()`: 5 bugs to sort into hoops; tap a bug then a hoop. L0–1: legs (No legs / 6 legs / 8 legs; woodlouse never used). L2+: alternates legs with wings (Wings / No wings). Wrong → wobble + hint ("Count the legs!"); 3rd miss on a bug → it hops into the right hoop. Finish → first time green gem (`S.quests.sort`), then +2 coins.
+- **Bug journal** (📖 HUD button) `G.UI.journal()`: grid of all 10 bugs — found ones drawn in colour with name (tap: name + fact read aloud); unfound ones as silhouettes with "?". Header "N of 10 bugs".
+- Gems: green×3 (nature puzzles), red, yellow, purple on the platforms.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -306,7 +329,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 4. **[done iter3] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
 5. **[done iter4] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox (§7.2d). Cooking mini-game → later.
 6. **[done iter5] Wardrobe/creator UI polish** with locked-item hints, NEW badges, undo, saved outfits + Pip's toy shop (coins finally buy things) (§9).
-7. **[todo] Bugglemead** + bug journal + science puzzles.
+7. **[done iter6] Bugglemead** + bug journal + science puzzles (§7.2e).
 8. **[todo] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[todo] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[todo] Playrooms**: vet, witch kitchen, dolls' house, art easel.
@@ -328,3 +351,4 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter4 — Twiggy Spoon Café.** Feedback: 0 issues. Built the `cafe` area (§7.2d): Mrs Bramble, Wilf, four customers with order cards in `js/cafe.js` — count cakes onto a plate, read an order ticket, pay with coins into a purse, write the order on a notepad (handwriting pad). Never-fail rules and adaptive levels as for puzzles. Serving all four → blue gem + chef hat, then "Run the café" free play (customers re-order with random kinds). New decor: counter with cake dome and till, chalkboard menu; new theme `cafe` (gingham wallpaper). Debug steps `cafe`, `order-count/read/money/write`, `cafe2`; a scripted run checked rewards and re-orders. Next: wardrobe polish (#6), Bugglemead (#7).
 
 **iter5 — wardrobe polish + Pip's toy shop.** Feedback: 0 issues. Coins now buy things: Pip's shop sells the four shop-locked items (8–15 coins) with a "you need N more" subtraction message. Wardrobe: `G.unlock` + ✨NEW badges, lock hints that say where to win an item, tab names, ↩️ undo, 🧺 My outfits (3 hangers). Fixed the Done button wrapping and the shop wrapping on phone. Debug steps `shop`, `shop-poor`, `wardrobe-new`, `outfits`; a scripted run checked buy → wear → NEW badge → undo. Next: Bugglemead (#7).
+- **iter6 — Bugglemead.** New area `meadow` (90 wide: flowers, hive, logs, pond, leaf platforms; gate to Teapot Tower). `js/bugart.js` (Sonnet sub-agent): 10 procedural bugs with countable legs/wings + silhouettes. `js/meadow.js`: bug data (`G.BUGS`), magnifier card (legs → wings → legs/wings/home by `level.nature`, never fails), milestone prizes (6 → antennae + green, 10 → bee wings + purple), sorting hoops (always one bug per hoop), Bettina's progress lines. 📖 HUD button now opens the bug journal. Scripted test: 6 looks → prize; woodlouse wings reveal; sort with 3 misses auto-places, green gem; no page errors. Fix found in test: sort set could miss the "No legs" bug — now built per hoop. Feedback: none open. Next: #8 sentences on lines / capitals & digits.

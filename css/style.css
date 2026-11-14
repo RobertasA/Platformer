@@ -158,3 +158,28 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 .shopitem.have .pr { color: #e0568f; }
 .shopact { display: flex; justify-content: center; min-height: 72px; }
 .creator .bigbtn { white-space: nowrap; padding: 0 22px; }
+
+/* ---- iter6 Bugglemead ---- */
+.bugcard { border-color: #9be05c; background: #fbfff2; }
+.bugcard .q small { font-size: 24px; color: #4f8a2d; text-transform: capitalize; }
+.lens { width: 300px; height: 300px; border-radius: 50%; border: 16px solid #8d5a3b; box-shadow: 0 0 0 6px #d9b382, inset 0 0 40px rgba(255,255,255,.7); background: radial-gradient(#f6ffe6, #d6f5b8); overflow: hidden; flex: none; }
+.lens canvas { width: 268px; height: 268px; }
+.bugcard .answers .ans { min-width: 130px; min-height: 90px; }
+.sortcard { border-color: #9be05c; background: #fbfff2; }
+.sorttray { display: flex; gap: 12px; justify-content: center; min-height: 120px; }
+.sortbug { width: 120px; height: 120px; border-radius: 24px; border: 4px solid transparent; background: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.12); padding: 0; }
+.sortbug canvas { width: 110px; height: 110px; }
+.sortbug.sel { border-color: #ffb13c; transform: translateY(-6px); }
+.sortbug.placed { width: 74px; height: 74px; box-shadow: none; background: transparent; }
+.sortbug.placed canvas { width: 70px; height: 70px; }
+.hoops { display: flex; gap: 22px; justify-content: center; }
+.hoop { min-width: 250px; min-height: 170px; border-radius: 50%; border: 10px solid #ff7eb6; background: #fff8fb; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 2px; padding: 8px 20px; position: relative; }
+.hoop:nth-child(2) { border-color: #4aa8ff; background: #f3f9ff; } .hoop:nth-child(3) { border-color: #7ed16a; background: #f5fff1; }
+.hoop span { position: absolute; top: -26px; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 14px; padding: 2px 14px; font-size: 26px; font-weight: 700; white-space: nowrap; box-shadow: 0 3px 0 rgba(0,0,0,.1); }
+.hoop.wob { animation: wob .4s; }
+.journal { width: 1040px; background: #fffaf0; border: 8px solid #c79a5e; text-align: center; }
+.journal h2 { margin: 0 0 10px; font-size: 40px; } .journal h2 small { font-size: 26px; color: #8d5a3b; margin-left: 12px; }
+.jgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.jbug { background: #fff; border: 0; border-radius: 22px; box-shadow: 0 5px 0 rgba(0,0,0,.1); padding: 6px; display: flex; flex-direction: column; align-items: center; }
+.jbug canvas { width: 130px; height: 130px; } .jbug.unk { background: #f1ece2; }
+.jname { font-size: 26px; font-weight: 600; text-transform: capitalize; }

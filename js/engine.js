@@ -136,6 +136,10 @@
         else if (touch) e.cool = Math.max(e.cool, 0.6);   // stay quiet until she steps away
         continue;
       }
+      if (e.k === 'bug' && !G.paused) {
+        if (e.fly) { e.px = e.x * T + Math.sin(e.t * 0.7) * 70; e.py = e.row * T + Math.sin(e.t * 2.1) * 18; e.dir = Math.cos(e.t * 0.7) > 0 ? 1 : -1; }
+        else if (e.x1) { e.dir = e.dir || 1; e.px += e.dir * dt * 26; if (e.px > e.x1 * T) e.dir = -1; if (e.px < e.x0 * T) e.dir = 1; }
+      }
       if (e.hidden || (e.k === 'mdoor' && G.S.locks[e.id]) || e.k === 'creak' || e.k === 'squeak' || e.k === 'check') continue;
       const d = Math.abs(e.px - P.x);
       if (near(e, 80) && d < best) { best = d; E.near = e; }
@@ -155,13 +159,15 @@
   };
 
   E.interact = function (e) {
-    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
+    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.lines === 'bettina' ? G.MEAD.bettinaLines() : e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
     else if (e.k === 'lesson') G.LS.run(e);
     else if (e.k === 'sign') G.UI.toast('📜 ' + e.text, true);
     else if (e.k === 'gate') G.UI.gate(e);
     else if (e.k === 'mdoor') E.mathsDoor(e);
     else if (e.k === 'mum') E.tuckIn(e);
     else if (e.k === 'cust') E.serve(e);
+    else if (e.k === 'bug') G.MEAD.look(e.kind);
+    else if (e.k === 'sorter') G.MEAD.sort();
     else if (e.k === 'door') {
       G.sfx('door');
       if (e.act === 'wardrobe') G.UI.creator(false);
@@ -265,7 +271,7 @@
     for (const p of E.parts) { c.globalAlpha = Math.max(0, p.life / p.max); if (p.kind === 'text') { c.fillStyle = p.col; c.strokeStyle = '#3b3350'; c.lineWidth = 4; c.font = '700 ' + p.r * 1.5 + 'px ' + G.FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.strokeText(p.txt, p.x, p.y); c.fillText(p.txt, p.x, p.y); } else if (p.kind === 'spark') G.star(c, p.x, p.y, p.r * 1.4, p.col); else G.circ(c, p.x, p.y, p.r, p.col); }
     c.globalAlpha = 1;
     // "press ✋" hint over the nearest thing
-    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
+    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' ? 150 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
     c.restore();
   };
 
@@ -325,6 +331,14 @@
         c.beginPath(); c.moveTo(e.px + 22, by + 18); c.lineTo(e.px + 14, by + 34); c.lineTo(e.px + 38, by + 22); c.fill();
         G.emoji(c, wait ? G.CAFE.ICON[custWant(e)] : '💖', e.px + 46, by - 3, 32);
       }
+    } else if (e.k === 'bug') {
+      if (G.drawBug) G.drawBug(c, e.kind, e.px, e.py, 1.5, { t: t + e.t, face: e.dir || 1, fly: e.fly }); else G.emoji(c, '🐞', e.px, e.py - 16, 30);
+      if (!G.S.bugs[e.kind]) { const bob = Math.sin(t * 4 + e.t) * 3; G.emoji(c, '✨', e.px + 36, e.py - 60 + bob, 24); }
+    } else if (e.k === 'sorter') {
+      const cols = ['#ff7eb6', '#4aa8ff', '#7ed16a'];
+      for (let i = 0; i < 3; i++) { c.strokeStyle = cols[i]; c.lineWidth = 8; c.beginPath(); c.ellipse(e.px - 50 + i * 50, e.py - 10, 26, 10, 0, 0, Math.PI * 2); c.stroke(); }
+      G.drawDecor(c, { k: 'sign', x: e.px, y: e.py - 18, icon: '🔍' }, t);
+      if (!G.S.quests.sort) { const bob = Math.sin(t * 4) * 3; G.circ(c, e.px + 40, e.py - 104 + bob, 16, '#7ed16a'); G.drawGem(c, 'green', e.px + 40, e.py - 104 + bob, 9, t); }
     } else if (e.k === 'sign' && !e.hidden) {
       G.drawDecor(c, { k: 'sign', x: e.px, y: e.py, icon: e.icon || '📜' }, t);
     }
