@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#8fd3ff">
+<title>Hazelnut Hollow</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="hud-left">
+      <div id="gembar"></div>
+      <div id="questpill" class="hidden"></div>
+    </div>
+    <div id="hud-right">
+      <button class="hbtn" data-act="map" title="Map">🗺️</button>
+      <button class="hbtn" data-act="play" title="Playroom">🧸</button>
+      <button class="hbtn" data-act="wardrobe" title="Dress up">👗</button>
+      <button class="hbtn" data-act="journal" title="Journal">📖</button>
+      <button class="hbtn" data-act="settings" title="Settings">⚙️</button>
+    </div>
+    <div id="noisebar" class="hidden"><span>🤫</span><div class="meter"><i></i></div><span>😴</span></div>
+    <div id="banner" class="hidden"></div>
+    <div id="toast" class="hidden"></div>
+  </div>
+
+  <div id="touch" class="hidden">
+    <button class="tbtn" id="t-left">◀</button>
+    <button class="tbtn" id="t-right">▶</button>
+    <button class="tbtn" id="t-act">✋</button>
+    <button class="tbtn" id="t-jump">⬆</button>
+  </div>
+
+  <div id="dialogue" class="hidden">
+    <canvas id="dlg-face" width="120" height="120"></canvas>
+    <div id="dlg-body">
+      <div id="dlg-name"></div>
+      <div id="dlg-text"></div>
+    </div>
+    <button id="dlg-next">▶</button>
+  </div>
+
+  <div id="overlay" class="hidden"></div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/art.js"></script>
+<script src="js/scenery.js"></script>
+<script src="js/curriculum.js"></script>
+<script src="js/puzzle.js"></script>
+<script src="js/world.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/sandbox.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
