@@ -1,0 +1,76 @@
+/* Hazelnut Hollow — Crystal Caves cards */
+.cavecard { width: 1000px; max-height: 650px; overflow: visible; border-color: #7d5bd6; color: #f4ecff; gap: 10px; padding: 18px 28px 20px;
+  background: radial-gradient(ellipse at 50% 100%, #4b2f9a 0%, #2a1a5e 55%, #170f38 100%); }
+.cavecard .q { font-size: 38px; text-shadow: 0 0 14px #b49bff; }
+.cavecard .hint { color: #ffe9a8; font-size: 30px; min-height: 40px; text-shadow: 0 0 10px rgba(255,220,120,.4); max-width: 900px; line-height: 1.15; }
+.cavecard .iconbtn { background: #4a3a8f; color: #fff; }
+.cavecard .bigbtn:disabled { opacity: .5; }
+.cavecard .cv-bar { display: flex; gap: 20px; justify-content: center; min-height: 72px; }
+.cavecard .closex { background: #ffe9a8; }
+
+/* chime crystals */
+.cavecard .cv-row { display: flex; gap: 22px; justify-content: center; align-items: flex-end; height: 240px; padding-top: 6px; }
+.cavecard .cv-cr { --c1: #ff8fd0; --c2: #b8266f; position: relative; width: 132px; height: 220px; border: 0; padding: 0; background: none; touch-action: none; cursor: pointer;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,.18)); transition: transform .15s, filter .15s; }
+.cavecard .cv-cr.c0 { --c1: #ff9ad8; --c2: #b0206a; }
+.cavecard .cv-cr.c1 { --c1: #ffc27a; --c2: #c25a12; height: 190px; }
+.cavecard .cv-cr.c2 { --c1: #8ff0a8; --c2: #1d8f4e; height: 230px; }
+.cavecard .cv-cr.c3 { --c1: #8fd0ff; --c2: #1f62c4; height: 205px; }
+.cavecard .cv-cr.c4 { --c1: #c9a6ff; --c2: #5a2bc0; height: 220px; }
+.cavecard .cv-gem { position: absolute; inset: 0; display: block;
+  clip-path: polygon(50% 0, 92% 22%, 100% 100%, 0 100%, 8% 22%);
+  background: linear-gradient(115deg, rgba(255,255,255,.55) 0 14%, transparent 14% 30%, rgba(255,255,255,.15) 30% 38%, transparent 38%),
+    linear-gradient(180deg, var(--c1), var(--c2)); opacity: .82; transition: opacity .15s, filter .15s; }
+.cavecard .cv-cr.lit { transform: translateY(-6px) scale(1.06); filter: drop-shadow(0 0 22px var(--c1)) drop-shadow(0 0 40px var(--c1)); }
+.cavecard .cv-cr.lit .cv-gem { opacity: 1; filter: brightness(1.45) saturate(1.2); }
+.cavecard .cv-cr:active { transform: scale(1.04); }
+.cavecard .cv-cr.cheer { animation: cvCheer .7s ease; }
+@keyframes cvCheer { 30% { transform: translateY(-22px) scale(1.08); filter: drop-shadow(0 0 26px var(--c1)); } }
+.cavecard .cv-row.shake { animation: cvShake .45s; }
+@keyframes cvShake { 20% { transform: translateX(-9px); } 40% { transform: translateX(9px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(6px); } }
+.cavecard .cv-badges { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; pointer-events: none; }
+.cavecard .cv-badge { width: 44px; height: 44px; border-radius: 50%; background: #fff; color: #3a1d86; font-weight: 700; font-size: 28px; line-height: 44px; box-shadow: 0 0 12px #fff; animation: cvPop .4s; }
+@keyframes cvPop { from { transform: scale(0); } }
+.cavecard .cv-dots { display: flex; gap: 14px; justify-content: center; height: 26px; }
+.cavecard .cv-dot { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.15); border: 2px solid #b49bff; transition: all .2s; }
+.cavecard .cv-dot.on { background: #ffe9a8; box-shadow: 0 0 12px #ffe9a8; border-color: #ffe9a8; }
+.cavecard .cv-dot.done { animation: cvPop .5s; }
+
+/* sparkles */
+.cavecard .cv-spark { position: absolute; left: 50%; top: 45%; font-size: 34px; pointer-events: none; z-index: 5; animation: cvSpark 1.3s ease-out forwards; }
+@keyframes cvSpark { 0% { transform: translate(0,0) scale(.3); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(1.3) rotate(120deg); opacity: 0; } }
+
+/* nest */
+.cavecard .cv-scene { position: relative; width: 100%; height: 330px; display: flex; justify-content: center; align-items: flex-end; overflow: hidden; border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 75%, rgba(255,180,90,.28), transparent 60%); }
+.cavecard .cv-nest { position: relative; width: 460px; height: 100%; }
+.cavecard .cv-twigs { position: absolute; left: 30px; right: 30px; bottom: 6px; height: 84px; border-radius: 50% 50% 46% 46% / 40% 40% 60% 60%;
+  background: repeating-linear-gradient(100deg, #6b4423 0 10px, #8d5f33 10px 18px, #55341a 18px 26px); box-shadow: inset 0 10px 14px rgba(0,0,0,.4), 0 6px 14px rgba(0,0,0,.4); }
+.cavecard .cv-stones { position: absolute; left: 0; right: 0; bottom: 10px; height: 64px; z-index: 3; pointer-events: none; display: flex; justify-content: space-between; padding: 0 12px; }
+.cavecard .cv-stone { font-size: 52px; opacity: .25; filter: grayscale(1); }
+.cavecard .cv-stone:nth-child(2) { margin-top: -6px; }
+.cavecard .cv-stone.got { opacity: 1; filter: none; }
+.cavecard .cv-stone.glow { animation: cvGlow 1.4s ease-in-out infinite; animation-delay: calc(var(--i) * .25s); filter: drop-shadow(0 0 14px #ff9a2e); }
+@keyframes cvGlow { 50% { transform: scale(1.2); filter: drop-shadow(0 0 26px #ffd25a); } }
+.cavecard .cv-egg { position: absolute; left: 50%; bottom: 48px; width: 150px; height: 190px; margin-left: -75px; z-index: 2; touch-action: none; transform-origin: 50% 100%; }
+.cavecard .cv-egg i { position: absolute; inset: 0; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 30% 28%, #fff 0 4%, transparent 5%), radial-gradient(circle at 62% 30%, #7c5ad0 0 3%, transparent 3.5%), radial-gradient(circle at 40% 55%, #7c5ad0 0 3.5%, transparent 4%),
+    radial-gradient(circle at 70% 62%, #7c5ad0 0 3%, transparent 3.5%), radial-gradient(circle at 28% 78%, #7c5ad0 0 3%, transparent 3.5%), radial-gradient(circle at 58% 82%, #7c5ad0 0 3.5%, transparent 4%),
+    radial-gradient(circle at 35% 30%, #fff7e0, #f2dca6 55%, #d3b074);
+  box-shadow: inset -12px -14px 22px rgba(120,80,30,.35); }
+.cavecard .cv-egg.cold i { filter: saturate(.5) hue-rotate(160deg) brightness(1.05); }
+.cavecard .cv-egg.warm i { box-shadow: inset -12px -14px 22px rgba(120,80,30,.35), 0 0 36px 8px rgba(255,170,70,.7); }
+.cavecard .cv-egg.warm { cursor: pointer; animation: cvBeat 1.6s ease-in-out infinite; }
+@keyframes cvBeat { 50% { transform: scale(1.04); } }
+.cavecard .cv-egg.shiver { animation: cvShiver .35s linear infinite; }
+@keyframes cvShiver { 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
+.cavecard .cv-egg.wobble { animation: cvWobble .5s; }
+@keyframes cvWobble { 20% { transform: rotate(-12deg); } 45% { transform: rotate(10deg); } 70% { transform: rotate(-6deg); } }
+.cavecard .cv-egg.burst { animation: cvBurst .55s ease-in forwards; }
+@keyframes cvBurst { 40% { transform: scale(1.25); } 100% { transform: scale(1.7); opacity: 0; } }
+.cavecard .cv-cracks { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cavecard .cv-crack { fill: none; stroke: #4a2c10; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 300; animation: cvDraw .35s forwards; }
+@keyframes cvDraw { from { stroke-dashoffset: 300; } to { stroke-dashoffset: 0; } }
+.cavecard .cv-snow { position: absolute; left: 50%; top: 20px; margin-left: 70px; font-size: 54px; animation: cvFloat 2.4s ease-in-out infinite; }
+@keyframes cvFloat { 50% { transform: translateY(-12px) rotate(20deg); } }
+.cavecard .cv-dragon { position: absolute; left: 50%; bottom: 40px; width: 260px; height: 240px; margin-left: -130px; z-index: 2; touch-action: none; cursor: pointer; }

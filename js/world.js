@@ -24,6 +24,7 @@
     barnaby: { name: 'Barnaby Bear', look: { cre: 'bear', s: 1.7, acc: 'scarf' } },
     hettie: { name: 'Hettie Hedgehog', look: { cre: 'hedgehog', s: 1.3, acc: 'bowtie' } },
     ogden: { name: 'Ogden', look: { cre: 'ogre', s: 1.8, acc: 'napkin' } },
+    rosie: { name: 'Rosie Rabbit', look: { cre: 'bunny', s: 1.5, acc: 'scarf' } },
     tuft: { name: 'Mr Tuft', look: { cre: 'tuft', s: 1.5, acc: 'bowtie' } },
   };
 
@@ -315,6 +316,87 @@
         { id: 'cu-fossil', k: 'curio', cid: 'fossil', icon: '🦴', x: 10, row: 13 },
         { id: 'tw-cabinet', k: 'cabinet', x: 20, row: 13 },
         { id: 'g-tw-purple1', k: 'gem', col: 'purple', x: 25.5, row: 13 },
+      ],
+    },
+    /* Whispering Woods (SPEC §7.2h): dusk; fireflies (pick), trail signs, campfire story, rafts and a bouncy mushroom. */
+    woods: {
+      name: 'Whispering Woods', theme: 'woods', music: 'woods', w: 100, h: 15, dark: 0.3,
+      fills: [
+        [0, 0, 0, 14, '#'], [99, 0, 99, 14, '#'],
+        [0, 12, 99, 14, '#'],
+        [11, 10, 12, 10, '='], [15, 7, 18, 7, '='],                   // step + tree branch (red gem); mushroom at x14 is the fun way
+        [28, 12, 35, 13, '~'],                                        // first stream (raft)
+        [44, 10, 47, 10, '='], [49, 8, 52, 8, '='], [54, 6, 56, 6, '='],   // hollow-log steps (blue gem)
+        [62, 10, 63, 10, '='], [64, 8, 65, 8, '='], [67, 6, 71, 6, '='],   // up to the high branch (firefly)
+        [74, 12, 80, 13, '~'],                                        // second stream (raft)
+      ],
+      spawn: { x: 3, row: 12 },
+      decor: [
+        { k: 'bigtree', x: 200 }, { k: 'pine', x: 420, s: 1.6 }, { k: 'bush', x: 520 }, { k: 'bigtree', x: 820 }, { k: 'mushroom', x: 980 }, { k: 'pine', x: 1180, s: 1.3 },
+        { k: 'tree', x: 1260, col: '#4f9a55' }, { k: 'rock', x: 1310 }, { k: 'pine', x: 1760, s: 1.8 }, { k: 'logpile', x: 2050 }, { k: 'bigtree', x: 2260 }, { k: 'mushroom', x: 2420, col: '#ffb13c' },
+        { k: 'pine', x: 2700, s: 1.4 }, { k: 'bush', x: 2840, v: 1 }, { k: 'bigtree', x: 3250 }, { k: 'pine', x: 3480, s: 1.7 }, { k: 'rock', x: 3520, s: 0.8 }, { k: 'tree', x: 3960, col: '#4f9a55' },
+        { k: 'mushroom', x: 4110 }, { k: 'bush', x: 4250 }, { k: 'pine', x: 4380, s: 1.5 }, { k: 'cavemouth', x: 4600 },
+      ],
+      ents: [
+        { id: 'wd-back', k: 'door', x: 1.6, row: 12, icon: '☕', col: '#8d5a3b', to: 'cafe', at: { x: 50, row: 12 } },
+        { id: 'rosie', k: 'npc', who: 'rosie', x: 6, row: 12, lines: 'rosie', talk: [] },
+        { id: 'wd-sign', k: 'sign', x: 9, row: 12, text: 'Whispering Woods. Jump on the red mushroom to bounce!' },
+        { id: 'wd-boing1', k: 'bounce', x: 14, row: 12 },
+        { id: 'g-wd-red1', k: 'gem', col: 'red', x: 17, row: 7 },
+        { id: 'wd-trail1', k: 'trail', col: 'green', x: 22.5, row: 12 },
+        { id: 'wd-raft1', k: 'raft', x: 30, row: 12, x0: 29.6, x1: 34.4, w: 3 },
+        { id: 'ff-1', k: 'pick', set: 'fireflies', icon: '✨', name: 'firefly', fly: true, x: 32, row: 10.6 },
+        { id: 'wd-story', k: 'story', x: 40, row: 12 },
+        { id: 'ff-2', k: 'pick', set: 'fireflies', icon: '✨', name: 'firefly', fly: true, x: 50.5, row: 6.6 },
+        { id: 'g-wd-blue1', k: 'gem', col: 'blue', x: 55.5, row: 6 },
+        { id: 'wd-trail2', k: 'trail', col: 'yellow', x: 59, row: 12 },
+        { id: 'wd-boing2', k: 'bounce', x: 66.5, row: 12 },
+        { id: 'ff-3', k: 'pick', set: 'fireflies', icon: '✨', name: 'firefly', fly: true, x: 70, row: 4.6 },
+        { id: 'wd-raft2', k: 'raft', x: 76, row: 12, x0: 75.6, x1: 79.4, w: 3 },
+        { id: 'ff-4', k: 'pick', set: 'fireflies', icon: '✨', name: 'firefly', fly: true, x: 77, row: 10.6 },
+        { id: 'wd-trail3', k: 'trail', col: 'green', x: 84, row: 12 },
+        { id: 'ff-5', k: 'pick', set: 'fireflies', icon: '✨', name: 'firefly', fly: true, x: 88.5, row: 11.4 },
+        { id: 'wd-sign2', k: 'sign', x: 91.5, row: 12, text: 'Crystal Caves this way. Bring two yellow gems and two green gems.' },
+        { id: 'gate-caves', k: 'gate', x: 95, row: 12, to: 'caves', label: 'Crystal Caves', icon: '💎', needs: { yellow: 2, green: 2 } },
+      ],
+    },
+    /* Crystal Caves (SPEC §7.2h): dark (lantern helps); crystal chimes, warm stones (pick) for the dragon egg. */
+    caves: {
+      name: 'Crystal Caves', theme: 'caves', music: 'caves', w: 90, h: 15, dark: 0.8,
+      fills: [
+        [0, 0, 0, 14, '#'], [89, 0, 89, 14, '#'], [0, 0, 89, 1, '#'],
+        [0, 12, 89, 14, '#'],
+        [10, 2, 12, 3, '#'], [26, 2, 29, 4, '#'], [52, 2, 54, 3, '#'], [70, 2, 73, 4, '#'],   // stalactites
+        [18, 10, 20, 10, '='], [22, 8, 24, 8, '='],                   // ledges (yellow gem)
+        [32, 12, 38, 13, '~'],                                        // underground lake (raft, green gem)
+        [43, 6, 46, 6, '='], [47, 10, 48, 10, '='], [49, 8, 50, 8, '='],   // high shelf (warm stone): crystal bounce at x41.5 or the steps
+        [58, 11, 58, 11, '#'],                                        // stalagmite to hop
+        [62, 10, 63, 10, '='], [65, 8, 67, 8, '='],                   // ledge (warm stone)
+      ],
+      spawn: { x: 3, row: 12 },
+      decor: [
+        { k: 'crystal', x: 260 }, { k: 'rock', x: 420, col: '#6d5fa8' }, { k: 'crystal', x: 800, col: '#7fe3ff' }, { k: 'crystal', x: 1180, col: '#ffe066' }, { k: 'rock', x: 1420, col: '#6d5fa8', s: 1.3 },
+        { k: 'crystal', x: 1960, col: '#ff7eb6' }, { k: 'crystal', x: 2330 }, { k: 'rock', x: 2500, col: '#6d5fa8' }, { k: 'crystal', x: 2900, col: '#7ed957' }, { k: 'crystal', x: 3300, col: '#b77bff' },
+        { k: 'rock', x: 3700, col: '#6d5fa8', s: 0.8 }, { k: 'crystal', x: 3990, col: '#7fe3ff' }, { k: 'crystal', x: 4230, col: '#ffe066' },
+      ],
+      ents: [
+        { id: 'cv-back', k: 'door', x: 1.6, row: 12, icon: '🌲', col: '#6b4a30', to: 'woods', at: { x: 93, row: 12 } },
+        { id: 'mole2', k: 'npc', who: 'mole', x: 6, row: 12, lines: 'mole', talk: [] },
+        { id: 'cv-sign', k: 'sign', x: 9, row: 12, text: 'Crystal Caves. It is dark! Hold a lantern to see more.' },
+        { id: 'cv-chime1', k: 'chime', col: 'blue', x: 14, row: 12 },
+        { id: 'g-cv-yellow1', k: 'gem', col: 'yellow', x: 23.5, row: 8 },
+        { id: 'em-1', k: 'pick', set: 'embers', icon: '🔥', name: 'warm stone', x: 28, row: 12 },
+        { id: 'cv-raft1', k: 'raft', x: 34, row: 12, x0: 33.6, x1: 37.4, w: 3 },
+        { id: 'g-cv-green1', k: 'gem', col: 'green', x: 35.5, row: 12.6 },
+        { id: 'cv-boing1', k: 'bounce', look: 'crystal', x: 41.5, row: 12 },
+        { id: 'em-2', k: 'pick', set: 'embers', icon: '🔥', name: 'warm stone', x: 44.5, row: 6 },
+        { id: 'cv-chime2', k: 'chime', col: 'purple', x: 54.5, row: 12 },
+        { id: 'g-cv-red1', k: 'gem', col: 'red', x: 60, row: 12 },
+        { id: 'em-3', k: 'pick', set: 'embers', icon: '🔥', name: 'warm stone', x: 66, row: 8 },
+        { id: 'cv-nest', k: 'nest', x: 73.5, row: 12 },
+        { id: 'cv-chime3', k: 'chime', col: 'yellow', x: 79, row: 12 },
+        { id: 'cv-sign2', k: 'sign', x: 83, row: 12, text: 'Cloudtop Kingdom is up above. Bring three red, three yellow and two purple gems.' },
+        { id: 'gate-clouds', k: 'gate', x: 86, row: 12, to: 'clouds', label: 'Cloudtop Kingdom', icon: '☁️', needs: { red: 3, yellow: 3, purple: 2 } },
       ],
     },
   };

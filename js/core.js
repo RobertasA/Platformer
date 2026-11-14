@@ -36,7 +36,7 @@
     v: 1, created: false, name: '', avatar: G.defaultAvatar(),
     gems: { red: 0, blue: 0, green: 0, yellow: 0, purple: 0 }, coins: 0,
     areas: { village: true }, area: 'village',
-    taken: {}, locks: {}, quests: {}, bugs: {}, curios: {}, owned: {}, seen: {}, fresh: {}, outfits: [],
+    taken: {}, locks: {}, quests: {}, bugs: {}, curios: {}, picks: {}, owned: {}, seen: {}, fresh: {}, outfits: [],
     level: { maths: 0, words: 0, nature: 0, shapes: 0, patterns: 0 },
     streak: { maths: 0, words: 0, nature: 0, shapes: 0, patterns: 0 },
     stats: { solved: 0, vet: 0, potions: 0 },

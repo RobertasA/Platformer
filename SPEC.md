@@ -27,7 +27,8 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `meadow` Bugglemead + `js/meadow.js` + `js/bugart.js` (§7.2e) | [done] iter6 |
 | Sentence Shore, capitals & digits trees, journal Writing tab (§7.2f) | [done] iter7 |
 | `tower` Teapot Tower + `js/tower.js` (§7.2g) | [done] iter8 |
-| Areas woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
+| `woods` + `js/woods.js`, `caves` + `js/caves.js`, bounce/raft/pick/dark (§7.2h) | [building] iter10 |
+| Area clouds + finale | [todo] — gate opens but travel shows "still being built" |
 | `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -267,6 +268,24 @@ A tall, cosy collector's house (Ottoline homage). Five floors joined by zig-zag 
 - Gems on steps/shelves: red, blue, green, yellow, purple ×1 each.
 - Save: `S.curios` (new key in `blank()`).
 
+### 7.2h Whispering Woods and Crystal Caves (iter10) [building]
+New engine pieces (all in `engine.js`):
+- **Bounce** `k:'bounce'` (`look:'mushroom'|'crystal'`, `pow` default 900): landing on its cap flings the player up about 5½ tiles (a double jump is still allowed after). Every bounce also has an ordinary stepped route, so nothing *needs* it.
+- **Raft** `k:'raft'` (`x0`,`x1` tile range, `w` tiles wide, default 3, `speed` px/s default 50): a platform that glides to and fro on the water; the player stands on it and is carried. Only ever over swimmable water.
+- **Pick-ups** `k:'pick'` (`set`, `icon`, `name`, optional `fly`): touched to collect, like curios; saved in `S.picks[id]`. `G.pickCount(set)` → `{have, total}` over all areas. Toast "You found a firefly! 2 of 5".
+- **Darkness** `area.dark` (0–1): a dark wash over the world with soft holes of light round the player (radius 190, or 300 when holding the lantern), gems, pick-ups, characters, doors, chimes and the nest.
+- NPC lines by name: `e.lines` → `G.NPC_LINES[name]()`.
+
+**Whispering Woods** `woods` (100×15, theme woods, `dark: 0.3` dusk). Door back to the café. **Rosie Rabbit** the ranger (`G.PEOPLE.rosie`, bunny + scarf) asks you to find **five fireflies** (`pick`, set `fireflies`); when all five are found she gives a yellow gem (`quests.fireflies`). Two streams with rafts, a bouncy mushroom up to a tree branch, hollow-log steps.
+- **Trail signs** `k:'trail'` ×3 → `G.WOODS.trail(e)`: a little picture map (5×4 grid of landmarks, compass rose, fox token). L0 (`level.shapes` 0): one step — "Start at the camp. Go north. What do you find?"; L1: two squares one way; L2+: two legs ("Go 1 north, then 2 west"). Three picture answers; the fox walks the route when answered; hint → hint → reveal. First time at each sign: gem of the sign's `col` (`quests['trail:'+id]`), later +2 coins.
+- **Campfire story** `k:'story'` → `G.WOODS.story(e)`: one of 6 four-card picture stories, shuffled; tap the cards in order to fill four slots; wrong card wobbles with a hint; when complete the story is read aloud card by card. First time purple gem (`quests.story`), later +2 coins.
+- Gems: red (branch), blue (logs), green ×2 + yellow (trail signs), purple (story), yellow (fireflies). Gate to the caves at the far end: yellow 2, green 2.
+
+**Crystal Caves** `caves` (90×15, theme caves, `dark: 0.8`). Door back to the woods. **Mole** (`G.PEOPLE.mole`) explains the dark and the lantern. An underground lake with a raft, a crystal bounce, ledges.
+- **Crystal chimes** `k:'chime'` ×3 → `G.CAVES.chime(e)`: five glowing crystals (notes C D E G A, `G.note`). The cave plays a tune (3 notes at `level.patterns` 0, 4 at 1, 5 at 2+); tap the crystals to play it back. A wrong note → "Listen again" and a replay; after 3 misses the crystals show the order as numbers. Free play afterwards. First time at each chime: gem of its `col` (`quests['chime:'+id]`), later +2 coins.
+- **Dragon nest** `k:'nest'` → `G.CAVES.nest(e)`: the egg is cold; find **three warm stones** (`pick`, set `embers`). With all three: the egg wobbles, cracks and hatches → `pet:dragon` + red gem (`quests.dragon`). Later visits: the baby dragon says hello.
+- Gems: blue, purple, yellow (chimes), yellow (ledge), green (in the lake), red ×2 (floor, nest). Gate to Cloudtop Kingdom at the far end: red 3, yellow 3, purple 2.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -362,7 +381,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 8. **[done iter7] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[done iter8] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[done iter9] Playrooms**: toy box, potion kitchen, vet, dolls' house, art studio; world map.
-11. **[todo] Woods, Caves, Clouds** + final gates, finale, golden crown.
+11. **[building iter10] Woods + Caves**; then **[todo] Clouds** + finale, golden crown.
 12. **[todo] Grown-up page**, offline PWA, accessibility settings, polish pass (juice, music, particles).
 
 ---

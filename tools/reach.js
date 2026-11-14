@@ -48,14 +48,15 @@ const { chromium } = require('playwright');
         }
         I.left = I.right = I.jump = false; return false; };
       const fails = [], oks = [];
-      const targets = a.ents.filter(e => !['creak', 'squeak', 'check'].includes(e.k));
+      const targets = a.ents.filter(e => !['creak', 'squeak', 'check', 'raft', 'bounce'].includes(e.k));
       for (const e of targets) {
         const s = cell(); if (!stand(...s)) { for (let i = 0; i < 60; i++) tick(); }
         const s2 = cell(); while (!stand(...s2) && s2[1] > 2) s2[1]--;   // sunk in a pond: plan from the surface
-        const goal = (x, r) => e.fly ? (Math.abs(x - e.x) <= 2 && r - e.row <= 2.5 && r >= e.row) : (Math.abs(x + 0.5 - e.x) <= 0.8 && (r === Math.ceil(e.row) || (e.k === 'gem' && r > e.row - 0.6 && r - e.row <= 2)));
+        const goal = (x, r) => e.fly && e.k === 'pick' ? (Math.abs(x + 0.5 - e.x) <= 1 && r >= e.row && r - e.row <= 2.6) : e.fly ? (Math.abs(x - e.x) <= 2 && r - e.row <= 2.5 && r >= e.row) : (Math.abs(x + 0.5 - e.x) <= 0.8 && (r === Math.ceil(e.row) || (e.k === 'gem' && r > e.row - 0.6 && r - e.row <= 2)));
         const pth = stand(...s2) ? path(s2, goal) : null;
         if (!pth) { fails.push(e.id + ':nopath from ' + s2); E.load(id); continue; }
         let ok = true, stuck = null; for (const [wx, wr] of pth.slice(1)) { if (!goTo(wx, wr)) { ok = false; stuck = [wx, wr, 'at', (P.x / T).toFixed(1), (P.y / T).toFixed(1)]; break; } }
+        if (ok && e.k === 'pick') { for (let i = 0; i < 240 && !G.S.picks[e.id]; i++) { if (i % 40 === 0) I.jump = I.jumpHit = true; tick(); } I.jump = false; if (!G.S.picks[e.id]) { ok = false; stuck = 'pick not touched'; } }
         if (ok && e.k === 'gem' && !e.fly) { const ent = E.ents.find(x => x.id === e.id); if (ent && !ent.got) { I.jump = I.jumpHit = true; for (let i = 0; i < 50; i++) { tick(); } I.jump = false; if (!ent.got) { ok = false; stuck = 'gem not touched'; } } }
         if (ok) oks.push(e.id); else { fails.push(e.id + ':stuck ' + stuck); E.load(id); }
       }

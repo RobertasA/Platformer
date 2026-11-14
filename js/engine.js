@@ -16,11 +16,11 @@
     const a = G.AREAS[id]; if (!a) return false;
     E.area = a; E.id = id; G.S.area = id; G.S.areas[id] = true;
     E.ents = a.ents.map(d => Object.assign({ cool: 0, t: Math.random() * 6 }, d, { px: d.x * T, py: d.row * T }))
-      .filter(e => !(e.k === 'gem' && G.S.taken[id + ':' + e.id]) && !(e.k === 'curio' && G.S.curios[e.cid]));
+      .filter(e => !(e.k === 'gem' && G.S.taken[id + ':' + e.id]) && !(e.k === 'curio' && G.S.curios[e.cid]) && !(e.k === 'pick' && G.S.picks[e.id]));
     const s = at || a.spawn;
     P.x = s.x * T; P.y = s.row * T; P.vx = P.vy = 0; P.safe = { x: P.x, y: P.y }; P.jumps = 0;
     E.cam.x = U.clamp(P.x - G.VW / 2, 0, a.w * T - G.VW); E.cam.y = U.clamp(P.y - G.VH * 0.6, 0, a.h * T - G.VH);
-    E.trail = []; E.parts = [];
+    E.trail = []; E.parts = []; P.on = null;
     E.noise = 0; E.warned = false; E.check = { x: P.x, y: P.y }; E.creakT = 0;
     const nb = document.getElementById('noisebar'); if (nb) nb.classList.toggle('hidden', !a.hush);
     G.music.play(a.music || a.theme);
@@ -51,6 +51,10 @@
         const ch = tileAt(tx, ty);
         if (solid(ch) || (ch === '=' && prevY <= ty * T + 0.5)) { P.y = ty * T; if (P.vy > 420) land(P.vy); P.vy = 0; P.ground = true; return; }
       }
+      for (const e of E.ents) {   // rafts: moving one-way platforms
+        if (e.k !== 'raft') continue; const hw = (e.w || 3) * T / 2 + 8;
+        if (Math.abs(P.x - e.px) < hw && prevY <= e.py + 8 && P.y >= e.py) { P.y = e.py; if (P.vy > 420) land(P.vy); P.vy = 0; P.ground = true; P.on = e; return; }
+      }
     } else {
       const ty = Math.floor((P.y - PH.h) / T);
       for (let tx = l; tx <= r; tx++) if (solid(tileAt(tx, ty))) { P.y = (ty + 1) * T + PH.h; P.vy = 0; return; }
@@ -61,6 +65,7 @@
   function updatePlayer(dt) {
     const I = G.input, frozen = G.paused;
     const dir = frozen ? 0 : (I.right ? 1 : 0) - (I.left ? 1 : 0);
+    if (P.on) { if (P.ground) { P.x += P.on.dx || 0; P.y = P.on.py; } P.on = null; }   // carried by a raft
     const wasWater = P.inWater;
     P.inWater = tileAt(Math.floor(P.x / T), Math.floor((P.y - 20) / T)) === '~';
     if (P.inWater && !wasWater && P.vy > 100) { G.sfx('splash'); E.burst(P.x, P.y - 20, '#bfe9ff', 12); }
@@ -136,6 +141,21 @@
         else if (touch) e.cool = Math.max(e.cool, 0.6);   // stay quiet until she steps away
         continue;
       }
+      if (e.k === 'raft') { const px0 = e.px; if (!G.paused) { e.dir = e.dir || 1; e.px += e.dir * (e.speed || 50) * dt; if (e.px > e.x1 * T) { e.px = e.x1 * T; e.dir = -1; } if (e.px < e.x0 * T) { e.px = e.x0 * T; e.dir = 1; } } e.dx = e.px - px0; continue; }
+      if (e.k === 'bounce') {
+        if (e.squish > 0) e.squish -= dt;
+        if (!G.paused && P.vy > 0 && Math.abs(P.x - e.px) < 40 && P.y > e.py - 46 && P.y < e.py - 8) { P.vy = -(e.pow || 900); P.jumps = 1; P.ground = false; e.squish = 0.3; G.sfx('jump2'); G.sfx('pop'); E.burst(e.px, e.py - 30, '#fff6c9', 10); }
+        continue;
+      }
+      if (e.k === 'pick') {
+        if (e.fly) { e.px = e.x * T + Math.sin(e.t * 0.9) * 26; e.py = e.row * T + Math.sin(e.t * 2.1) * 12; }
+        const gy = e.py - 30;
+        if (!G.paused && !e.gone && Math.abs(e.px - P.x) < 44 && gy > P.y - PH.h - 34 && gy < P.y + 20) {
+          e.gone = true; G.S.picks[e.id] = true; G.sfx('gem'); E.burst(e.px, gy, '#ffe9a8', 18);
+          const n = G.pickCount(e.set); G.UI.toast('You found a ' + e.name + '! ' + e.icon + ' ' + n.have + ' of ' + n.total, true); G.saveGame();
+        }
+        continue;
+      }
       if (e.k === 'curio') {
         const gy = e.py - 30 + Math.sin(e.t * 3) * 5;
         if (!G.paused && !e.gone && Math.abs(e.px - P.x) < 40 && gy > P.y - PH.h - 30 && gy < P.y + 20) { e.gone = true; G.TOWER.pickCurio(e.cid); E.burst(e.px, gy, '#ffe9a8', 18); }
@@ -153,6 +173,9 @@
     if (!G.paused && G.input.actHit && E.near) E.interact(E.near);
   }
 
+  G.NPC_LINES = { bettina: () => G.MEAD.bettinaLines(), tuft: () => G.TOWER.tuftLines(), rosie: () => G.WOODS.rosieLines(), mole: () => G.CAVES.moleLines() };
+  G.pickCount = set => { let have = 0, total = 0; for (const id in G.AREAS) for (const e of G.AREAS[id].ents) if (e.k === 'pick' && e.set === set) { total++; if (G.S.picks[e.id]) have++; } return { have, total }; };
+
   E.pickGem = async function (e) {
     const info = G.GEM_INFO[e.col];
     G.sfx('gem'); E.burst(e.px, e.py - 34, info.col, 16);
@@ -165,7 +188,7 @@
   };
 
   E.interact = function (e) {
-    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.lines === 'bettina' ? G.MEAD.bettinaLines() : e.lines === 'tuft' ? G.TOWER.tuftLines() : e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
+    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.lines ? G.NPC_LINES[e.lines]() : e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
     else if (e.k === 'lesson') G.LS.run(e);
     else if (e.k === 'sign') G.UI.toast('📜 ' + e.text, true);
     else if (e.k === 'gate') G.UI.gate(e);
@@ -174,6 +197,10 @@
     else if (e.k === 'cust') E.serve(e);
     else if (e.k === 'bug') G.MEAD.look(e.kind);
     else if (e.k === 'sorter') G.MEAD.sort();
+    else if (e.k === 'trail') G.WOODS.trail(e);
+    else if (e.k === 'story') G.WOODS.story(e);
+    else if (e.k === 'chime') G.CAVES.chime(e);
+    else if (e.k === 'nest') G.CAVES.nest(e);
     else if (e.k === 'shoes') G.TOWER.shoes();
     else if (e.k === 'post') G.TOWER.postcard();
     else if (e.k === 'case') G.TOWER.case();
@@ -280,10 +307,60 @@
     // particles
     for (const p of E.parts) { c.globalAlpha = Math.max(0, p.life / p.max); if (p.kind === 'text') { c.fillStyle = p.col; c.strokeStyle = '#3b3350'; c.lineWidth = 4; c.font = '700 ' + p.r * 1.5 + 'px ' + G.FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.strokeText(p.txt, p.x, p.y); c.fillText(p.txt, p.x, p.y); } else if (p.kind === 'spark') G.star(c, p.x, p.y, p.r * 1.4, p.col); else G.circ(c, p.x, p.y, p.r, p.col); }
     c.globalAlpha = 1;
+    if (a.dark) drawDark(c, a.dark, cx, cy, t);
     // "press ✋" hint over the nearest thing
-    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' || e.k === 'shoes' || e.k === 'post' ? 150 : e.k === 'case' ? 170 : e.k === 'cabinet' ? 210 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
+    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' || e.k === 'shoes' || e.k === 'post' ? 150 : e.k === 'case' || e.k === 'trail' || e.k === 'chime' ? 170 : e.k === 'story' || e.k === 'nest' ? 130 : e.k === 'cabinet' ? 210 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
     c.restore();
   };
+
+  /* darkness with soft holes of light (SPEC §7.2h) */
+  let darkCv = null;
+  function drawDark(c, dark, cx, cy, t) {
+    if (!darkCv) { darkCv = document.createElement('canvas'); darkCv.width = G.VW / 2; darkCv.height = G.VH / 2; }
+    const d = darkCv.getContext('2d'); d.globalCompositeOperation = 'source-over'; d.clearRect(0, 0, darkCv.width, darkCv.height);
+    d.fillStyle = 'rgba(10,8,38,' + dark + ')'; d.fillRect(0, 0, darkCv.width, darkCv.height);
+    d.globalCompositeOperation = 'destination-out';
+    const hole = (x, y, r) => { const sx = (x - cx) / 2, sy = (y - cy) / 2; if (sx < -r || sy < -r || sx > darkCv.width + r || sy > darkCv.height + r) return; const g = d.createRadialGradient(sx, sy, r * 0.15, sx, sy, r / 2); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)'); d.fillStyle = g; d.beginPath(); d.arc(sx, sy, r / 2, 0, 7); d.fill(); };
+    hole(P.x, P.y - 50, (G.S.avatar.held === 'lantern' ? 330 : 210) + Math.sin(t * 3) * 6);
+    for (const e of E.ents) { const r = e.k === 'gem' || e.k === 'pick' ? 100 : e.k === 'npc' || e.k === 'door' || e.k === 'gate' || e.k === 'chime' || e.k === 'nest' || e.k === 'story' ? 170 : e.k === 'trail' || e.k === 'sign' || e.k === 'bounce' ? 110 : 0; if (r) hole(e.px, e.py - 40, r + Math.sin(t * 2 + e.t) * 5); }
+    c.drawImage(darkCv, cx, cy, G.VW, G.VH);
+  }
+
+  /* Woods and Caves props (SPEC §7.2h) */
+  function wildProp(c, e, t) {
+    const x = e.px, y = e.py;
+    if (e.k === 'bounce') {
+      const sq = e.squish > 0 ? 1 - Math.sin(e.squish / 0.3 * Math.PI) * 0.35 : 1; c.save(); c.translate(x, y); c.scale(2 - sq, sq);
+      if (e.look === 'crystal') { c.fillStyle = '#7fe3ff'; c.beginPath(); c.moveTo(-34, 0); c.lineTo(-40, -22); c.lineTo(-14, -40); c.lineTo(14, -40); c.lineTo(40, -22); c.lineTo(34, 0); c.fill(); c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.moveTo(-14, -40); c.lineTo(0, -8); c.lineTo(14, -40); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 3; c.stroke(); }
+      else { c.fillStyle = '#f6ead2'; G.rr(c, -12, -22, 24, 24, 8); c.fill(); c.fillStyle = '#e8485a'; c.beginPath(); c.ellipse(0, -24, 42, 22, 0, Math.PI, 0); c.fill(); c.fillRect(-42, -25, 84, 4); c.fillStyle = '#fff'; G.circ(c, -20, -32, 6, '#fff'); G.circ(c, 4, -38, 7, '#fff'); G.circ(c, 24, -30, 5, '#fff'); }
+      c.restore(); G.emoji(c, '⬆️', x, y - 70 + Math.sin(t * 5) * 4, 20);
+    } else if (e.k === 'raft') {
+      const w = (e.w || 3) * T, bob = Math.sin(t * 2 + e.t) * 2;
+      for (let i = 0; i < 4; i++) { G.rr(c, x - w / 2, y + bob + i * 5 - 2, w, 7, 4); c.fillStyle = i % 2 ? '#a57142' : '#b98352'; c.fill(); }
+      c.fillStyle = '#6b4a30'; c.fillRect(x - w / 2 + 12, y + bob - 3, 6, 22); c.fillRect(x + w / 2 - 18, y + bob - 3, 6, 22);
+    } else if (e.k === 'pick') {
+      const yy = y - 30 + (e.fly ? 0 : Math.sin(e.t * 3) * 5);
+      G.circ(c, x, yy, 30 + Math.sin(t * 4 + e.t) * 4, e.set === 'embers' ? 'rgba(255,140,60,.4)' : 'rgba(255,240,120,.4)'); G.circ(c, x, yy, 20, 'rgba(255,255,255,.55)'); c.fillStyle = '#000'; G.emoji(c, e.icon, x, yy, 34);
+    } else if (e.k === 'trail') {
+      c.fillStyle = '#8d5a3b'; c.fillRect(x - 6, y - 110, 12, 110);
+      c.save(); c.translate(x, y - 96); G.rr(c, -6, -18, 78, 30, 6); c.fillStyle = '#f3d9ac'; c.fill(); c.strokeStyle = '#8d5a3b'; c.lineWidth = 3; c.stroke(); G.rr(c, -72, 16, 78, 30, 6); c.fill(); c.stroke(); c.restore();
+      c.fillStyle = '#000'; G.emoji(c, '🧭', x + 32, y - 98, 22); G.emoji(c, '🦊', x - 34, y - 64, 22);
+      badge(c, 'trail:' + e.id, e.col, x + 50, y - 130, t);
+    } else if (e.k === 'story') {
+      G.drawDecor(c, { k: 'campfire', x, y }, t); c.fillStyle = '#000'; G.emoji(c, '📖', x + 52, y - 26, 34); G.emoji(c, '🪵', x - 58, y - 12, 34);
+      badge(c, 'story', 'purple', x + 40, y - 100, t);
+    } else if (e.k === 'chime') {
+      const cols = ['#ff7eb6', '#ffe066', '#7ed957', '#7fe3ff', '#b77bff'];
+      cols.forEach((col, i) => { const h = 70 + (i % 2) * 30 + Math.sin(t * 2 + i) * 3, bx = x - 56 + i * 28; c.fillStyle = col; c.beginPath(); c.moveTo(bx - 12, y); c.lineTo(bx - 12, y - h + 14); c.lineTo(bx, y - h); c.lineTo(bx + 12, y - h + 14); c.lineTo(bx + 12, y); c.fill(); c.fillStyle = 'rgba(255,255,255,.4)'; c.fillRect(bx - 8, y - h + 16, 6, h - 22); });
+      c.fillStyle = '#000'; G.emoji(c, '🎵', x + 6, y - 126 + Math.sin(t * 3) * 5, 26);
+      badge(c, 'chime:' + e.id, e.col, x + 62, y - 120, t);
+    } else if (e.k === 'nest') {
+      c.fillStyle = '#8d5a3b'; c.beginPath(); c.ellipse(x, y - 10, 62, 20, 0, 0, 7); c.fill(); c.strokeStyle = '#6b4a30'; c.lineWidth = 3; for (let i = -3; i <= 3; i++) { c.beginPath(); c.moveTo(x + i * 16 - 8, y - 2); c.lineTo(x + i * 16 + 8, y - 20); c.stroke(); }
+      if (G.S.quests.dragon) G.drawCreature(c, 'dragon', x, y - 14, 0.9, { t: t + e.t, face: P.x < x ? -1 : 1 });
+      else { c.save(); c.translate(x, y - 16); c.rotate(Math.sin(t * 6) * 0.04); c.fillStyle = '#e9f3d8'; c.beginPath(); c.ellipse(0, -30, 30, 40, 0, 0, 7); c.fill(); G.circ(c, -10, -40, 6, '#9fd08a'); G.circ(c, 12, -22, 7, '#9fd08a'); G.circ(c, -4, -12, 5, '#9fd08a'); c.restore(); badge(c, 'dragon', 'red', x + 50, y - 96, t); }
+    }
+  }
+  function badge(c, quest, col, x, y, t) { if (G.S.quests[quest]) return; const bob = Math.sin(t * 4) * 3; G.circ(c, x, y + bob, 16, G.GEM_INFO[col].col); G.drawGem(c, col, x, y + bob, 9, t); }
 
   /* Teapot Tower furniture (SPEC §7.2g) */
   const TQ = { shoes: ['shoes', 'purple'], post: ['post', 'blue'], case: ['case', 'yellow'], cabinet: ['curios', 'green'] };
@@ -384,6 +461,8 @@
       const y = e.py - 30 + Math.sin(e.t * 3) * 5;
       G.circ(c, e.px, y, 32 + Math.sin(t * 4) * 3, 'rgba(160,120,210,.35)'); G.circ(c, e.px, y, 24, 'rgba(255,255,255,.6)'); c.fillStyle = '#000'; G.emoji(c, e.icon, e.px, y, 40);
       if (Math.random() < 0.05) E.parts.push({ x: e.px + U.rnd(-20, 20), y: y + U.rnd(-20, 20), vx: 0, vy: -20, life: 0.6, max: 0.6, col: '#fff', kind: 'spark', r: 3 });
+    } else if (e.k === 'bounce' || e.k === 'raft' || e.k === 'pick' || e.k === 'trail' || e.k === 'story' || e.k === 'chime' || e.k === 'nest') {
+      wildProp(c, e, t);
     } else if (e.k === 'shoes' || e.k === 'post' || e.k === 'case' || e.k === 'cabinet') {
       towerProp(c, e, t);
     } else if (e.k === 'sign' && !e.hidden) {
