@@ -21,7 +21,7 @@ const { chromium } = require('playwright');
     const n = await page.evaluate(() => (window.G && G.debug && G.debug.steps || []).length).catch(() => 0);
     for (let i = 0; i < n; i++) {
       const label = await page.evaluate(i => { const s = G.debug.steps[i]; s.run(); return s.name; }, i).catch(e => { errs.push('step ' + i + ': ' + e.message); return 'step' + i; });
-      await page.waitForTimeout(900);
+      await page.waitForTimeout(550);
       await page.screenshot({ path: `shots/${name}-${i + 1}-${label}.png` });
     }
     if (errs.length) { bad++; console.error(`[${name}] ERRORS:\n  ` + errs.join('\n  ')); } else console.log(`[${name}] ok`);

@@ -78,7 +78,8 @@
       else if (P.coyote > 0) { P.vy = -PH.jump; P.coyote = 0; P.buf = 0; P.jumps = 1; G.sfx('jump'); P.squash = -0.2; }
       else if (P.jumps < 2) { P.vy = -PH.jump * 0.88; P.buf = 0; P.jumps = 2; G.sfx('jump2'); E.burst(P.x, P.y, '#fff6c9', 8); }
     }
-    if (!I.jump && P.vy < -200 && !P.inWater) P.vy *= Math.pow(PH.cut, dt * 10);   // variable jump height
+    if (P.vy >= 0) P.flung = false;
+    if (!I.jump && P.vy < -200 && !P.inWater && !P.flung) P.vy *= Math.pow(PH.cut, dt * 10);   // variable jump height
     P.vy += (P.inWater ? PH.swimGrav : PH.gravity) * dt;
     P.vy = Math.min(P.vy, P.inWater ? PH.swimMax : PH.fall);
     const oldX = P.x; P.x += P.vx * dt; collideX(); blockDoors(oldX);
@@ -144,7 +145,7 @@
       if (e.k === 'raft') { const px0 = e.px; if (!G.paused) { e.dir = e.dir || 1; e.px += e.dir * (e.speed || 50) * dt; if (e.px > e.x1 * T) { e.px = e.x1 * T; e.dir = -1; } if (e.px < e.x0 * T) { e.px = e.x0 * T; e.dir = 1; } } e.dx = e.px - px0; continue; }
       if (e.k === 'bounce') {
         if (e.squish > 0) e.squish -= dt;
-        if (!G.paused && P.vy > 0 && Math.abs(P.x - e.px) < 40 && P.y > e.py - 46 && P.y < e.py - 8) { P.vy = -(e.pow || 900); P.jumps = 1; P.ground = false; e.squish = 0.3; G.sfx('jump2'); G.sfx('pop'); E.burst(e.px, e.py - 30, '#fff6c9', 10); }
+        if (!G.paused && P.vy > 0 && Math.abs(P.x - e.px) < 40 && P.y > e.py - 46 && P.y < e.py - 8) { P.vy = -(e.pow || 900); P.flung = true; P.jumps = 1; P.ground = false; e.squish = 0.3; G.sfx('jump2'); G.sfx('pop'); E.burst(e.px, e.py - 30, '#fff6c9', 10); }
         continue;
       }
       if (e.k === 'pick') {

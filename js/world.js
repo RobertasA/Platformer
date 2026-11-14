@@ -324,7 +324,7 @@
       fills: [
         [0, 0, 0, 14, '#'], [99, 0, 99, 14, '#'],
         [0, 12, 99, 14, '#'],
-        [11, 10, 12, 10, '='], [15, 7, 18, 7, '='],                   // step + tree branch (red gem); mushroom at x14 is the fun way
+        [10, 10, 11, 10, '='], [12, 8, 13, 8, '='], [15, 7, 18, 7, '='],                   // step + tree branch (red gem); mushroom at x14 is the fun way
         [28, 12, 35, 13, '~'],                                        // first stream (raft)
         [44, 10, 47, 10, '='], [49, 8, 52, 8, '='], [54, 6, 56, 6, '='],   // hollow-log steps (blue gem)
         [62, 10, 63, 10, '='], [64, 8, 65, 8, '='], [67, 6, 71, 6, '='],   // up to the high branch (firefly)
@@ -362,7 +362,7 @@
     },
     /* Crystal Caves (SPEC §7.2h): dark (lantern helps); crystal chimes, warm stones (pick) for the dragon egg. */
     caves: {
-      name: 'Crystal Caves', theme: 'caves', music: 'caves', w: 90, h: 15, dark: 0.8,
+      name: 'Crystal Caves', theme: 'caves', music: 'caves', w: 90, h: 15, dark: 0.72,
       fills: [
         [0, 0, 0, 14, '#'], [89, 0, 89, 14, '#'], [0, 0, 89, 1, '#'],
         [0, 12, 89, 14, '#'],
@@ -387,7 +387,7 @@
         { id: 'g-cv-yellow1', k: 'gem', col: 'yellow', x: 23.5, row: 8 },
         { id: 'em-1', k: 'pick', set: 'embers', icon: '🔥', name: 'warm stone', x: 28, row: 12 },
         { id: 'cv-raft1', k: 'raft', x: 34, row: 12, x0: 33.6, x1: 37.4, w: 3 },
-        { id: 'g-cv-green1', k: 'gem', col: 'green', x: 35.5, row: 12.6 },
+        { id: 'g-cv-green1', k: 'gem', col: 'green', x: 35.5, row: 12.5 },
         { id: 'cv-boing1', k: 'bounce', look: 'crystal', x: 41.5, row: 12 },
         { id: 'em-2', k: 'pick', set: 'embers', icon: '🔥', name: 'warm stone', x: 44.5, row: 6 },
         { id: 'cv-chime2', k: 'chime', col: 'purple', x: 54.5, row: 12 },

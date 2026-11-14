@@ -27,8 +27,8 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `meadow` Bugglemead + `js/meadow.js` + `js/bugart.js` (§7.2e) | [done] iter6 |
 | Sentence Shore, capitals & digits trees, journal Writing tab (§7.2f) | [done] iter7 |
 | `tower` Teapot Tower + `js/tower.js` (§7.2g) | [done] iter8 |
-| `woods` + `js/woods.js`, `caves` + `js/caves.js`, bounce/raft/pick/dark (§7.2h) | [building] iter10 |
-| Area clouds + finale | [todo] — gate opens but travel shows "still being built" |
+| `woods` + `js/woods.js`, `caves` + `js/caves.js`, bounce/raft/pick/dark (§7.2h) | [done] iter10 |
+| `clouds` + `js/clouds.js`, finale `js/finale.js`, grown-ups page (§7.2i) | [building] iter11 |
 | `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -268,23 +268,35 @@ A tall, cosy collector's house (Ottoline homage). Five floors joined by zig-zag 
 - Gems on steps/shelves: red, blue, green, yellow, purple ×1 each.
 - Save: `S.curios` (new key in `blank()`).
 
-### 7.2h Whispering Woods and Crystal Caves (iter10) [building]
+### 7.2h Whispering Woods and Crystal Caves (iter10) [done]
 New engine pieces (all in `engine.js`):
 - **Bounce** `k:'bounce'` (`look:'mushroom'|'crystal'`, `pow` default 900): landing on its cap flings the player up about 5½ tiles (a double jump is still allowed after). Every bounce also has an ordinary stepped route, so nothing *needs* it.
 - **Raft** `k:'raft'` (`x0`,`x1` tile range, `w` tiles wide, default 3, `speed` px/s default 50): a platform that glides to and fro on the water; the player stands on it and is carried. Only ever over swimmable water.
 - **Pick-ups** `k:'pick'` (`set`, `icon`, `name`, optional `fly`): touched to collect, like curios; saved in `S.picks[id]`. `G.pickCount(set)` → `{have, total}` over all areas. Toast "You found a firefly! 2 of 5".
 - **Darkness** `area.dark` (0–1): a dark wash over the world with soft holes of light round the player (radius 190, or 300 when holding the lantern), gems, pick-ups, characters, doors, chimes and the nest.
 - NPC lines by name: `e.lines` → `G.NPC_LINES[name]()`.
+- A bounce sets `P.flung` so the variable-jump cut does not shorten it (cleared when the player starts to fall).
+- As built in the cards: the trail reward comes after the fox finishes walking; L2 routes are always 1 square then 2 at right angles; crystals answer on `pointerdown`; `G.WOODS.makeTrail(level)` and `G.CAVES.makeTune(n)` are pure generators for tests.
 
 **Whispering Woods** `woods` (100×15, theme woods, `dark: 0.3` dusk). Door back to the café. **Rosie Rabbit** the ranger (`G.PEOPLE.rosie`, bunny + scarf) asks you to find **five fireflies** (`pick`, set `fireflies`); when all five are found she gives a yellow gem (`quests.fireflies`). Two streams with rafts, a bouncy mushroom up to a tree branch, hollow-log steps.
 - **Trail signs** `k:'trail'` ×3 → `G.WOODS.trail(e)`: a little picture map (5×4 grid of landmarks, compass rose, fox token). L0 (`level.shapes` 0): one step — "Start at the camp. Go north. What do you find?"; L1: two squares one way; L2+: two legs ("Go 1 north, then 2 west"). Three picture answers; the fox walks the route when answered; hint → hint → reveal. First time at each sign: gem of the sign's `col` (`quests['trail:'+id]`), later +2 coins.
 - **Campfire story** `k:'story'` → `G.WOODS.story(e)`: one of 6 four-card picture stories, shuffled; tap the cards in order to fill four slots; wrong card wobbles with a hint; when complete the story is read aloud card by card. First time purple gem (`quests.story`), later +2 coins.
 - Gems: red (branch), blue (logs), green ×2 + yellow (trail signs), purple (story), yellow (fireflies). Gate to the caves at the far end: yellow 2, green 2.
 
-**Crystal Caves** `caves` (90×15, theme caves, `dark: 0.8`). Door back to the woods. **Mole** (`G.PEOPLE.mole`) explains the dark and the lantern. An underground lake with a raft, a crystal bounce, ledges.
+**Crystal Caves** `caves` (90×15, theme caves, `dark: 0.72`). Door back to the woods. **Mole** (`G.PEOPLE.mole`) explains the dark and the lantern. An underground lake with a raft, a crystal bounce, ledges.
 - **Crystal chimes** `k:'chime'` ×3 → `G.CAVES.chime(e)`: five glowing crystals (notes C D E G A, `G.note`). The cave plays a tune (3 notes at `level.patterns` 0, 4 at 1, 5 at 2+); tap the crystals to play it back. A wrong note → "Listen again" and a replay; after 3 misses the crystals show the order as numbers. Free play afterwards. First time at each chime: gem of its `col` (`quests['chime:'+id]`), later +2 coins.
 - **Dragon nest** `k:'nest'` → `G.CAVES.nest(e)`: the egg is cold; find **three warm stones** (`pick`, set `embers`). With all three: the egg wobbles, cracks and hatches → `pet:dragon` + red gem (`quests.dragon`). Later visits: the baby dragon says hello.
 - Gems: blue, purple, yellow (chimes), yellow (ledge), green (in the lake), red ×2 (floor, nest). Gate to Cloudtop Kingdom at the far end: red 3, yellow 3, purple 2.
+
+### 7.2i Cloudtop Kingdom, the finale and the grown-ups page (iter11) [building]
+**Cloudtop Kingdom** `clouds` (90×24, theme clouds). Arrive from the caves gate; door back to the caves. Fluffy cloud platforms climb up and to the right to the Cloud Castle; cloud bounces (`look:'cloud'`); a solid cloud floor runs along the bottom so nobody can fall out. **Luna the unicorn** (`G.PEOPLE.luna`, `cre:'unicorn'`) greets you and says what the castle needs (`G.CLOUDS.lunaLines()`).
+- **Weather station** `k:'weather'` → `G.CLOUDS.weather(e)`: 3 rounds. A window shows the weather (sunny and hot, rainy, snowy, windy, frosty, stormy) with a thermometer; pick the right thing for teddy to wear/take from 3 pictures (sun hat, umbrella, woolly hat and scarf, kite, mittens, wellies…). Hint → hint → reveal. First time blue gem (`quests.weather`), later +2 coins. Adapts `nature`.
+- **Star counter** `k:'stars'` → `G.CLOUDS.stars(e)`: place value, 3 rounds. Stars shown in ten-frames (full frames = tens) plus loose ones; "How many stars?" with 3–4 number answers; L0 (`level.maths` 0) 6–15, L1 11–29, L2+ 20–59 and the question alternates with "How many tens?". On the answer the tens and ones are spoken ("2 tens and 4 ones make 24"). First time yellow gem (`quests.stars`), later +2 coins. Adapts `maths`.
+- **Rainbow maker** `k:'rainbow'` → `G.CLOUDS.rainbow(e)`: seven colour jars; tap them in rainbow order (red, orange, yellow, green, blue, indigo, violet) to paint each arc of a big rainbow from the outside in. A wrong jar wobbles; a hint names the next colour; after 2 misses the right jar glows. First time purple gem (`quests.rainbow`), later +2 coins. Once done a rainbow arcs over the castle in the level.
+- Gems on the clouds: red ×2, green ×2, yellow, blue.
+- **Cloud Castle** `k:'castle'` → `G.FINALE.castle(e)`: the royal door needs **5 red, 5 blue, 5 green, 5 yellow and 4 purple** gems (gems are never spent). Not enough: a card shows the five counts with ticks and says which colours are still needed ("Gems hide in every land. Look at the map!"). Enough → **the party** (`G.FINALE.party()`): a hall with all the friends she has met (portraits via `G.portrait`), bunting and confetti; three short spoken lines; then "Sign the royal book": she writes her own name on the handwriting pad (`G.HW.mount`, fade mode; if the name is empty or has characters the pad cannot do, the text is "I did it"); then the crown: `G.unlock('hat:goldcrown')`, `quests.finale`, fanfare, "You are the hero of Hazelnut Hollow! Keep playing — the playroom and all your friends are still here." Later visits replay the party without the reward.
+
+**Grown-ups page** `G.UI.grownups()` — from Settings → "For grown-ups 🔒" (hold the button for 2 seconds). Plain text, not shown to the child as scores: puzzles solved; level per subject with a one-line meaning; handwriting — letters practised, letters with ≥ 2 stars, and the five weakest letters to practise; quests finished; areas visited; gems by colour; playroom counts (potions, pets cured, pictures saved). Controls: handwriting strictness (gentle / normal / strict → `settings.writeTol` 1.3 / 1 / 0.8), left-handed pad, and reset progress (hold 2 s). A line on how to send feedback (GitHub issue labelled `feedback`).
 
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
@@ -381,7 +393,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 8. **[done iter7] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[done iter8] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[done iter9] Playrooms**: toy box, potion kitchen, vet, dolls' house, art studio; world map.
-11. **[building iter10] Woods + Caves**; then **[todo] Clouds** + finale, golden crown.
+11. **[done iter10] Woods + Caves**; then **[building iter11] Clouds** + finale, golden crown.
 12. **[todo] Grown-up page**, offline PWA, accessibility settings, polish pass (juice, music, particles).
 
 ---
@@ -413,3 +425,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 - *Gaps against AIM* — (1) must-have #3 "lots of free-play sandboxes": none existed, and the HUD 🧸 and 🗺️ buttons plus the playroom door all said "still being built" → iter9. (2) Woods, Caves, Clouds gates open on nothing → iter10–11. (3) No grown-up page yet. (4) Handwriting is still untested with a real stylus — needs the owner's feedback.
 
 **iter9 — Playrooms and the world map.** `js/sandbox.js` framework (`G.SB.register/open/close`, 1280×720 stage, `api` with state/save/say/sfx/pos/spark/drag) and a toy box opened from the HUD 🧸 or the playroom door. Four rooms, one file + stylesheet each: Potion Kitchen, Vet Clinic, Dolls' House (three Sonnet sub-agents in parallel, each given §8 as the brief and told to verify with screenshots) and Art Studio (pressure-aware brush, rainbow, glitter, stamps, mirror, undo, 6-slot gallery). `G.UI.map()` replaces the "still being built" map: visited areas are fast-travel buttons. Learnt: one file + one scoped stylesheet per room lets agents work in parallel without conflicts. Scripted tests per room (real pointer events), no page errors at tablet and phone sizes. Feedback: none open. Next: #11 Woods + Caves.
+
+**iter10 — Whispering Woods and Crystal Caves.** Two new areas behind the café's woods gate. Engine: bouncy mushrooms/crystals, rafts (moving platforms that carry the player), touch pick-ups in sets (`S.picks`, `G.pickCount`), darkness with holes of light (bigger with the lantern), `G.NPC_LINES`. Woods: Rosie Rabbit's five fireflies, three compass-and-map trail signs (geography), a campfire story to put in order. Caves: Mole, three crystal chimes (music memory), three warm stones to hatch the dragon egg → `pet:dragon`. Cards by two Sonnet sub-agents (`js/woods.js`, `js/caves.js`). Learnt: the jump-cut killed bounces (fixed with `P.flung`); `tools/reach.js` now also collects pick-ups, and found a branch that was one tile too far and a lake gem set too deep — both fixed before shipping. Check: 31 new entities reached by the physics bot; raft carry and bounce height (5.7 rows) tested with the real engine. Feedback: none open. Next: Clouds + finale.
