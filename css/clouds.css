@@ -1,1 +1,106 @@
-/* placeholder */
+/* Cloudtop Kingdom cards — everything scoped under .cloudcard */
+.cloudcard { --pc: #bfe0ff; background: linear-gradient(#f4fbff, #e6f3ff); width: 1040px; min-height: 0; padding: 10px 24px 14px; gap: 8px; overflow: visible; }
+.cloudcard .q { font-size: 30px; }
+.cloudcard .q small { display: block; font-size: 22px; color: #6b7fa8; font-weight: 600; }
+.cloudcard .top { min-height: 56px; }
+.cloudcard .hint { font-size: 26px; min-height: 34px; }
+.cloudcard .hint.fact { color: #1d7a4a; font-weight: 700; }
+.cloudcard .answers { gap: 16px; }
+.cloudcard .ans.glow { animation: cloudglow .9s ease-in-out infinite alternate; }
+.cloudcard .ans.wrong { animation: cloudwob .4s; }
+@keyframes cloudwob { 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+@keyframes cloudglow { from { box-shadow: 0 6px 0 rgba(0,0,0,.14), 0 0 0 0 rgba(255,214,10,.9); background: #fff6c8; } to { box-shadow: 0 6px 0 rgba(0,0,0,.14), 0 0 22px 8px rgba(255,214,10,.9); background: #fff0a0; } }
+.cloudcard .cdots { display: flex; gap: 14px; justify-content: center; height: 22px; }
+.cloudcard .cdots i { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 3px solid #9cc4ee; box-sizing: border-box; transition: background .3s, transform .3s; }
+.cloudcard .cdots i.on { background: #ffc83d; border-color: #e89b00; transform: scale(1.2); }
+.cloudcard .cspark { position: absolute; font-size: 34px; pointer-events: none; animation: cloudspark 1.6s ease-out forwards; z-index: 5; }
+@keyframes cloudspark { 0% { opacity: 0; transform: scale(.3) translateY(10px); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.4) translateY(-50px) rotate(40deg); } }
+
+/* weather */
+.cloudcard .cwscene { display: flex; align-items: center; justify-content: center; gap: 34px; height: 240px; }
+.cloudcard .cwwin { position: relative; width: 380px; height: 230px; border-radius: 26px; border: 12px solid #fff; box-shadow: 0 0 0 5px #c9a46a, 0 8px 0 rgba(0,0,0,.18); overflow: hidden; box-sizing: border-box; flex: none; }
+.cloudcard .cwwin::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 8px; margin-left: -4px; background: #fff; z-index: 4; }
+.cloudcard .cwwin::after { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 8px; margin-top: -4px; background: #fff; z-index: 4; }
+.cloudcard .sky-sunny { background: linear-gradient(#6cc4ff, #bfe9ff 70%, #ffe9a0); }
+.cloudcard .sky-rainy { background: linear-gradient(#7d8ea3, #b3c1cf); }
+.cloudcard .sky-snowy { background: linear-gradient(#aebfd6, #eaf2fb); }
+.cloudcard .sky-windy { background: linear-gradient(#8fd0f5, #d4f0ff); }
+.cloudcard .sky-frosty { background: linear-gradient(#a9d8ff, #e4f6ff); box-shadow: inset 0 0 40px 10px rgba(255,255,255,.9), 0 0 0 5px #c9a46a, 0 8px 0 rgba(0,0,0,.18); }
+.cloudcard .sky-stormy { background: linear-gradient(#3b3f58, #6d7391); }
+.cloudcard .cwbig { position: absolute; left: 0; right: 0; top: 14px; text-align: center; font-size: 100px; line-height: 1.1; z-index: 3; filter: drop-shadow(0 4px 6px rgba(0,0,0,.2)); animation: cloudbob 3s ease-in-out infinite; }
+.cloudcard .sky-sunny .cwbig { animation: cloudpulse 2.4s ease-in-out infinite; }
+@keyframes cloudbob { 50% { transform: translateY(-8px); } }
+@keyframes cloudpulse { 50% { transform: scale(1.1) rotate(8deg); } }
+.cloudcard .cwsill { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; background: linear-gradient(#8fd06a, #6cb64c); z-index: 2; }
+.cloudcard .sky-snowy .cwsill, .cloudcard .sky-frosty .cwsill { background: linear-gradient(#fff, #dbe9f6); }
+.cloudcard .cwfx { position: absolute; inset: 0; z-index: 3; overflow: hidden; }
+.cloudcard .cwdrop { position: absolute; top: -20px; width: 4px; height: 22px; border-radius: 3px; background: linear-gradient(rgba(120,190,255,0), #5aaeff); animation: cloudrain .7s linear infinite; }
+@keyframes cloudrain { to { transform: translateY(250px); } }
+.cloudcard .cwflake { position: absolute; top: -24px; font-style: normal; color: #fff; font-size: 24px; text-shadow: 0 0 4px #7aa8d8; animation: cloudsnow 4s linear infinite; }
+.cloudcard .cwflake.slow { animation-duration: 6s; font-size: 20px; color: #8fd0ff; }
+@keyframes cloudsnow { 50% { margin-left: 14px; } to { transform: translateY(260px) rotate(180deg); } }
+.cloudcard .cwleaf { position: absolute; left: -30px; font-style: normal; font-size: 28px; animation: cloudgust 2.5s linear infinite; }
+@keyframes cloudgust { 0% { transform: translateX(0) rotate(0); } 50% { transform: translateX(200px) translateY(-14px) rotate(180deg); } 100% { transform: translateX(440px) rotate(360deg); } }
+.cloudcard .cwflash { position: absolute; inset: 0; background: #fff; opacity: 0; animation: cloudflash 3s infinite; }
+@keyframes cloudflash { 0%, 55%, 61%, 100% { opacity: 0; } 57% { opacity: .85; } 59% { opacity: .2; } 60% { opacity: .7; } }
+.cloudcard .cwtherm { position: relative; width: 74px; height: 230px; flex: none; }
+.cloudcard .cwtube { position: absolute; left: 24px; top: 4px; width: 26px; height: 150px; border-radius: 13px; background: #fff; border: 4px solid #8896ab; box-sizing: border-box; overflow: hidden; display: flex; align-items: flex-end; }
+.cloudcard .cwmerc { width: 100%; border-radius: 0 0 6px 6px; transition: height .6s; }
+.cloudcard .cwbulb { position: absolute; left: 14px; top: 140px; width: 46px; height: 46px; border-radius: 50%; border: 4px solid #8896ab; box-sizing: border-box; }
+.cloudcard .cwnum { position: absolute; left: -6px; right: -6px; top: 190px; text-align: center; font-size: 36px; font-weight: 800; }
+.cloudcard .cwteddy { width: 130px; height: 230px; display: flex; align-items: flex-end; justify-content: center; font-size: 100px; flex: none; }
+.cloudcard .cwteddy span { display: inline-block; transform-origin: 50% 100%; }
+.cloudcard .cwteddy.happy span { animation: cloudhop .7s; }
+@keyframes cloudhop { 30% { transform: translateY(-30px) rotate(-8deg); } 60% { transform: translateY(0) rotate(8deg); } }
+.cloudcard .cwans { flex-direction: column; min-width: 200px; min-height: 120px; padding: 6px 18px; }
+.cloudcard .cwi { font-size: 56px; line-height: 1.1; }
+.cloudcard .cwn { font-size: 24px; font-weight: 700; color: #5b3d1e; }
+
+/* stars */
+.cloudcard.cscard { --pc: #8f86e8; background: linear-gradient(#1c2a6e, #4a3c9c 70%, #6d4fb0); color: #fff; width: 1060px; }
+.cloudcard.cscard .q { color: #fff; }
+.cloudcard.cscard .hint { color: #d7caff; }
+.cloudcard.cscard .hint.fact { color: #ffe27a; }
+.cloudcard.cscard .iconbtn { background: #e8e1ff; }
+.cloudcard.cscard .cdots i { background: rgba(255,255,255,.2); border-color: #b9aaff; }
+.cloudcard.cscard .cdots i.on { background: #ffd84d; border-color: #fff3b0; }
+.cloudcard .cssky { display: flex; flex-wrap: nowrap; gap: 8px; justify-content: center; align-items: center; min-height: 128px; padding: 8px 0; width: 100%; }
+.cloudcard .csframe { display: grid; grid-template-columns: repeat(5, 25px); grid-auto-rows: 25px; gap: 2px; padding: 5px; border-radius: 10px; background: rgba(255,255,255,.1); border: 3px solid rgba(255,255,255,.35); flex: none; }
+.cloudcard .csframe.full { border-color: #ffd84d; background: rgba(255,216,77,.16); }
+.cloudcard .csframe i { font-style: normal; display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1; border-radius: 6px; background: rgba(255,255,255,.07); }
+.cloudcard .csframe i.st { background: rgba(255,255,255,.14); animation: cloudtwinkle 2.6s ease-in-out infinite; }
+.cloudcard .csframe i.st:nth-child(3n) { animation-delay: -.8s; } .cloudcard .csframe i.st:nth-child(3n+1) { animation-delay: -1.7s; }
+@keyframes cloudtwinkle { 50% { transform: scale(.82); opacity: .8; } }
+.cloudcard .cssky.shine .csframe.full { animation: cloudshine .8s ease-in-out 2; }
+@keyframes cloudshine { 50% { box-shadow: 0 0 22px 6px #ffd84d; } }
+.cloudcard .csans { min-width: 150px; font-size: 52px; color: #2b2468; }
+
+/* rainbow */
+.cloudcard.crcard { --pc: #d6b8ff; background: linear-gradient(#e9f6ff, #fdf0ff); }
+.cloudcard .crsky { position: relative; width: 480px; height: 232px; margin: 0 auto; border-radius: 24px; background: linear-gradient(#bfe6ff, #f2fbff); overflow: hidden; box-shadow: inset 0 0 0 4px #fff, 0 5px 0 rgba(0,0,0,.12); flex: none; }
+.cloudcard .crsvg { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; }
+.cloudcard .crbase, .cloudcard .crarc { fill: none; stroke-width: 17; stroke-linecap: butt; }
+.cloudcard .crbase { stroke: #d5dbe6; stroke-dasharray: 5 7; opacity: .9; }
+.cloudcard .crarc { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.cloudcard .crarc.paint { animation: cloudpaint 1.1s ease-out forwards; }
+@keyframes cloudpaint { to { stroke-dashoffset: 0; } }
+.cloudcard .crcl { position: absolute; bottom: -18px; font-size: 90px; line-height: 1; filter: drop-shadow(0 4px 4px rgba(120,150,200,.25)); animation: cloudbob 5s ease-in-out infinite; }
+.cloudcard .crcl.c1 { left: 6px; } .cloudcard .crcl.c2 { left: 90px; font-size: 70px; animation-delay: -1.5s; }
+.cloudcard .crcl.c3 { right: 90px; font-size: 70px; animation-delay: -3s; } .cloudcard .crcl.c4 { right: 6px; animation-delay: -2s; }
+.cloudcard .crsky.shimmer .crsvg { animation: cloudshimmer 1.2s ease-in-out infinite; }
+@keyframes cloudshimmer { 50% { filter: brightness(1.25) saturate(1.3) drop-shadow(0 0 8px #fff); } }
+.cloudcard .crjars { display: flex; justify-content: center; gap: 8px; width: 100%; }
+.cloudcard .crjar { position: relative; width: 116px; height: 118px; border: 0; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; transition: transform .2s, opacity .4s, filter .4s; }
+.cloudcard .crlid { width: 56px; height: 14px; border-radius: 6px 6px 3px 3px; background: #b88a5a; box-shadow: 0 3px 0 rgba(0,0,0,.15); }
+.cloudcard .crbody { position: relative; width: 100px; height: 66px; margin-top: 2px; border-radius: 14px 14px 26px 26px; border: 4px solid rgba(255,255,255,.85); box-sizing: border-box; box-shadow: 0 5px 0 rgba(0,0,0,.18); overflow: hidden; }
+.cloudcard .crshine { position: absolute; left: 10px; top: 6px; width: 10px; height: 36px; border-radius: 6px; background: rgba(255,255,255,.55); }
+.cloudcard .crname { font-size: 24px; font-weight: 800; color: #4a3a6a; margin-top: 4px; line-height: 1; }
+.cloudcard .crtick { position: absolute; left: 0; right: 0; top: 24px; font-size: 40px; font-weight: 800; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.4); opacity: 0; }
+.cloudcard .crjar.used { filter: grayscale(1); opacity: .5; pointer-events: none; }
+.cloudcard .crjar.used .crtick { opacity: 1; }
+.cloudcard .crjar.wrong { animation: cloudwob .4s; }
+.cloudcard .crjar.pour { animation: cloudpour .8s; }
+@keyframes cloudpour { 30%, 60% { transform: rotate(-32deg) translateY(-6px); } }
+.cloudcard .crjar.glow .crbody { animation: cloudglow .9s ease-in-out infinite alternate; }
+.cloudcard .crjar.glow { transform: scale(1.08); }
+.cloudcard.cscard .closex { color: #3b3350; }

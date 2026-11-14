@@ -257,7 +257,42 @@
     reset.onpointerdown = () => { reset.style.opacity = 0.6; ht = setTimeout(() => { G.resetGame(); location.reload(); }, 2000); };
     reset.onpointerup = reset.onpointerleave = cancel;
     const close = U.el('button', 'bigbtn green', 'Done ✓'); close.onclick = () => { G.sfx('tap'); UI.overlay(false); G.paused = false; };
-    row.appendChild(reset); row.appendChild(close); card.appendChild(row); ov.appendChild(card);
+    const gu = U.el('button', 'bigbtn', 'For grown-ups 🔒'); gu.style.fontSize = '22px'; gu.title = 'Hold for two seconds';
+    let gt = 0; const gcancel = () => { clearTimeout(gt); gu.style.opacity = 1; };
+    gu.onpointerdown = () => { gu.style.opacity = 0.6; gt = setTimeout(() => UI.grownups(), 2000); }; gu.onpointerup = gu.onpointerleave = gcancel;
+    row.appendChild(reset); row.appendChild(gu); row.appendChild(close); card.appendChild(row); ov.appendChild(card);
+  };
+
+  /* ---------- grown-ups page (SPEC §7.2i): plain facts for a parent, never shown to the child as scores ---------- */
+  UI.grownups = function () {
+    G.paused = true;
+    const S = G.S, ov = UI.overlay(true), card = U.el('div', 'card grown');
+    const SUBJ = { maths: ['Maths', ['counting and adding within 5', 'adding and taking away within 10', 'number bonds and sums within 20', 'two-digit numbers, twos, fives and tens', 'Year 2: bigger sums, times tables, change']],
+      words: ['Reading and spelling', ['first sounds and tracing letters', 'CVC words and simple sentences', 'rhymes, tricky words, spelling', 'digraphs and compound words', 'Year 2: endings, plurals, harder spellings']],
+      nature: ['Science', ['animals, senses and seasons', 'plants, materials, baby animals', 'habitats and what animals eat', 'animal groups and life cycles', 'Year 2: food chains, living and dead']],
+      shapes: ['Shape, time and money', ['2D shapes, coins, o\'clock', 'half past, corners, position', '3D shapes, measuring, symmetry', 'quarter turns, months, change', 'Year 2: five-minute times, change from £1']],
+      patterns: ['Patterns and logic', ['what comes next', 'repeating and growing patterns', 'counting in twos and fives', 'steps of three and four, ordering', 'Year 2: odd and even, mirror pictures']] };
+    const hw = S.handwriting || {}, keys = Object.keys(hw), stars = k => { const b = hw[k].best || 0; return b >= 0.85 ? 3 : b >= 0.7 ? 2 : b >= 0.5 ? 1 : 0; };
+    const weak = keys.filter(k => hw[k].tries >= 1).sort((a, b) => (hw[a].best || 0) - (hw[b].best || 0)).slice(0, 5).filter(k => stars(k) < 3);
+    const quests = Object.keys(S.quests).filter(k => S.quests[k]).length, areas = Object.keys(S.areas).filter(k => S.areas[k] && G.AREAS[k]).length;
+    const ps = S.playsets || {}, pics = ps.art && ps.art.gallery ? ps.art.gallery.length : 0, cured = ps.vet && ps.vet.cured || S.stats.vet || 0;
+    let h = '<div class="gtitle">For grown-ups</div><div class="gcols"><div>';
+    h += '<h3>Learning</h3><p>Puzzles solved: <b>' + S.stats.solved + '</b>. The game moves each subject up or down a level by itself.</p><table>';
+    for (const k in SUBJ) { const lv = Math.min(4, S.level[k] || 0); h += '<tr><td>' + SUBJ[k][0] + '</td><td><b>Level ' + (lv + 1) + ' of 5</b></td><td>' + SUBJ[k][1][lv] + '</td></tr>'; }
+    h += '</table><h3>Handwriting</h3><p>Letters practised: <b>' + keys.length + '</b>. Formed well (2–3 stars): <b>' + keys.filter(k => stars(k) >= 2).length + '</b>.'
+      + (weak.length ? ' Worth practising: <b class="gl">' + weak.join(' &nbsp;') + '</b>.' : keys.length ? ' Nothing stands out as weak.' : ' Nothing written yet — try Writing Wood.') + '</p>';
+    h += '</div><div><h3>Adventure</h3><p>Places visited: <b>' + areas + ' of ' + Object.keys(G.AREAS).length + '</b>. Quests and firsts finished: <b>' + quests + '</b>.' + (S.quests.finale ? ' The Cloud Castle is open — the story is complete.' : '') + '</p>'
+      + '<p>Gems: ' + G.GEMS.map(c => G.gemSVG(c, 22) + ' ' + S.gems[c]).join(' &nbsp;') + ' &nbsp;🪙 ' + S.coins + '</p>'
+      + '<h3>Playroom</h3><p>Potions cast: <b>' + (S.stats.potions || 0) + '</b>. Pets made better: <b>' + cured + '</b>. Pictures saved: <b>' + pics + '</b>.</p>'
+      + '<h3>Settings</h3><div class="gset"></div><p class="gfb">Feedback: open an issue labelled <b>feedback</b> on the game\'s GitHub page. One note per issue.</p></div></div>';
+    card.innerHTML = h;
+    const set = card.querySelector('.gset');
+    const tolBtn = U.el('button', 'gbtn'), TOL = [[1.3, 'gentle'], [1, 'normal'], [0.8, 'strict']];
+    const tolShow = () => { const cur = S.settings.writeTol || 1, i = cur > 1.1 ? 0 : cur < 0.9 ? 2 : 1; tolBtn.textContent = 'Handwriting checks: ' + TOL[i][1]; return i; };
+    tolBtn.onclick = () => { S.settings.writeTol = TOL[(tolShow() + 1) % 3][0]; tolShow(); G.saveGame(); }; tolShow(); set.appendChild(tolBtn);
+    const lh = U.el('button', 'gbtn'); const lhShow = () => lh.textContent = 'Writing hand: ' + (S.settings.leftHanded ? 'left' : 'right'); lh.onclick = () => { S.settings.leftHanded = !S.settings.leftHanded; lhShow(); G.saveGame(); }; lhShow(); set.appendChild(lh);
+    const close = U.el('button', 'closex', '✕'); close.onclick = () => { G.sfx('tap'); UI.overlay(false); G.paused = false; }; card.appendChild(close);
+    ov.appendChild(card);
   };
 
   /* bug journal (SPEC §7.2e) */

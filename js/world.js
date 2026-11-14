@@ -25,6 +25,7 @@
     hettie: { name: 'Hettie Hedgehog', look: { cre: 'hedgehog', s: 1.3, acc: 'bowtie' } },
     ogden: { name: 'Ogden', look: { cre: 'ogre', s: 1.8, acc: 'napkin' } },
     rosie: { name: 'Rosie Rabbit', look: { cre: 'bunny', s: 1.5, acc: 'scarf' } },
+    luna: { name: 'Luna', look: { cre: 'unicorn', s: 1.5 } },
     tuft: { name: 'Mr Tuft', look: { cre: 'tuft', s: 1.5, acc: 'bowtie' } },
   };
 
@@ -397,6 +398,43 @@
         { id: 'cv-chime3', k: 'chime', col: 'yellow', x: 79, row: 12 },
         { id: 'cv-sign2', k: 'sign', x: 83, row: 12, text: 'Cloudtop Kingdom is up above. Bring three red, three yellow and two purple gems.' },
         { id: 'gate-clouds', k: 'gate', x: 86, row: 12, to: 'clouds', label: 'Cloudtop Kingdom', icon: '☁️', needs: { red: 3, yellow: 3, purple: 2 } },
+      ],
+    },
+    /* Cloudtop Kingdom (SPEC §7.2i): climb the clouds to the castle. The solid cloud floor catches every fall. */
+    clouds: {
+      name: 'Cloudtop Kingdom', theme: 'clouds', music: 'clouds', w: 90, h: 24,
+      fills: [
+        [0, 0, 0, 23, '#'], [89, 0, 89, 23, '#'],
+        [0, 21, 89, 23, '#'],
+        [16, 19, 18, 19, '='], [20, 17, 23, 17, '='],                 // first puffs (red gem)
+        [26, 15, 36, 16, '#'],                                        // star island
+        [38, 13, 40, 13, '='], [42, 11, 44, 11, '='],                 // puffs (green gem)
+        [47, 11, 57, 12, '#'],                                        // rainbow island
+        [59, 9, 61, 9, '='],                                          // last puff (yellow gem)
+        [64, 9, 88, 10, '#'],                                         // castle island
+      ],
+      spawn: { x: 3, row: 21 },
+      decor: [
+        { k: 'cloudpuff', x: 400, row: 21 }, { k: 'cloudpuff', x: 900, row: 21 }, { k: 'cloudpuff', x: 1500, row: 15 }, { k: 'cloudpuff', x: 2100, row: 21 },
+        { k: 'cloudpuff', x: 2600, row: 11 }, { k: 'cloudpuff', x: 3200, row: 21 }, { k: 'cloudpuff', x: 3900, row: 21 }, { k: 'cloudpuff', x: 4100, row: 9 },
+      ],
+      ents: [
+        { id: 'cl-back', k: 'door', x: 1.6, row: 21, icon: '💎', col: '#7b68b8', to: 'caves', at: { x: 84, row: 12 } },
+        { id: 'luna', k: 'npc', who: 'luna', x: 6, row: 21, lines: 'luna', talk: [] },
+        { id: 'cl-sign', k: 'sign', x: 9, row: 21, text: 'Cloudtop Kingdom. Climb the clouds to the castle!' },
+        { id: 'cl-weather', k: 'weather', x: 12.5, row: 21 },
+        { id: 'g-cl-red1', k: 'gem', col: 'red', x: 22, row: 17 },
+        { id: 'cl-boing1', k: 'bounce', look: 'cloud', pow: 1000, x: 24.5, row: 21 },
+        { id: 'cl-stars', k: 'stars', x: 31, row: 15 },
+        { id: 'g-cl-blue1', k: 'gem', col: 'blue', x: 35, row: 15 },
+        { id: 'cl-boing2', k: 'bounce', look: 'cloud', pow: 1100, x: 39, row: 21 },
+        { id: 'g-cl-green1', k: 'gem', col: 'green', x: 43, row: 11 },
+        { id: 'cl-rainbow', k: 'rainbow', x: 52, row: 11 },
+        { id: 'g-cl-yellow1', k: 'gem', col: 'yellow', x: 60, row: 9 },
+        { id: 'cl-boing3', k: 'bounce', look: 'cloud', pow: 1400, x: 62.5, row: 21 },
+        { id: 'g-cl-green2', k: 'gem', col: 'green', x: 70, row: 21 },
+        { id: 'cl-castle', k: 'castle', x: 76, row: 9 },
+        { id: 'g-cl-red2', k: 'gem', col: 'red', x: 86, row: 9 },
       ],
     },
   };

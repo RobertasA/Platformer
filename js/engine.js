@@ -174,7 +174,7 @@
     if (!G.paused && G.input.actHit && E.near) E.interact(E.near);
   }
 
-  G.NPC_LINES = { bettina: () => G.MEAD.bettinaLines(), tuft: () => G.TOWER.tuftLines(), rosie: () => G.WOODS.rosieLines(), mole: () => G.CAVES.moleLines() };
+  G.NPC_LINES = { bettina: () => G.MEAD.bettinaLines(), tuft: () => G.TOWER.tuftLines(), rosie: () => G.WOODS.rosieLines(), mole: () => G.CAVES.moleLines(), luna: () => G.CLOUDS.lunaLines() };
   G.pickCount = set => { let have = 0, total = 0; for (const id in G.AREAS) for (const e of G.AREAS[id].ents) if (e.k === 'pick' && e.set === set) { total++; if (G.S.picks[e.id]) have++; } return { have, total }; };
 
   E.pickGem = async function (e) {
@@ -198,6 +198,10 @@
     else if (e.k === 'cust') E.serve(e);
     else if (e.k === 'bug') G.MEAD.look(e.kind);
     else if (e.k === 'sorter') G.MEAD.sort();
+    else if (e.k === 'weather') G.CLOUDS.weather(e);
+    else if (e.k === 'stars') G.CLOUDS.stars(e);
+    else if (e.k === 'rainbow') G.CLOUDS.rainbow(e);
+    else if (e.k === 'castle') G.FINALE.castle(e);
     else if (e.k === 'trail') G.WOODS.trail(e);
     else if (e.k === 'story') G.WOODS.story(e);
     else if (e.k === 'chime') G.CAVES.chime(e);
@@ -310,7 +314,7 @@
     c.globalAlpha = 1;
     if (a.dark) drawDark(c, a.dark, cx, cy, t);
     // "press ✋" hint over the nearest thing
-    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' || e.k === 'shoes' || e.k === 'post' ? 150 : e.k === 'case' || e.k === 'trail' || e.k === 'chime' ? 170 : e.k === 'story' || e.k === 'nest' ? 130 : e.k === 'cabinet' ? 210 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
+    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : e.k === 'bug' ? (e.fly ? 110 : 100) : e.k === 'sorter' || e.k === 'shoes' || e.k === 'post' ? 150 : e.k === 'castle' ? 250 : e.k === 'case' || e.k === 'trail' || e.k === 'chime' || e.k === 'weather' || e.k === 'stars' || e.k === 'rainbow' ? 170 : e.k === 'story' || e.k === 'nest' ? 130 : e.k === 'cabinet' ? 210 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
     c.restore();
   };
 
@@ -332,7 +336,8 @@
     const x = e.px, y = e.py;
     if (e.k === 'bounce') {
       const sq = e.squish > 0 ? 1 - Math.sin(e.squish / 0.3 * Math.PI) * 0.35 : 1; c.save(); c.translate(x, y); c.scale(2 - sq, sq);
-      if (e.look === 'crystal') { c.fillStyle = '#7fe3ff'; c.beginPath(); c.moveTo(-34, 0); c.lineTo(-40, -22); c.lineTo(-14, -40); c.lineTo(14, -40); c.lineTo(40, -22); c.lineTo(34, 0); c.fill(); c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.moveTo(-14, -40); c.lineTo(0, -8); c.lineTo(14, -40); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 3; c.stroke(); }
+      if (e.look === 'cloud') { for (const [ox, oy, r] of [[-26, -14, 18], [0, -22, 24], [26, -14, 18], [-12, -8, 16], [14, -8, 16]]) G.circ(c, ox, oy, r, '#fff'); c.fillStyle = '#ffd6ea'; c.beginPath(); c.ellipse(0, -4, 40, 6, 0, 0, 7); c.fill(); }
+      else if (e.look === 'crystal') { c.fillStyle = '#7fe3ff'; c.beginPath(); c.moveTo(-34, 0); c.lineTo(-40, -22); c.lineTo(-14, -40); c.lineTo(14, -40); c.lineTo(40, -22); c.lineTo(34, 0); c.fill(); c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.moveTo(-14, -40); c.lineTo(0, -8); c.lineTo(14, -40); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 3; c.stroke(); }
       else { c.fillStyle = '#f6ead2'; G.rr(c, -12, -22, 24, 24, 8); c.fill(); c.fillStyle = '#e8485a'; c.beginPath(); c.ellipse(0, -24, 42, 22, 0, Math.PI, 0); c.fill(); c.fillRect(-42, -25, 84, 4); c.fillStyle = '#fff'; G.circ(c, -20, -32, 6, '#fff'); G.circ(c, 4, -38, 7, '#fff'); G.circ(c, 24, -30, 5, '#fff'); }
       c.restore(); G.emoji(c, '⬆️', x, y - 70 + Math.sin(t * 5) * 4, 20);
     } else if (e.k === 'raft') {
@@ -342,6 +347,24 @@
     } else if (e.k === 'pick') {
       const yy = y - 30 + (e.fly ? 0 : Math.sin(e.t * 3) * 5);
       G.circ(c, x, yy, 30 + Math.sin(t * 4 + e.t) * 4, e.set === 'embers' ? 'rgba(255,140,60,.4)' : 'rgba(255,240,120,.4)'); G.circ(c, x, yy, 20, 'rgba(255,255,255,.55)'); c.fillStyle = '#000'; G.emoji(c, e.icon, x, yy, 34);
+    } else if (e.k === 'weather') {
+      c.fillStyle = '#9aa3b5'; c.fillRect(x - 5, y - 120, 10, 120); G.rr(c, x - 44, y - 96, 88, 60, 12); c.fillStyle = '#fff'; c.fill(); c.strokeStyle = '#9ec3ff'; c.lineWidth = 4; c.stroke();
+      c.fillStyle = '#000'; G.emoji(c, ['☀️', '🌧️', '❄️', '🌈'][Math.floor(t / 2) % 4], x, y - 66, 36); c.save(); c.translate(x, y - 128); c.rotate(Math.sin(t * 1.5) * 0.5); G.emoji(c, '🪁', 0, -8, 30); c.restore();
+      badge(c, 'weather', 'blue', x + 52, y - 116, t);
+    } else if (e.k === 'stars') {
+      c.strokeStyle = '#6b5a8c'; c.lineWidth = 6; c.beginPath(); c.moveTo(x, y - 60); c.lineTo(x - 26, y); c.moveTo(x, y - 60); c.lineTo(x + 26, y); c.moveTo(x, y - 60); c.lineTo(x, y); c.stroke();
+      c.save(); c.translate(x, y - 66); c.rotate(-0.6); G.rr(c, -16, -14, 78, 28, 10); c.fillStyle = '#7a4de0'; c.fill(); G.rr(c, 52, -18, 16, 36, 6); c.fillStyle = '#ffd23c'; c.fill(); c.restore();
+      c.fillStyle = '#000'; for (let i = 0; i < 3; i++) G.emoji(c, '⭐', x + 50 + i * 26, y - 130 - i * 14 + Math.sin(t * 3 + i) * 4, 20);
+      badge(c, 'stars', 'yellow', x - 44, y - 110, t);
+    } else if (e.k === 'rainbow') {
+      const cols = ['#e23b4e', '#ff8a3c', '#ffd23c', '#58c263', '#3d8bff', '#4b3fb5', '#9a5de0'];
+      cols.forEach((col, i) => { const bx = x - 66 + i * 22; G.rr(c, bx - 9, y - 30 - (i % 2) * 6, 18, 30 + (i % 2) * 6, 5); c.fillStyle = col; c.fill(); c.fillStyle = 'rgba(255,255,255,.5)'; c.fillRect(bx - 6, y - 26, 4, 18); });
+      c.fillStyle = '#000'; G.emoji(c, '🖌️', x + 4, y - 74 + Math.sin(t * 3) * 4, 34);
+      badge(c, 'rainbow', 'purple', x + 70, y - 96, t);
+    } else if (e.k === 'castle') {
+      if (G.S.quests.rainbow) { const cols = ['#e23b4e', '#ff8a3c', '#ffd23c', '#58c263', '#3d8bff', '#4b3fb5', '#9a5de0']; c.lineWidth = 12; c.globalAlpha = 0.8; cols.forEach((col, i) => { c.strokeStyle = col; c.beginPath(); c.arc(x, y - 40, 430 - i * 12, Math.PI, 0); c.stroke(); }); c.globalAlpha = 1; }
+      G.drawDecor(c, { k: 'castle', x, y }, t);
+      G.drawDoor(c, x, y, { style: 'gate', open: !!G.S.quests.finale, icon: '👑', glow: '#ffe9a8' }, t);
     } else if (e.k === 'trail') {
       c.fillStyle = '#8d5a3b'; c.fillRect(x - 6, y - 110, 12, 110);
       c.save(); c.translate(x, y - 96); G.rr(c, -6, -18, 78, 30, 6); c.fillStyle = '#f3d9ac'; c.fill(); c.strokeStyle = '#8d5a3b'; c.lineWidth = 3; c.stroke(); G.rr(c, -72, 16, 78, 30, 6); c.fill(); c.stroke(); c.restore();
@@ -462,7 +485,7 @@
       const y = e.py - 30 + Math.sin(e.t * 3) * 5;
       G.circ(c, e.px, y, 32 + Math.sin(t * 4) * 3, 'rgba(160,120,210,.35)'); G.circ(c, e.px, y, 24, 'rgba(255,255,255,.6)'); c.fillStyle = '#000'; G.emoji(c, e.icon, e.px, y, 40);
       if (Math.random() < 0.05) E.parts.push({ x: e.px + U.rnd(-20, 20), y: y + U.rnd(-20, 20), vx: 0, vy: -20, life: 0.6, max: 0.6, col: '#fff', kind: 'spark', r: 3 });
-    } else if (e.k === 'bounce' || e.k === 'raft' || e.k === 'pick' || e.k === 'trail' || e.k === 'story' || e.k === 'chime' || e.k === 'nest') {
+    } else if (e.k === 'bounce' || e.k === 'raft' || e.k === 'pick' || e.k === 'trail' || e.k === 'story' || e.k === 'chime' || e.k === 'nest' || e.k === 'weather' || e.k === 'stars' || e.k === 'rainbow' || e.k === 'castle') {
       wildProp(c, e, t);
     } else if (e.k === 'shoes' || e.k === 'post' || e.k === 'case' || e.k === 'cabinet') {
       towerProp(c, e, t);

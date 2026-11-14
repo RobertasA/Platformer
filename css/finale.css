@@ -1,1 +1,83 @@
-/* placeholder */
+/* Cloud Castle finale — everything under .finalecard */
+.finalecard { text-align: center; color: #3b2a6e; overflow: visible; }
+.finalecard .ttl { margin: 6px 0 4px; font-size: 40px; color: #7036c9; }
+
+/* ---- door card ---- */
+.finalecard.door { width: 820px; max-width: 96%; padding-bottom: 28px; background: linear-gradient(#e9f6ff, #fff7e0); }
+.finalecard .door { display: flex; justify-content: center; margin-top: 4px; }
+.finalecard .arch { position: relative; width: 190px; height: 190px; border-radius: 95px 95px 6px 6px; background: linear-gradient(#ffe27a, #e0a82e); border: 8px solid #b9801a; box-shadow: inset 0 0 0 6px #ffefa8, 0 6px 0 rgba(0,0,0,.2); overflow: hidden; }
+.finalecard .leaf { position: absolute; top: 0; bottom: 0; width: 50%; background: repeating-linear-gradient(90deg, rgba(185,128,26,.25) 0 6px, transparent 6px 22px); }
+.finalecard .leaf.l { left: 0; border-right: 3px solid #b9801a; } .finalecard .leaf.r { right: 0; }
+.finalecard .keys { position: absolute; left: 0; right: 0; top: 56px; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; padding: 0 14px; }
+.finalecard .kh { width: 40px; height: 40px; border-radius: 50%; background: #6b4510; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 3px 6px rgba(0,0,0,.5); }
+.finalecard .kh svg { opacity: .25; filter: grayscale(.6); }
+.finalecard .kh.lit svg { opacity: 1; filter: none; }
+.finalecard .gems { display: flex; justify-content: center; gap: 18px; margin: 6px 0; }
+.finalecard .gm { width: 118px; }
+.finalecard .gi { position: relative; height: 62px; display: flex; align-items: center; justify-content: center; }
+.finalecard .gm:not(.ok) .gi svg { animation: finalepulse 1.8s ease-in-out infinite; }
+.finalecard .tick { position: absolute; right: 12px; bottom: -2px; width: 30px; height: 30px; border-radius: 50%; background: #3fd08a; color: #fff; font-size: 20px; line-height: 30px; font-weight: 700; box-shadow: 0 2px 0 #12915a; }
+.finalecard .ct { font-size: 32px; font-weight: 700; }
+.finalecard .gm.ok .ct { color: #12915a; }
+.finalecard .msg { font-size: 34px; font-weight: 700; margin: 6px 0 2px; line-height: 1.15; }
+.finalecard.door .hint, .finalecard .hint { color: #7036c9; }
+.finalecard.door .bigbtn { margin-top: 12px; }
+@keyframes finalepulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.14); } }
+
+/* ---- party ---- */
+.finalecard.party { width: 1180px; max-width: 98vw; height: 660px; max-height: 98vh; padding: 0; border-radius: 34px; overflow: visible; background: #fff3d6; }
+.finalecard .hall { position: absolute; inset: 0; border-radius: 34px; overflow: hidden; background: linear-gradient(#fbe3f0 0, #fff0d8 60%, #e8c88c 100%); }
+.finalecard .hall::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 110px; background: repeating-linear-gradient(90deg, #d9a96a 0 90px, #cf9c5c 90px 180px); }
+.finalecard .win { position: absolute; top: 56px; width: 120px; height: 230px; border-radius: 60px 60px 0 0; border: 8px solid #b9801a; background: linear-gradient(#7fd0ff, #d6f1ff); box-shadow: inset 0 -30px 0 -10px rgba(255,255,255,.7), 0 4px 0 rgba(0,0,0,.15); }
+.finalecard .win::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 6px; margin-left: -3px; background: #b9801a; }
+.finalecard .w1 { left: 60px; } .finalecard .w2 { left: 250px; } .finalecard .w3 { right: 250px; } .finalecard .w4 { right: 60px; }
+.finalecard .bunting { position: absolute; left: 0; right: 0; top: 0; height: 60px; display: flex; justify-content: space-around; }
+.finalecard .bunting i { width: 0; height: 0; border-left: 30px solid transparent; border-right: 30px solid transparent; border-top: 50px solid var(--c, #ff5d8f); margin-top: calc(sin(1) * 0px); transform-origin: top; animation: finalesway 2.4s ease-in-out infinite; animation-delay: calc(var(--i) * -.2s); }
+.finalecard .bunting i:nth-child(5n+1) { --c: #ff5d8f; } .finalecard .bunting i:nth-child(5n+2) { --c: #ffd23f; } .finalecard .bunting i:nth-child(5n+3) { --c: #4aa8ff; } .finalecard .bunting i:nth-child(5n+4) { --c: #3fd08a; } .finalecard .bunting i:nth-child(5n) { --c: #b36bff; }
+.finalecard .bunting i { border-top-color: var(--c); }
+.finalecard .carpet { position: absolute; left: 50%; bottom: 0; width: 420px; height: 120px; margin-left: -210px; background: linear-gradient(#d6264a, #a3153a); clip-path: polygon(14% 0, 86% 0, 100% 100%, 0 100%); box-shadow: inset 0 0 0 6px #ffd23f; }
+.finalecard .confetti { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: 34px; z-index: 5; }
+.finalecard .cf { position: absolute; top: -30px; border-radius: 2px; animation: finalefall 5s linear infinite; }
+.finalecard .cf.burst { animation-iteration-count: 1; animation-fill-mode: both; }
+@keyframes finalefall { 0% { transform: translate(0, 0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), 720px) rotate(var(--rot)); opacity: .9; } }
+@keyframes finalesway { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+.finalecard .stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 70px; z-index: 3; }
+.finalecard .crowd { display: flex; align-items: flex-end; justify-content: center; gap: 6px; }
+.finalecard .wing { display: grid; grid-template-columns: repeat(3, 118px); gap: 0 4px; }
+.finalecard .fr { animation: finalebob 1.6s ease-in-out infinite; }
+.finalecard .fr canvas { display: block; margin: 0 auto; }
+.finalecard .nm { font-size: 17px; font-weight: 700; line-height: 1.05; background: rgba(255,255,255,.75); border-radius: 10px; padding: 1px 4px; margin: -2px 2px 6px; }
+.finalecard .me { width: 240px; animation: finalebob 1.3s ease-in-out infinite; }
+.finalecard .me canvas { display: block; margin: 0 auto; }
+.finalecard .nm.big { font-size: 26px; background: #ffd23f; display: inline-block; padding: 2px 16px; border-radius: 16px; }
+@keyframes finalebob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.finalecard .bubble { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); width: 820px; max-width: 80%; min-height: 108px; background: #fff; border-radius: 28px; border: 5px solid #b36bff; padding: 8px 90px 8px 24px; text-align: left; box-shadow: 0 6px 0 rgba(0,0,0,.18); display: flex; flex-direction: column; justify-content: center; }
+.finalecard .bubble .who { font-size: 22px; font-weight: 700; color: #b36bff; }
+.finalecard .bubble .line { font-size: 36px; font-weight: 700; line-height: 1.1; }
+.finalecard .bubble.pop { animation: finalepop .45s ease-out; }
+@keyframes finalepop { 0% { transform: translateX(-50%) scale(.7); opacity: 0; } 70% { transform: translateX(-50%) scale(1.06); } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+.finalecard .go { position: absolute; right: 24px; bottom: 28px; min-width: 96px; min-height: 96px; border-radius: 50%; font-size: 44px; padding: 0; animation: finalepulse 1.4s ease-in-out infinite; }
+.finalecard .party .closex, .finalecard .closex { z-index: 8; }
+
+/* stage 2 */
+.finalecard.writing .hall::before { opacity: .5; }
+.finalecard .stage .ttl { background: rgba(255,255,255,.85); padding: 4px 28px; border-radius: 24px; margin-top: -14px; font-size: 38px; }
+.finalecard .book { position: relative; margin-top: 14px; padding: 26px 34px; background: #8a4b1f; border-radius: 22px; box-shadow: 0 8px 0 rgba(0,0,0,.25); }
+.finalecard .book .pg { position: absolute; top: 12px; bottom: 12px; width: calc(50% - 22px); background: repeating-linear-gradient(#fffaf0 0 38px, #f0e2c4 38px 40px); border-radius: 10px; }
+.finalecard .book .pg.l { left: 14px; } .finalecard .book .pg.r { right: 14px; }
+.finalecard .book .spine { position: absolute; left: 50%; top: 12px; bottom: 12px; width: 8px; margin-left: -4px; background: linear-gradient(90deg, rgba(0,0,0,.25), transparent, rgba(0,0,0,.25)); }
+.finalecard .book .pad { position: relative; width: 800px; height: 280px; max-width: 100%; }
+.finalecard .stage .hint { background: rgba(255,255,255,.85); border-radius: 18px; padding: 2px 20px; margin-top: 12px; }
+
+/* stage 3 */
+.finalecard .hero { position: relative; width: 300px; height: 300px; margin-top: 10px; }
+.finalecard .hero .rays { position: absolute; inset: -60px; background: repeating-conic-gradient(rgba(255,210,63,.55) 0 10deg, transparent 10deg 20deg); border-radius: 50%; animation: finalespin 14s linear infinite; -webkit-mask: radial-gradient(circle, #000 30%, transparent 70%); mask: radial-gradient(circle, #000 30%, transparent 70%); }
+.finalecard .hero canvas { position: relative; display: block; margin: 20px auto 0; }
+.finalecard .crown { position: absolute; left: 50%; top: -78px; margin-left: -55px; width: 110px; font-size: 92px; line-height: 1; filter: drop-shadow(0 6px 0 rgba(0,0,0,.2)); animation: finalecrown 1.3s cubic-bezier(.3,1.4,.5,1) .5s both; }
+@keyframes finalecrown { 0% { transform: translateY(-420px) rotate(-25deg); opacity: 0; } 60% { transform: translateY(18px) rotate(6deg); opacity: 1; } 80% { transform: translateY(-14px) rotate(-3deg); } 100% { transform: translateY(0) rotate(0); opacity: 1; } }
+@keyframes finalespin { to { transform: rotate(360deg); } }
+.finalecard .stage > .msg { background: rgba(255,255,255,.9); border-radius: 22px; padding: 4px 30px; margin-top: 4px; font-size: 40px; color: #7036c9; }
+.finalecard .stage > .hint { max-width: 900px; font-size: 28px; line-height: 1.15; }
+.finalecard .stage > .bigbtn { margin-top: 10px; }
+.finalecard .stage .hint:empty { display: none; }
