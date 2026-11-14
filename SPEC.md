@@ -10,11 +10,18 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | Area | State |
 |---|---|
 | Repo, aim/spec/loop, CI deploy, smoke test | [done] iter0 |
-| `js/core.js` namespace, save, input | [done] written, unverified |
-| `js/audio.js` sfx/music/speech | [done] written, unverified |
-| `js/art.js` avatar, creatures, gems | [done] written, unverified |
-| `js/scenery.js` backgrounds, tiles, props, doors | [done] written, unverified |
-| `css/style.css`, `js/curriculum.js`, `js/puzzle.js`, `js/handwriting.js`, `js/world.js`, `js/engine.js`, `js/ui.js`, `js/sandbox.js`, `js/main.js` | [todo] iter1 — **game does not boot until these exist** |
+| `js/core.js` namespace, save, input | [done] iter1, verified in browser |
+| `js/audio.js` sfx/music/speech | [done] (headless: no audio check) |
+| `js/art.js`, `js/scenery.js` | [done] iter1, verified in screenshots |
+| `css/style.css`, `js/main.js` (fit, title, loop, debug steps) | [done] iter1 |
+| `js/world.js` village (72×15, 5 NPCs, 9 gems, 4 gates) | [done] iter1 |
+| `js/engine.js` physics, camera, gems, interact, travel | [done] iter1 |
+| `js/ui.js` HUD, toast, dialogue, gate card, creator/wardrobe, settings | [done] iter1 |
+| `js/puzzle.js` shell (choice / order / write) | [done] iter1 |
+| `js/handwriting.js` pad, glyphs a–z A–Z 0–9, recogniser, coach | [done] iter1 (synthetic tests only; untested with a real stylus) |
+| `js/curriculum.js` generators | see iteration log |
+| Areas beyond the village (house, café, meadow, writing…) | [todo] — gates open but travel shows "still being built" |
+| `js/sandbox.js` playrooms | [todo] stub |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
 
@@ -85,14 +92,16 @@ Coins: small economy for the toy shop / dress-up unlocks (§9). Gems are never s
 
 ---
 
-## 4. Engine rules [todo iter1]
+## 4. Engine rules [done iter1]
 
 - Tile size 48. Tile map chars per area (see §5). Solid `#`, one-way platform `=`, water `~`, spikes-free (no hazards that hurt; "oops" = gentle respawn at last checkpoint with a giggle).
-- Player: run 260px/s, jump 640px/s (double jump unlocked after first area), coyote time 0.1s, jump buffer 0.12s, variable jump height. Squash & stretch. Pet follows with delay.
+- Player: run 260px/s, jump 640px/s, gravity 1500 (1050 falling… see `PH` in engine.js), double jump always on (0.88× strength) — a 6-year-old needs it from the start, coyote time 0.1s, jump buffer 0.12s, variable jump height. Squash & stretch. Pet follows with delay.
 - Camera: smooth follow, clamp to area bounds, look-ahead.
 - Interact (✋ / E / tap on thing): talk, open door, pick gem, use toy.
 - NPC: idle bob, speech bubble `!` when quest available. Dialogue box with portrait, tap to advance, read aloud.
-- Falling off the bottom → respawn at checkpoint (no penalty).
+- Falling off the bottom → respawn at last safe ground with a "Whoops! 🙃" toast (no penalty).
+- Water `~`: slow sink (swimGrav 420), jump = swim-hop, splash.
+- Tapping an NPC/gate/door/sign on the canvas (within 200px of the player) interacts too.
 - Enemies: none that hurt. "Grumpy" characters that block the way until helped (puzzle/quest).
 - Gem pickup: touch → sparkle burst → puzzle modal (subject by colour, difficulty from `level[subject]`) → on success gem flies to HUD, `taken[...]=true`; on failure gem wobbles, can retry any time.
 - Gate: `needs:{red:2,blue:1}` etc. Shows recipe with gem icons + "have/need". If enough → press ✋ → gems are *shown* (not consumed? **consumed**: yes, spent) → gate opens permanently (`locks[id]=true`). Always ensure the world holds more gems than the total of all recipes (+ spares) so progress can't dead-end.
@@ -244,9 +253,9 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 
 ## 13. Backlog (ranked; loop picks from the top)
 
-1. **[todo] Boot slice**: `style.css`, `main.js`, `engine.js`, `world.js` (village only), HUD, title + character creator → player can walk/jump around the village with the avatar. *Smoke test green.*
-2. **[todo] Gem + puzzle loop**: `curriculum.js` (maths L0–2, words L0–1), `puzzle.js` shell (choice/count), gem pickup → puzzle → HUD, first gate (village→house).
-3. **[todo] Handwriting v1**: `handwriting.js` with glyph table a–z, trace mode + recogniser + coach messages; `writing` area stub; blue gems via writing; works with stylus pointer events.
+1. **[done iter1] Boot slice**: `style.css`, `main.js`, `engine.js`, `world.js` (village only), HUD, title + character creator → player can walk/jump around the village with the avatar. *Smoke test green.*
+2. **[done iter1] Gem + puzzle loop**: `curriculum.js` (maths L0–2, words L0–1), `puzzle.js` shell (choice/count), gem pickup → puzzle → HUD, first gate (village→house).
+3. **[todo] Handwriting v1 → Writing Wood**: `handwriting.js` is done (iter1); still needed: the `writing` area with Captain Quill, letter-family lessons (§7.3 ladder), handwriting progress in a journal; blue gems via writing; works with stylus pointer events.
 4. **[todo] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
 5. **[todo] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox.
 6. **[todo] Wardrobe/creator UI polish** with all presets and locked items.
@@ -262,3 +271,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 ## 14. Iteration log
 
 **iter0 — set-up (this commit).** Wrote AIM/LOOP/SPEC/CLAUDE.md, CI deploy workflow, smoke test. Already drafted engine foundations: `core.js`, `audio.js`, `art.js` (avatar with ~150 customisation options + creatures + gems), `scenery.js` (7 themes, ~60 props, doors/gates). Owner added: tablet + stylus, handwriting/letter-formation as a priority (§7). Next: backlog #1 and #2, using sub-agents for bulk content.
+
+**iter1 — playable village.** Wrote style.css, world.js (village), engine.js, ui.js (HUD, dialogue, gate recipe card, character creator with 14 tabs + 20 job presets, settings with 2-second hold to reset), puzzle.js (choice / order / write; never fails: hint → hint → reveal and keep the gem), main.js (letterbox fit, title over a panning village, debug steps). Sonnet agents wrote handwriting.js (62 glyphs, deterministic recogniser, coach messages, demo/fade guides, 310/310 synthetic tests) and curriculum.js. check.js now runs `G.debug.steps` and screenshots each (walk, talk, maths, words, write, gate, creator, settings). Feedback: 0 issues. Next: Writing Wood area (backlog #3), Hush House (#4).
