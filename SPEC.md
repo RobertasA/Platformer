@@ -22,7 +22,8 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `js/curriculum.js` generators (80 generators over 5 subjects, L0–4, `selfTest()` clean) | [done] iter3 |
 | `js/lessons.js` + `writing` area (Writing Wood) | [done] iter2 |
 | `house` area (Hush House: noise meter, creaky boards, squeaky toys, maths doors, tuck Mum in) | [done] iter3 |
-| Areas café, meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
+| `cafe` area + `js/cafe.js` order cards (Twiggy Spoon Café, §7.2d) | [done] iter4 |
+| Areas meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -201,6 +202,26 @@ Area `writing` (woods theme, 64×15) reached through the village gate (blue×2).
 - Goal `mum` (bed with snoring Mum): ✋ → two lines → `S.quests.hush`, +1 yellow gem, +5 coins, unlocks `held:lantern`. Afterwards: "Sweet dreams, Mum."
 - Layout (64×15): kitchen → door1 → hall (duck, frog toy) → door2 → sitting room (bookcase climb) → door3 → bedroom. Gems: red×2, yellow, purple on shelves. Door 🏡 back to the village gate.
 
+### 7.2d Twiggy Spoon Café (iter4) — `cafe` in world.js; order cards in `js/cafe.js` (`G.CAFE`)
+- Area `cafe` (56×15, theme `cafe`: warm cream wallpaper with gingham stripes, honey floorboards, dusk woods through the windows). Door 🏡 back to the village café gate. Gate 🌲 `gate-woods` (needs red×2, blue×1) to Whispering Woods (not built yet → "still being built").
+- **Mrs Bramble** (badger, chef hat) runs the café; **Wilf** (fox) carries the plates. Intro: "Welcome to the Twiggy Spoon! I am Mrs Bramble." / "Our customers are hungry. Tap a customer to take their order." / "Serve all four and you can be a real waiter!"
+- Customers `k:'cust'` sit at tables. Each has a fixed story order `kind` and a speech bubble above (🧁 count, 📜 read, 🪙 money, ✏️ write; 💖 when served).
+  | id | who | kind |
+  |---|---|---|
+  | `cf-bear` | Barnaby Bear (bear, scarf) | count |
+  | `cf-hettie` | Hettie Hedgehog | read |
+  | `cf-hoot` | Professor Hoot (owl) | money |
+  | `cf-ogden` | Ogden (ogre, napkin) — loves tiny cakes | write |
+- **Order cards** `G.CAFE.order(cust)` → Promise<{ok}> (same never-fail rules as puzzles: wrong → wobble + hint, 3rd wrong → show the answer and still serve; ✕ closes, nothing lost). Levels follow `S.level.maths` (count, money) and `S.level.words` (read, write) and adapt via `G.PZ.adapt`.
+  - **count** "I would like N acorn cakes, please!" — tap 🧁 on the tray to put them on the plate, tap a plate cake to put it back, **Serve**. N: L0 2–4, L1 3–6, L2 5–10, L3+ 5–9 plus "and one more" (N+1). Tray holds N+3 cakes (max 12).
+  - **read** a ticket shows a food word; pick the matching picture from 3. Words (`CAFE.EASY`, L0–1): egg, tea, pie, nut, ham, bun, cup; (`CAFE.HARD`, L2+): cake, milk, soup, toast, honey, apple, pear, bread, cheese. (No jam/fig/peas: their emoji are unreliable on tablets.)
+  - **money** "A bun / cup of tea / slice of pie / cake / honey toast costs Np. Can you help me find the coins?" — tap coins (1p, 2p, 5p, 10p) into the purse, tap a purse coin to take it out, **Pay**. N: L0 2–5 (1p, 2p only), L1 3–10 (+5p), L2+ 6–20 (+10p). Any coin mix that adds up is right (purse max 14 coins). Reveal = greedy coins (`CAFE.payWith`). The chalkboard prices are decor only.
+  - **write** "I want a W, please! Can you write it on your notepad?" — handwriting pad with the word; mode by words level: L0 trace, L1 fade, L2+ memory — and at L2+ the order shows the picture instead of the word. Words: `CAFE.EASY`.
+- Rewards: each served order +2 coins, 💖 bubble. Serving all four story orders → `S.quests.cafe`, +1 blue gem, unlocks `hat:chef`, banner "Super waiter! ☕".
+- **Run the café** (free play, after the story): each customer re-orders 25 s after being served, with a random kind; +2 coins each. No end, no failure.
+- Gems on the café shelves: blue, red, green, purple. Music: `village`. On finishing the story the other customers re-order after 8 s.
+- [todo] cooking mini-game (stir, pour, decorate cakes).
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -275,7 +296,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 2. **[done iter1] Gem + puzzle loop**: `curriculum.js` (maths L0–2, words L0–1), `puzzle.js` shell (choice/count), gem pickup → puzzle → HUD, first gate (village→house).
 3. **[done iter2] Handwriting v1 → Writing Wood**: `handwriting.js` is done (iter1); still needed: the `writing` area with Captain Quill, letter-family lessons (§7.3 ladder), handwriting progress in a journal; blue gems via writing; works with stylus pointer events.
 4. **[done iter3] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
-5. **[todo] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox.
+5. **[done iter4] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox (§7.2d). Cooking mini-game → later.
 6. **[todo] Wardrobe/creator UI polish** with all presets and locked items.
 7. **[todo] Bugglemead** + bug journal + science puzzles.
 8. **[todo] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
@@ -295,3 +316,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter2 — Writing Wood.** Feedback: 0 issues. Added `js/lessons.js` (letter-family trees + word stones, trace→fade→memory ladder per letter, gem on first completion, coins on repeat) and the `writing` area. Doors can carry `at` (arrival spot). Puzzles accept `noAdapt`. New debug steps: wood, wood2, lesson. Next: Hush House (#4), then café.
 
 **iter3 — Hush House + curriculum.** Feedback: 0 issues. Built the `house` area (§7.2c): noise meter, tiptoe speed, creaky boards, squeaky toys, night-light checkpoints, three maths doors, tuck-Mum-in ending with a lantern reward. Integrated `curriculum.js` from a Sonnet sub-agent (selfTest clean); fixed "1 pebbles" in story sums (min 2). New debug steps `house`, `house2`, `mdoor`, `mum`, `curr` (runs `G.CURR.selfTest()`, throws on problems). A scripted Playwright run checked noise rise, the wake → checkpoint reset, door blocking and the reward. Next: the café (backlog #5).
+
+**iter4 — Twiggy Spoon Café.** Feedback: 0 issues. Built the `cafe` area (§7.2d): Mrs Bramble, Wilf, four customers with order cards in `js/cafe.js` — count cakes onto a plate, read an order ticket, pay with coins into a purse, write the order on a notepad (handwriting pad). Never-fail rules and adaptive levels as for puzzles. Serving all four → blue gem + chef hat, then "Run the café" free play (customers re-order with random kinds). New decor: counter with cake dome and till, chalkboard menu; new theme `cafe` (gingham wallpaper). Debug steps `cafe`, `order-count/read/money/write`, `cafe2`; a scripted run checked rewards and re-orders. Next: wardrobe polish (#6), Bugglemead (#7).

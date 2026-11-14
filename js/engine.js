@@ -128,7 +128,7 @@
   function updateEnts(dt) {
     E.near = null; let best = 1e9;
     for (const e of E.ents) {
-      e.t += dt; if (e.cool > 0) e.cool -= dt;
+      e.t += dt; if (e.cool > 0) e.cool -= dt; if (e.again > 0) e.again -= dt;
       if (e.k === 'gem') {
         const gy = e.py - 34 + Math.sin(e.t * 3) * 5;
         const touch = Math.abs(e.px - P.x) < 40 && gy > P.y - PH.h - 30 && gy < P.y + 20;
@@ -161,6 +161,7 @@
     else if (e.k === 'gate') G.UI.gate(e);
     else if (e.k === 'mdoor') E.mathsDoor(e);
     else if (e.k === 'mum') E.tuckIn(e);
+    else if (e.k === 'cust') E.serve(e);
     else if (e.k === 'door') {
       G.sfx('door');
       if (e.act === 'wardrobe') G.UI.creator(false);
@@ -186,6 +187,30 @@
     G.UI.flyGem('yellow', e.px - E.cam.x, e.py - 80 - E.cam.y);
     G.UI.banner('You did it! 🌙'); G.saveGame();
     setTimeout(() => G.UI.toast('You won a night lantern! Find it in the dressing-up cottage. 🏮', true), 2400);
+  };
+  /* ---------- café customers (SPEC §7.2d) ---------- */
+  const custWaiting = e => G.S.quests.cafe ? !(e.again > 0) : !G.S.quests['cafe:' + e.id];
+  const custWant = e => G.S.quests.cafe ? (e.want || e.kind) : e.kind;
+  E.serve = async function (e) {
+    const S = G.S, who = G.PEOPLE[e.who];
+    if (e.busy) return;
+    if (!custWaiting(e)) { G.UI.toast(who.name + ' is munching happily. 💖', true); return; }
+    e.busy = true;
+    const res = await G.CAFE.order({ who: e.who, kind: custWant(e) });
+    e.busy = false;
+    if (!res.ok) return;
+    S.coins += 2; G.sfx('coin'); e.again = 25; e.want = G.U.pick(G.CAFE.KINDS);
+    E.burst(e.px, e.py - 110, '#ff9ec7', 14);
+    if (!S.quests.cafe) {
+      S.quests['cafe:' + e.id] = true;
+      if (E.ents.filter(x => x.k === 'cust').every(x => S.quests['cafe:' + x.id])) {
+        S.quests.cafe = true; S.gems.blue++; S.owned['hat:chef'] = true;
+        for (const x of E.ents) if (x.k === 'cust' && x !== e) x.again = 8;
+        G.sfx('fanfare'); G.UI.flyGem('blue', e.px - E.cam.x, e.py - 110 - E.cam.y); G.UI.banner('Super waiter! ☕');
+        setTimeout(() => G.UI.toast('You won a chef hat! Find it in the dressing-up cottage. 👩‍🍳 Customers will keep coming — run the café!', true), 2400);
+      }
+    }
+    G.UI.gembar(); G.saveGame();
   };
   E.travel = function (to, at) {
     if (!G.AREAS[to]) { G.UI.soon((G.AREA_NAMES && G.AREA_NAMES[to]) || 'That place'); return false; }
@@ -240,7 +265,7 @@
     for (const p of E.parts) { c.globalAlpha = Math.max(0, p.life / p.max); if (p.kind === 'text') { c.fillStyle = p.col; c.strokeStyle = '#3b3350'; c.lineWidth = 4; c.font = '700 ' + p.r * 1.5 + 'px ' + G.FONT; c.textAlign = 'center'; c.textBaseline = 'middle'; c.strokeText(p.txt, p.x, p.y); c.fillText(p.txt, p.x, p.y); } else if (p.kind === 'spark') G.star(c, p.x, p.y, p.r * 1.4, p.col); else G.circ(c, p.x, p.y, p.r, p.col); }
     c.globalAlpha = 1;
     // "press ✋" hint over the nearest thing
-    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'door' ? 160 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
+    if (E.near && !G.paused) { const e = E.near, h = e.k === 'gate' || e.k === 'mdoor' ? 230 : e.k === 'mum' ? 150 : e.k === 'cust' ? 190 : e.k === 'door' ? 160 : 140, bob = Math.sin(t * 5) * 4; G.circ(c, e.px, e.py - h + bob, 26, 'rgba(255,255,255,.92)'); G.emoji(c, e.k === 'npc' ? '💬' : '✋', e.px, e.py - h + bob, 30); }
     c.restore();
   };
 
@@ -292,6 +317,14 @@
       G.drawDecor(c, { k: 'bed', x: e.px, y: e.py, mum: true, col: '#b77bff' }, t);
       if (E.noise > 0.7) G.emoji(c, '😟', e.px - 58, e.py - 110 + Math.sin(t * 8) * 3, 30);
       if (G.S.quests.hush) G.emoji(c, '💖', e.px + 40, e.py - 100 + Math.sin(t * 2) * 4, 30);
+    } else if (e.k === 'cust') {
+      G.drawLook(c, G.PEOPLE[e.who].look, e.px, e.py, 1, { t: t + e.t, face: 1 });
+      const wait = custWaiting(e), bob = Math.sin(t * 3 + e.t) * 3, by = e.py - 140 + bob;
+      if (wait || e.again > 18) {
+        G.rr(c, e.px + 14, by - 30, 64, 54, 18); c.fillStyle = 'rgba(255,255,255,.95)'; c.fill();
+        c.beginPath(); c.moveTo(e.px + 22, by + 18); c.lineTo(e.px + 14, by + 34); c.lineTo(e.px + 38, by + 22); c.fill();
+        G.emoji(c, wait ? G.CAFE.ICON[custWant(e)] : '💖', e.px + 46, by - 3, 32);
+      }
     } else if (e.k === 'sign' && !e.hidden) {
       G.drawDecor(c, { k: 'sign', x: e.px, y: e.py, icon: e.icon || '📜' }, t);
     }

@@ -89,6 +89,12 @@
     { name: 'house2', run: () => { G.S.locks['hh-door1'] = G.S.locks['hh-door2'] = true; G.debug.warp(30); } },
     { name: 'mdoor', run: () => { G.debug.warp(47); G.E.interact(G.E.ents.find(e => e.id === 'hh-door3')); } },
     { name: 'mum', run: () => { G.debug.close(); G.S.locks['hh-door3'] = true; G.debug.warp(57); } },
+    { name: 'cafe', run: () => { G.debug.close(); G.E.load('cafe'); G.debug.warp(12); } },
+    { name: 'order-count', run: () => { G.S.level.maths = 1; G.E.interact(G.E.ents.find(e => e.id === 'cf-bear')); } },
+    { name: 'order-read', run: () => { G.debug.close(); G.CAFE.order({ who: 'hettie', kind: 'read' }); } },
+    { name: 'order-money', run: () => { G.debug.close(); G.S.level.maths = 2; G.CAFE.order({ who: 'hoot', kind: 'money' }); } },
+    { name: 'order-write', run: () => { G.debug.close(); G.CAFE.order({ who: 'ogden', kind: 'write' }); } },
+    { name: 'cafe2', run: () => { G.debug.close(); G.debug.warp(38); } },
     { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];
 })();

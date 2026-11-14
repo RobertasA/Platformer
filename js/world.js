@@ -20,6 +20,10 @@
     bettina: { name: 'Bettina Bugbright', look: { av: { skin: '#c98f62', hair: 'afro', hairCol: '#2b2118', body: 'dungarees', col1: '#7ed957', col2: '#ffe066', motif: 'flower', shoes: '#8d5a3b', hat: 'none', back: 'none', held: 'net', face: 'glasses', pet: 'none' } } },
     quill: { name: 'Captain Quill', look: { cre: 'hen', s: 1.4, acc: 'bowtie' } },
     mole: { name: 'Mole', look: { cre: 'mole', s: 1.4, acc: 'hardhat' } },
+    bramble: { name: 'Mrs Bramble', look: { cre: 'badger', s: 1.5, acc: 'chef' } },
+    barnaby: { name: 'Barnaby Bear', look: { cre: 'bear', s: 1.7, acc: 'scarf' } },
+    hettie: { name: 'Hettie Hedgehog', look: { cre: 'hedgehog', s: 1.3, acc: 'bowtie' } },
+    ogden: { name: 'Ogden', look: { cre: 'ogre', s: 1.8, acc: 'napkin' } },
   };
 
   G.AREAS = {
@@ -164,6 +168,53 @@
         { id: 'hh-creak4', k: 'creak', x0: 52, x1: 56, x: 54, row: 12 },
         { id: 'hh-red2', k: 'gem', col: 'red', x: 54, row: 9 },
         { id: 'hh-mum', k: 'mum', x: 59.5, row: 12 },
+      ],
+    },
+
+    /* Twiggy Spoon Café (SPEC §7.2d): cust = a customer at a table; ✋ opens an order card (js/cafe.js). */
+    cafe: {
+      name: 'The Twiggy Spoon Café', theme: 'cafe', music: 'village', w: 56, h: 15,
+      fills: [
+        [0, 0, 0, 14, '#'], [55, 0, 55, 14, '#'],
+        [0, 12, 55, 14, '#'],
+        [10, 9, 13, 9, '='],                      // cake shelf over the counter
+        [18, 8, 20, 8, '='],                      // high jar shelf
+        [27, 10, 28, 10, '='], [30, 8, 32, 8, '='],   // teacup steps
+        [45, 9, 48, 9, '='],                      // pantry shelf
+      ],
+      spawn: { x: 3, row: 12 },
+      decor: [
+        { k: 'window', x: 150, up: 160, w: 90, h: 110 }, { k: 'menu', x: 290 }, { k: 'counter', x: 530, w: 240 }, { k: 'stove', x: 760 },
+        { k: 'plant', x: 860 },
+        { k: 'table', x: 14.9 * 48, col: '#fff', cloth: '#ff9ec7', icon: '🍯' }, { k: 'stool', x: 15.9 * 48, col: '#7ed16a' },
+        { k: 'window', x: 1000, up: 160, w: 90, h: 110 }, { k: 'picture', x: 1180, up: 170 },
+        { k: 'table', x: 23.4 * 48, col: '#fff', cloth: '#7fd8c8', icon: '🍵' }, { k: 'stool', x: 24.3 * 48, col: '#ffd95e' },
+        { k: 'clock', x: 1300 }, { k: 'plant', x: 1440 }, { k: 'window', x: 1640, up: 160, w: 90, h: 110 },
+        { k: 'table', x: 35.4 * 48, col: '#fff', cloth: '#ffd95e', icon: '🥧' }, { k: 'stool', x: 36.3 * 48, col: '#ff7a6a' },
+        { k: 'bookshelf', x: 1900 }, { k: 'plant', x: 2000 }, { k: 'menu', x: 2420 },
+        { k: 'table', x: 43.6 * 48, col: '#fff', cloth: '#c9b6ff', icon: '🧁' }, { k: 'stool', x: 44.6 * 48, col: '#4aa8ff' },
+        { k: 'window', x: 2530, up: 160, w: 90, h: 110 },
+      ],
+      ents: [
+        { id: 'cf-back', k: 'door', x: 1.6, row: 12, icon: '🏡', col: '#8d5a3b', to: 'village', at: { x: 44.5, row: 12 } },
+        { id: 'bramble', k: 'npc', who: 'bramble', x: 6, row: 12, talk: [
+          'Welcome to the Twiggy Spoon! I am Mrs Bramble.',
+          'Our customers are hungry. Tap a customer to take their order.',
+          'Serve all four and you can be a real waiter!',
+        ] },
+        { id: 'wilf2', k: 'npc', who: 'wilf', x: 9, row: 12, talk: [
+          'I carry the plates. You take the orders!',
+          'Look at the bubble over a customer. It shows what they need.',
+        ] },
+        { id: 'cf-blue1', k: 'gem', col: 'blue', x: 11.5, row: 9 },
+        { id: 'cf-bear', k: 'cust', who: 'barnaby', kind: 'count', x: 13.6, row: 12 },
+        { id: 'cf-red1', k: 'gem', col: 'red', x: 19, row: 8 },
+        { id: 'cf-hettie', k: 'cust', who: 'hettie', kind: 'read', x: 22.3, row: 12 },
+        { id: 'cf-green1', k: 'gem', col: 'green', x: 31, row: 8 },
+        { id: 'cf-hoot', k: 'cust', who: 'hoot', kind: 'money', x: 34.1, row: 12 },
+        { id: 'cf-ogden', k: 'cust', who: 'ogden', kind: 'write', x: 42.1, row: 12 },
+        { id: 'cf-purple1', k: 'gem', col: 'purple', x: 46.5, row: 9 },
+        { id: 'gate-woods', k: 'gate', x: 52, row: 12, to: 'woods', label: 'Whispering Woods', icon: '🌲', needs: { red: 2, blue: 1 } },
       ],
     },
   };

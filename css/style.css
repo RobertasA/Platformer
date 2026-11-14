@@ -112,3 +112,23 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 
 #turnme { position: fixed; inset: 0; background: #2c3566; color: #fff; display: none; align-items: center; justify-content: center; flex-direction: column; font-size: 36px; text-align: center; z-index: 9; }
 @media (orientation: portrait) and (max-width: 900px) { #turnme { display: flex; } }
+
+/* ---------- café order cards (SPEC §7.2d) ---------- */
+.cafecard { border-color: #ff9f7a; background: #fffaf2; }
+.cafecard .q small { font-size: 24px; color: #b07a45; }
+.cfface { width: 110px; height: 110px; border-radius: 50%; background: #ffe9cf; flex: none; }
+.cfarea { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; }
+.cftray, .cfcoins { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 900px; }
+.cfplate, .cfpurse { min-width: 520px; max-width: 900px; min-height: 96px; padding: 8px 20px; border-radius: 60px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; }
+.cfplate { background: #fff; border: 6px solid #e8dcc8; box-shadow: inset 0 -6px 0 #f1e8da; }
+.cfpurse { background: #f6d9ff; border: 6px dashed #b77bff; }
+.cfplate.wob, .cfpurse.wob { animation: wob .4s; }
+.cfcake { width: 72px; height: 72px; border: 0; background: none; font-size: 54px; line-height: 1; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.cftotal { font-size: 32px; font-weight: 600; color: #6b4b2a; }
+.coin { width: 84px; height: 84px; border-radius: 50%; border: 5px solid rgba(0,0,0,.18); font-size: 28px; font-weight: 700; color: #4a3b2a; box-shadow: 0 5px 0 rgba(0,0,0,.18); }
+.coin.c1, .coin.c2 { background: radial-gradient(circle at 35% 30%, #ffc79a, #c8743c); width: 72px; height: 72px; }
+.coin.c5, .coin.c10 { background: radial-gradient(circle at 35% 30%, #f4f6fa, #aab2c0); }
+.coin.c10 { width: 92px; height: 92px; }
+.cfticket { font-size: 84px; font-weight: 600; background: #fff; padding: 6px 48px; border-radius: 12px; border: 3px solid #e3d6c3; transform: rotate(-2deg); box-shadow: 0 6px 0 rgba(0,0,0,.08); letter-spacing: 4px; }
+.cfpic { font-size: 64px; line-height: 1; }
+.cafecard .pad { height: 330px; }
