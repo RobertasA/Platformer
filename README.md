@@ -8,6 +8,9 @@ Dress up as a witch or a vet, explore cosy places inspired by favourite picture 
 - **Loop:** [`LOOP.md`](LOOP.md) — aim → spec → code → verify → deploy
 - **Agents:** [`CLAUDE.md`](CLAUDE.md)
 
+## Feedback
+Watched her play and noticed something? Open an issue with the label **`feedback`** (one observation per issue). Each loop iteration reads them first, queues them in the spec backlog, and closes them when shipped. See [`LOOP.md`](LOOP.md#giving-feedback-for-the-owner).
+
 ## Run it
 No build step.
 ```
