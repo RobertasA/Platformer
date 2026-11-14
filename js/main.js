@@ -18,6 +18,11 @@
   G.toLogical = (clientX, clientY) => { const r = stage.getBoundingClientRect(); return { x: (clientX - r.left) / scale, y: (clientY - r.top) / scale }; };
 
   G.loadGame(); G.initTouch(); G.UI.bindHud();
+  /* offline play (SPEC §7.2j): never with ?debug so tests always see fresh files */
+  G.offline = { state: 'off' };
+  if ('serviceWorker' in navigator && !/[?&]debug/.test(location.search) && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    navigator.serviceWorker.register('sw.js').then(() => navigator.serviceWorker.ready).then(() => { G.offline.state = 'ready'; }).catch(() => { G.offline.state = 'failed'; });
+  }
   window.addEventListener('pointerdown', () => G.audioUnlock(), { once: true });
 
   cv.addEventListener('pointerdown', e => {

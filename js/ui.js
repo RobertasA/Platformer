@@ -284,6 +284,7 @@
     h += '</div><div><h3>Adventure</h3><p>Places visited: <b>' + areas + ' of ' + Object.keys(G.AREAS).length + '</b>. Quests and firsts finished: <b>' + quests + '</b>.' + (S.quests.finale ? ' The Cloud Castle is open — the story is complete.' : '') + '</p>'
       + '<p>Gems: ' + G.GEMS.map(c => G.gemSVG(c, 22) + ' ' + S.gems[c]).join(' &nbsp;') + ' &nbsp;🪙 ' + S.coins + '</p>'
       + '<h3>Playroom</h3><p>Potions cast: <b>' + (S.stats.potions || 0) + '</b>. Pets made better: <b>' + cured + '</b>. Pictures saved: <b>' + pics + '</b>.</p>'
+      + '<h3>Play offline</h3><p>' + (G.offline && G.offline.state === 'ready' ? 'The game is saved on this device and works without the internet.' : 'Open the game once with the internet on and it saves itself for offline play.') + ' For full screen, use the browser menu → <b>Add to Home Screen</b>.</p>'
       + '<h3>Settings</h3><div class="gset"></div><p class="gfb">Feedback: open an issue labelled <b>feedback</b> on the game\'s GitHub page. One note per issue.</p></div></div>';
     card.innerHTML = h;
     const set = card.querySelector('.gset');

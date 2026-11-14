@@ -29,6 +29,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `tower` Teapot Tower + `js/tower.js` (§7.2g) | [done] iter8 |
 | `woods` + `js/woods.js`, `caves` + `js/caves.js`, bounce/raft/pick/dark (§7.2h) | [done] iter10 |
 | `clouds` + `js/clouds.js`, finale `js/finale.js`, grown-ups page (§7.2i) | [done] iter11 |
+| Installable + offline (manifest, `sw.js`, icons) (§7.2j); Music Room | [building] iter12 |
 | `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -298,6 +299,12 @@ New engine pieces (all in `engine.js`):
 
 **Grown-ups page** `G.UI.grownups()` — from Settings → "For grown-ups 🔒" (hold the button for 2 seconds). Plain text, not shown to the child as scores: puzzles solved; level per subject with a one-line meaning; handwriting — letters practised, letters with ≥ 2 stars, and the five weakest letters to practise; quests finished; areas visited; gems by colour; playroom counts (potions, pets cured, pictures saved). Controls: handwriting strictness (gentle / normal / strict → `settings.writeTol` 1.3 / 1 / 0.8), left-handed pad. (Reset progress stays in Settings, hold 2 s.) Finishing the party also gives 20 coins. A line on how to send feedback (GitHub issue labelled `feedback`).
 
+### 7.2j Install and play offline (iter12) [building]
+- `manifest.webmanifest`: name "Hazelnut Hollow", `display: fullscreen`, `orientation: landscape`, start URL and scope `.`, theme colours, icons 192/512 (also maskable) in `icons/`, plus `apple-touch-icon` 180. The icons are the only image files in the repo; they are **generated** from the game's own drawing code by `tools/icons.js` (re-run it if the avatar art changes).
+- `sw.js` service worker: on install it fetches `index.html`, finds every local `src`/`href`, and caches them all; afterwards every same-origin GET is served cache-first and refreshed in the background (so a new deploy shows up on the second launch); Google Fonts responses are cached the first time they load. No tracking, no other network use.
+- Registered from `main.js` on https or localhost, never with `?debug` (so the smoke test always sees fresh files).
+- Grown-ups page gains "Play offline": says whether the game is saved for offline use and how to add it to the home screen.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -331,6 +338,8 @@ No goals, no scores, no failure, gentle sounds. Opened from the HUD 🧸 button 
 | `art` | **Art Studio** 🎨 | A big paper canvas for the stylus: pressure-aware round brush, 12 colours, 3 sizes, 🌈 rainbow brush, ✨ glitter brush, eraser, 🪞 mirror (left-right symmetry) toggle, emoji stamps (12), 3 papers (white, cream, night-blue), ↩ undo (10 steps), 🗑 clear, 💾 save to gallery (6 slots, `state.gallery` = JPEG data URLs ≤ 640×360; tap a thumbnail to load it back). |
 
 As built: bottling does not use up the potion (fill several bottles from one brew) and pouring a bottle back blends its colour in; casting on an empty pot only prompts "Add magic first!". The toad is its own SVG so CSS can tint/scale it. Cast effect by colour: red huge, orange tint, yellow/white float, green/brown spots, blue/black tiny, purple rainbow, pink party hat. In the vet a poorly pet's bubble turns to 💊 after the thermometer; medicine first makes the thermometer wiggle. Dolls' house: the garden is a strip beside the house, the drawer scrolls sideways and a sticker lifts out when dragged upwards; a new house starts with six stickers.
+
+| `music` | **Music Room** 🎵 [building iter12] | A rainbow xylophone of 8 bars (C major, C4–C5, `G.note`), three drum pads (`G.drum(0|1|2)`) and a row of 5 hand bells (pentatonic, an octave up). Slide the stylus across the bars for a glissando. ⏺ record (up to 80 notes with timing) → ▶ play back; 3 save slots (`state.tunes`). 🎼 Song book: three nursery tunes (Twinkle Twinkle, Hot Cross Buns, Mary Had a Little Lamb) — the next bar lights up and waits for her (no timing pressure, no wrong-note penalty; any other bar just plays). A little band of animals bobs in time when notes are played. |
 
 Later rooms [todo]: café (free play), bug garden, shop, music room, builder's yard.
 
@@ -394,7 +403,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 9. **[done iter8] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[done iter9] Playrooms**: toy box, potion kitchen, vet, dolls' house, art studio; world map.
 11. **[done iter10] Woods + Caves**; **[done iter11] Clouds** + finale, golden crown.
-12. **[done iter11] Grown-up page**. **[todo]** offline PWA, accessibility settings, polish pass (juice, music, particles), tile-layer cache.
+12. **[done iter11] Grown-up page**. **[building iter12]** offline PWA + Music Room. **[todo]** accessibility settings, polish pass (juice, music, particles), tile-layer cache.
 13. **[todo] More playrooms** (café free play, bug garden, shop, music room, builder's yard) and a second visit reason for finished areas (daily surprises).
 
 ---
