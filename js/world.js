@@ -86,6 +86,43 @@
         ] },
       ],
     },
+    writing: {
+      name: 'Writing Wood', theme: 'woods', music: 'woods', w: 64, h: 15,
+      fills: [
+        [0, 0, 0, 14, '#'], [63, 0, 63, 14, '#'],
+        [0, 12, 63, 14, '#'],
+        [30, 12, 34, 13, '~'],               // ink pond
+        [9, 9, 11, 9, '='], [20, 10, 22, 10, '='], [24, 8, 26, 8, '='],
+        [36, 11, 38, 11, '#'], [39, 10, 41, 11, '#'],          // mossy bank
+        [46, 9, 48, 9, '='], [50, 7, 52, 7, '='], [55, 10, 57, 10, '='],
+      ],
+      spawn: { x: 3, row: 12 },
+      decor: [
+        { k: 'pine', x: 60 }, { k: 'mushroom', x: 220 }, { k: 'logpile', x: 330 }, { k: 'flower', x: 520 }, { k: 'pine', x: 760, s: 1.2 },
+        { k: 'lamp', x: 900 }, { k: 'rock', x: 1250 }, { k: 'emoji', x: 1530, icon: '🦢', size: 34, up: 2 },
+        { k: 'campfire', x: 2470 }, { k: 'tent', x: 2380 }, { k: 'bigtree', x: 1120 }, { k: 'mushroom', x: 2300 }, { k: 'pine', x: 2560 },
+        { k: 'bush', x: 2700 }, { k: 'lamp', x: 2860 }, { k: 'pine', x: 3000, s: 0.9 },
+      ],
+      ents: [
+        { id: 'ww-back', k: 'door', x: 1.6, row: 12, icon: '🏡', col: '#8d5a3b', to: 'village', at: { x: 66, row: 12 } },
+        { id: 'quill2', k: 'npc', who: 'quill', x: 5, row: 12, talk: [
+          'Welcome aboard, writer! This is Writing Wood.',
+          'Each letter tree teaches a letter family. Watch the pen, then follow the green dot.',
+          'Finish a tree to win a blue gem. Practise again for coins!',
+        ] },
+        { id: 'lt-curly', k: 'lesson', x: 8, row: 12, icon: '🐛', col: '#9be05c', title: 'Curly caterpillar', letters: 'cadgoqe', say: 'Curly caterpillar letters! Start at the top, and go round like a c.' },
+        { id: 'g-ww-blue1', k: 'gem', col: 'blue', x: 10, row: 9 },
+        { id: 'lt-ladder', k: 'lesson', x: 15, row: 12, icon: '🪜', col: '#7ed16a', title: 'Long ladder', letters: 'litujy', say: 'Long ladder letters! Start at the top and go straight down.' },
+        { id: 'g-ww-purple1', k: 'gem', col: 'purple', x: 25, row: 8 },
+        { id: 'lt-robot', k: 'lesson', x: 21.5, row: 12, icon: '🤖', col: '#5fae5a', title: 'One-armed robot', letters: 'rnmhbkp', say: 'One-armed robot letters! Go down, back up, and over.' },
+        { id: 'ws-cvc', k: 'lesson', x: 28, row: 12, icon: '🪨', title: 'Word stone', words: [['cat', '🐱'], ['dog', '🐶'], ['sun', '☀️'], ['hat', '🎩'], ['pig', '🐷'], ['bus', '🚌'], ['bed', '🛏️'], ['cup', '☕']], say: 'This is a word stone. Write a word on the lines. Sit each letter on the line!' },
+        { id: 'g-ww-green1', k: 'gem', col: 'green', x: 32, row: 12.5 },
+        { id: 'lt-zigzag', k: 'lesson', x: 43.5, row: 12, icon: '⚡', col: '#ffd95e', title: 'Zig-zag monster', letters: 'zvwxsf', say: 'Zig-zag monster letters! Sharp, pointy lines. Start at the top.' },
+        { id: 'g-ww-blue2', k: 'gem', col: 'blue', x: 51, row: 7 },
+        { id: 'g-ww-yellow1', k: 'gem', col: 'yellow', x: 56, row: 10 },
+        { id: 'ws-cvc2', k: 'lesson', x: 60, row: 12, icon: '🪨', title: 'Big word stone', words: [['fish', '🐟'], ['shop', '🏪'], ['ship', '🚢'], ['frog', '🐸'], ['duck', '🦆'], ['milk', '🥛'], ['tree', '🌳'], ['star', '⭐']], say: 'A big word stone! These words have four letters. Take your time.' },
+      ],
+    },
   };
   for (const id in G.AREAS) G.AREAS[id].map = G.buildMap(G.AREAS[id].w, G.AREAS[id].h, G.AREAS[id].fills);
 })();

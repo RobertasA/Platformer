@@ -49,14 +49,14 @@
       const success = () => {
         if (done) return; done = true;
         G.sfx('right'); G.sfx('fanfare');
-        PZ.adapt(subject, wrong === 0, false);
+        if (!o.noAdapt) PZ.adapt(subject, wrong === 0, false);
         hint.innerHTML = U.pick(['Brilliant!', 'Well done!', 'Super!', 'Yes! Clever you!', 'Amazing!']) + ' ⭐';
         G.say(hint.textContent.replace('⭐', '') + ' ' + (p.explain || ''), true);
         confetti(card, info.col);
         setTimeout(() => finish({ ok: true, firstTry: wrong === 0 }), 1500);
       };
       const reveal = showAnswer => {
-        done = true; PZ.adapt(subject, false, true);
+        done = true; if (!o.noAdapt) PZ.adapt(subject, false, true);
         hint.textContent = 'Here it is! ' + (p.explain || '') + ' You still get the gem.';
         G.say(hint.textContent, true);
         if (showAnswer) showAnswer();

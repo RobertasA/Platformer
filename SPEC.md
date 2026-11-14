@@ -20,7 +20,8 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `js/puzzle.js` shell (choice / order / write) | [done] iter1 |
 | `js/handwriting.js` pad, glyphs a–z A–Z 0–9, recogniser, coach | [done] iter1 (synthetic tests only; untested with a real stylus) |
 | `js/curriculum.js` generators | see iteration log |
-| Areas beyond the village (house, café, meadow, writing…) | [todo] — gates open but travel shows "still being built" |
+| `js/lessons.js` + `writing` area (Writing Wood) | [done] iter2 |
+| Areas house, café, meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -163,7 +164,7 @@ Content is generated parametrically in `curriculum.js` (e.g. `gen.maths.add(leve
 
 ---
 
-## 7. Handwriting & drawing (stylus) — HIGH PRIORITY [todo iter1–2]
+## 7. Handwriting & drawing (stylus) — HIGH PRIORITY [building: pad + Writing Wood done]
 
 **Goal:** teach correct letter formation (start point, direction, stroke order, size, baseline), then joining words on lines. Works with stylus (preferred), finger. Uses Pointer Events with `pointerType`, pressure, and palm rejection (if a pen is active, ignore `touch` pointers on the pad).
 
@@ -182,6 +183,14 @@ For a drawn stroke S and the expected stroke E (resampled to N=32 points, scaled
 3. **Order**: strokes must be drawn in expected order; extra/missing strokes flagged.
 4. **Size/baseline**: bbox sits on the baseline, x-height/ascender within ±25%.
 5. Score 0..1 and a **coach message** keyed to the first failure ("Start at the top!", "Go the other way round", "Sit on the line", "Make it taller").
+
+### 7.2b Writing Wood (iter2)
+Area `writing` (woods theme, 64×15) reached through the village gate (blue×2). Captain Quill explains. Entities `k:'lesson'`:
+- **Letter trees** (UK letter families): Curly caterpillar `cadgoqe` 🐛, Long ladder `litujy` 🪜, One-armed robot `rnmhbkp` 🤖, Zig-zag monster `zvwxsf` ⚡. A visit = 4 random letters from the family.
+- **Word stones** 🪨: CVC words (cat, dog, sun…) and CCVC/CVCC words (fish, ship, frog…) with a picture emoji; 3 words a visit, first traced, then fading guide.
+- Per-letter mode (`G.LS.modeFor`): `trace` → `fade` once best score ≥ 0.7 → `memory` once best ≥ 0.85 over ≥ 3 tries (`S.handwriting[ch]`).
+- First completion → blue gem (+ ⭐ on the board, `S.quests['lesson:<id>']` counts visits); repeat → +2 coins. Closing a puzzle ends the visit with no penalty. Lessons do not change `S.level.words` (`noAdapt`).
+- Area also has 5 ordinary gems (blue×2, purple, green in the ink pond, yellow) and a door 🏡 back to the village gate.
 
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
@@ -255,12 +264,12 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 
 1. **[done iter1] Boot slice**: `style.css`, `main.js`, `engine.js`, `world.js` (village only), HUD, title + character creator → player can walk/jump around the village with the avatar. *Smoke test green.*
 2. **[done iter1] Gem + puzzle loop**: `curriculum.js` (maths L0–2, words L0–1), `puzzle.js` shell (choice/count), gem pickup → puzzle → HUD, first gate (village→house).
-3. **[todo] Handwriting v1 → Writing Wood**: `handwriting.js` is done (iter1); still needed: the `writing` area with Captain Quill, letter-family lessons (§7.3 ladder), handwriting progress in a journal; blue gems via writing; works with stylus pointer events.
+3. **[done iter2] Handwriting v1 → Writing Wood**: `handwriting.js` is done (iter1); still needed: the `writing` area with Captain Quill, letter-family lessons (§7.3 ladder), handwriting progress in a journal; blue gems via writing; works with stylus pointer events.
 4. **[todo] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
 5. **[todo] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox.
 6. **[todo] Wardrobe/creator UI polish** with all presets and locked items.
 7. **[todo] Bugglemead** + bug journal + science puzzles.
-8. **[todo] Words on lines** handwriting (CVC words), sentence writing.
+8. **[todo] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[todo] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
 10. **[todo] Playrooms**: vet, witch kitchen, dolls' house, art easel.
 11. **[todo] Woods, Caves, Clouds** + final gates, finale, golden crown.
@@ -273,3 +282,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter0 — set-up (this commit).** Wrote AIM/LOOP/SPEC/CLAUDE.md, CI deploy workflow, smoke test. Already drafted engine foundations: `core.js`, `audio.js`, `art.js` (avatar with ~150 customisation options + creatures + gems), `scenery.js` (7 themes, ~60 props, doors/gates). Owner added: tablet + stylus, handwriting/letter-formation as a priority (§7). Next: backlog #1 and #2, using sub-agents for bulk content.
 
 **iter1 — playable village.** Wrote style.css, world.js (village), engine.js, ui.js (HUD, dialogue, gate recipe card, character creator with 14 tabs + 20 job presets, settings with 2-second hold to reset), puzzle.js (choice / order / write; never fails: hint → hint → reveal and keep the gem), main.js (letterbox fit, title over a panning village, debug steps). Sonnet agents wrote handwriting.js (62 glyphs, deterministic recogniser, coach messages, demo/fade guides, 310/310 synthetic tests) and curriculum.js. check.js now runs `G.debug.steps` and screenshots each (walk, talk, maths, words, write, gate, creator, settings). Feedback: 0 issues. Next: Writing Wood area (backlog #3), Hush House (#4).
+
+**iter2 — Writing Wood.** Feedback: 0 issues. Added `js/lessons.js` (letter-family trees + word stones, trace→fade→memory ladder per letter, gem on first completion, coins on repeat) and the `writing` area. Doors can carry `at` (arrival spot). Puzzles accept `noAdapt`. New debug steps: wood, wood2, lesson. Next: Hush House (#4), then café.

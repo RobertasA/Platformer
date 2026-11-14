@@ -81,6 +81,9 @@
     { name: 'write', run: () => { G.debug.close(); G.PZ.run({ colour: 'blue', puzzle: { q: 'Write <b>cat</b>', say: 'Write cat', type: 'write', write: { text: 'cat', mode: 'trace' } } }); } },
     { name: 'gate', run: () => { G.debug.close(); G.debug.give('red', 1); G.debug.warp(33); G.UI.gate(G.E.ents.find(e => e.id === 'gate-house')); } },
     { name: 'creator', run: () => { G.debug.close(); G.UI.creator(false); } },
+    { name: 'wood', run: () => { G.debug.close(); G.E.load('writing'); G.debug.warp(12); } },
+    { name: 'wood2', run: () => { G.S.quests['lesson:lt-curly'] = 1; G.debug.warp(30); } },
+    { name: 'lesson', run: () => { G.debug.close(); G.PZ.run({ colour: 'blue', noAdapt: true, puzzle: { q: '🐶 Write <b>dog</b>', say: 'Write dog', type: 'write', write: { text: 'dog', mode: 'fade' } } }); } },
     { name: 'settings', run: () => { G.debug.close(); G.UI.settings(); } },
   ];
 })();
