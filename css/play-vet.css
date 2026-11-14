@@ -1,0 +1,69 @@
+.sb-vet { position: absolute; inset: 0; overflow: hidden; font-family: inherit; user-select: none; -webkit-user-select: none; }
+.sb-vet * { box-sizing: border-box; }
+.sb-vet .wall { position: absolute; left: 0; top: 0; width: 1280px; height: 470px; background: linear-gradient(#d9f7ec, #bfeedd 70%, #b2e8d6); }
+.sb-vet .wall::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20px 20px, rgba(255,255,255,.35) 4px, transparent 5px) 0 0/48px 48px; }
+.sb-vet .dado { position: absolute; left: 0; top: 400px; width: 1280px; height: 70px; background: linear-gradient(#fff 0 8px, #f6e9d5 8px); box-shadow: 0 -4px 0 #e3cfae inset, 0 6px 10px rgba(0,0,0,.12); }
+.sb-vet .floor { position: absolute; left: 0; top: 470px; width: 1280px; height: 250px; background: linear-gradient(rgba(0,0,0,.12), transparent 22%), repeating-conic-gradient(#fff7ea 0 25%, #ffe8c9 0 50%) 0 0/110px 110px; }
+.sb-vet .window { position: absolute; left: 520px; top: 60px; width: 200px; height: 190px; border: 12px solid #fff; border-radius: 100px 100px 14px 14px; background: linear-gradient(#8fd8ff, #d8f3ff); box-shadow: 0 8px 0 #cfe9e0, 0 12px 20px rgba(0,0,0,.15); overflow: hidden; }
+.sb-vet .window .sun { position: absolute; right: 18px; top: 10px; font-size: 54px; animation: sbvspin 20s linear infinite; }
+.sb-vet .window .cl { position: absolute; font-size: 56px; opacity: .95; animation: sbvcloud 14s linear infinite; }
+.sb-vet .window .c1 { top: 70px; left: -40px; } .sb-vet .window .c2 { top: 120px; left: 60px; animation-delay: -7s; font-size: 44px; }
+.sb-vet .window .bars { position: absolute; inset: 0; background: linear-gradient(#fff 0 0) 50% 0/8px 100% no-repeat, linear-gradient(#fff 0 0) 0 55%/100% 8px no-repeat; }
+.sb-vet .banner { position: absolute; left: 740px; top: 28px; padding: 10px 26px; font-size: 44px; font-weight: 800; color: #2f8f6b; background: #fff; border-radius: 22px; border: 5px solid #9be3c0; box-shadow: 0 8px 0 #7fcfa8, 0 14px 18px rgba(0,0,0,.12); transform: rotate(-2deg); }
+.sb-vet .banner .cross { color: #ff6b81; display: inline-block; animation: sbvbeat 1.6s ease-in-out infinite; }
+.sb-vet .poster { position: absolute; width: 104px; height: 136px; top: 60px; background: #fffbe9; border: 6px solid #fff; border-radius: 10px; box-shadow: 0 6px 12px rgba(0,0,0,.18); font-size: 56px; text-align: center; padding-top: 22px; line-height: 1.1; }
+.sb-vet .poster small { display: block; font-size: 18px; font-weight: 800; color: #6b5a8c; margin-top: 6px; }
+.sb-vet .p1 { left: 150px; transform: rotate(-4deg); background: #ffe3ec; } .sb-vet .p2 { left: 290px; transform: rotate(3deg); background: #fff0cc; } .sb-vet .p3 { left: 410px; transform: rotate(-2deg); background: #e0f0ff; }
+.sb-vet .plant { position: absolute; left: 880px; top: 372px; font-size: 96px; } .sb-vet .clock { display: none; }
+.sb-vet .rug { position: absolute; left: 70px; top: 548px; width: 400px; height: 120px; border-radius: 50%; background: radial-gradient(#ffb3c8 0 55%, #ff94b3 56% 70%, #ffd1de 71%); opacity: .8; }
+.sb-vet .bench { position: absolute; left: 50px; top: 270px; width: 440px; height: 190px; }
+.sb-vet .bench .back { position: absolute; left: 0; top: 0; width: 440px; height: 100px; border-radius: 22px 22px 0 0; background: linear-gradient(#b98a5e, #a67949); box-shadow: 0 6px 0 rgba(0,0,0,.12) inset; }
+.sb-vet .bench .seat { position: absolute; left: -8px; top: 124px; width: 456px; height: 30px; border-radius: 14px; background: linear-gradient(#e9b97f, #cf9a5c); box-shadow: 0 8px 0 #9c6f3d, 0 14px 14px rgba(0,0,0,.18); }
+.sb-vet .bench .legs i { position: absolute; top: 154px; width: 22px; height: 40px; background: #8a5f33; border-radius: 0 0 6px 6px; } .sb-vet .bench .legs i:first-child { left: 20px; } .sb-vet .bench .legs i:last-child { right: 20px; }
+.sb-vet .benchtag { position: absolute; left: 50px; top: 470px; font-size: 20px; font-weight: 800; color: #fff; background: #b98a5e; padding: 2px 14px; border-radius: 10px; opacity: 0; }
+.sb-vet .table { position: absolute; left: 470px; top: 470px; width: 460px; height: 190px; }
+.sb-vet .table .top { position: absolute; left: 0; top: 10px; width: 460px; height: 40px; border-radius: 20px; background: linear-gradient(#f6fbff, #cfe3ee); box-shadow: 0 10px 0 #a7c4d4, 0 22px 20px rgba(0,0,0,.2); }
+.sb-vet .table .pad { position: absolute; left: 60px; top: -8px; width: 340px; height: 36px; border-radius: 50%; background: linear-gradient(#9be3c0, #6fd0a5); box-shadow: 0 4px 0 #52b88a; z-index: 1; }
+.sb-vet .table .leg { position: absolute; top: 58px; width: 26px; height: 110px; background: linear-gradient(90deg, #cfe3ee, #a7c4d4); border-radius: 6px; } .sb-vet .table .l1 { left: 50px; } .sb-vet .table .l2 { right: 50px; }
+.sb-vet .counter { display: none; }
+.sb-vet .tray { position: absolute; left: 960px; top: 112px; width: 300px; height: 580px; border-radius: 30px; background: linear-gradient(#fff9ec, #ffeccb); border: 6px solid #fff; box-shadow: 0 10px 0 #e6c58f, 0 18px 26px rgba(0,0,0,.2); padding: 14px; z-index: 40; }
+.sb-vet .trayhead { text-align: center; font-size: 26px; font-weight: 800; color: #b07a2c; margin-bottom: 6px; }
+.sb-vet .cells { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sb-vet .tool { height: 112px; border-radius: 24px; background: linear-gradient(#fff, #f1f7ff); box-shadow: 0 6px 0 #c5d6ea, 0 10px 12px rgba(0,0,0,.12); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: grab; touch-action: none; transition: transform .15s; }
+.sb-vet .tool:nth-child(7) { grid-column: 1 / 3; width: 50%; margin: 0 auto; }
+.sb-vet .tool .em { font-size: 58px; line-height: 1.05; pointer-events: none; } .sb-vet .tool .nm { font-size: 18px; font-weight: 800; color: #5b6a8c; pointer-events: none; }
+.sb-vet .tool:active { transform: scale(.94); }
+.sb-vet .tool.sel { background: linear-gradient(#fff6c4, #ffe27a); box-shadow: 0 0 0 5px #ff9fb8, 0 6px 0 #e0b84a; transform: translateY(-4px) scale(1.05); }
+.sb-vet .tool.hint { animation: sbvhint .9s ease-in-out 2; }
+.sb-vet .count { position: absolute; left: 130px; top: 24px; z-index: 41; font-size: 34px; font-weight: 800; color: #e0446a; background: #fff; border-radius: 30px; padding: 6px 20px; box-shadow: 0 5px 0 #f3c3d0; }
+.sb-vet .pt { position: absolute; cursor: pointer; filter: drop-shadow(0 8px 6px rgba(0,0,0,.18)); }
+.sb-vet .pt .air, .sb-vet .pt .body { position: absolute; inset: 0; transform-origin: 50% 93%; }
+.sb-vet .pt canvas { display: block; pointer-events: none; animation: sbvbreath 3s ease-in-out infinite; transform-origin: 50% 93%; }
+.sb-vet .pt.hot { filter: drop-shadow(0 0 14px #fff36b) drop-shadow(0 0 28px #ffb6d0); }
+.sb-vet.armed .pt { filter: drop-shadow(0 0 6px rgba(255,243,107,.9)) drop-shadow(0 8px 6px rgba(0,0,0,.18)); }
+.sb-vet .body.asleep { transform: rotate(8deg) translateY(10px); transition: transform .5s; }
+.sb-vet .bub { position: absolute; width: 92px; height: 92px; margin-left: -46px; border-radius: 50%; background: #fff; box-shadow: 0 6px 0 #d9d2ee, 0 10px 14px rgba(0,0,0,.15); text-align: center; font-size: 52px; line-height: 92px; opacity: 0; transform: scale(0); pointer-events: none; }
+.sb-vet .bub.on { opacity: 1; transform: scale(1); animation: sbvbob 2.4s ease-in-out infinite; }
+.sb-vet .bub.pop.on { animation: sbvpop .5s cubic-bezier(.3,1.6,.5,1), sbvbob 2.4s ease-in-out .5s infinite; }
+.sb-vet .bub i { position: absolute; background: #fff; border-radius: 50%; box-shadow: 0 3px 0 #d9d2ee; } .sb-vet .bub .t1 { width: 22px; height: 22px; left: 8px; bottom: -20px; } .sb-vet .bub .t2 { width: 12px; height: 12px; left: -2px; bottom: -36px; }
+.sb-vet .pill { position: absolute; z-index: 70; transform: translate(-50%, 0); background: #fff; border-radius: 30px; padding: 6px 20px; font-size: 38px; color: #cf3b3b; box-shadow: 0 6px 0 #e3d6d6, 0 10px 14px rgba(0,0,0,.15); white-space: nowrap; animation: sbvpill 2.4s ease-out forwards; pointer-events: none; }
+.sb-vet .fl, .sb-vet .suds { position: absolute; z-index: 65; pointer-events: none; transform: translate(-50%, -50%); animation: sbvfloat 1.3s ease-out forwards; }
+.sb-vet .suds { animation-duration: 1s; opacity: .9; }
+.sb-vet .food { position: absolute; z-index: 65; font-size: 64px; transform: translate(-50%, -50%); transition: left .4s ease-in, top .4s ease-in; pointer-events: none; }
+.sb-vet .zzz { position: absolute; z-index: 65; font-size: 56px; pointer-events: none; animation: sbvzzz 1.5s ease-in-out infinite; }
+.sb-vet .ghost { position: absolute; z-index: 80; font-size: 84px; transform: translate(-50%, -60%) rotate(-12deg); pointer-events: none; filter: drop-shadow(0 8px 6px rgba(0,0,0,.25)); }
+.sb-vet .heartbeat { position: absolute; font-size: 50px; transform: translate(-50%, -50%); pointer-events: none; opacity: .9; } .sb-vet .heartbeat.b { animation: sbvbeat2 .7s ease-out; }
+.sb-vet .plaster { position: absolute; font-size: 52px; transform: translate(-50%, -50%) rotate(var(--r)); pointer-events: none; transition: opacity .4s; animation: sbvstick .4s cubic-bezier(.3,1.8,.5,1); }
+.sb-vet .spot { position: absolute; width: var(--r); height: var(--r); border-radius: 50%; background: radial-gradient(#8a6a3a, #6b8f3a); opacity: .85; pointer-events: none; transition: opacity .3s; }
+@keyframes sbvspin { to { transform: rotate(360deg); } }
+@keyframes sbvcloud { from { transform: translateX(0); } to { transform: translateX(300px); } }
+@keyframes sbvbeat { 50% { transform: scale(1.25); } }
+@keyframes sbvbreath { 50% { transform: scale(1.02, .985); } }
+@keyframes sbvbob { 50% { transform: translateY(-8px); } }
+@keyframes sbvpop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes sbvhint { 40% { transform: scale(1.14) rotate(-5deg); box-shadow: 0 0 0 6px #ffd93b, 0 6px 0 #c5d6ea; } }
+@keyframes sbvpill { 0% { transform: translate(-50%, 20px) scale(.4); opacity: 0; } 12% { transform: translate(-50%, 0) scale(1.1); opacity: 1; } 22% { transform: translate(-50%, 0) scale(1); } 85% { opacity: 1; } 100% { transform: translate(-50%, -20px); opacity: 0; } }
+@keyframes sbvfloat { from { opacity: 1; transform: translate(-50%, -50%) scale(.6); } 20% { transform: translate(-50%, -80%) scale(1.1); } to { opacity: 0; transform: translate(-50%, -260%) scale(1); } }
+@keyframes sbvzzz { 50% { transform: translateY(-16px) rotate(8deg); } }
+@keyframes sbvbeat2 { 0% { transform: translate(-50%, -50%) scale(.5); } 30% { transform: translate(-50%, -50%) scale(1.7); } 100% { transform: translate(-50%, -50%) scale(1); } }
+@keyframes sbvstick { from { transform: translate(-50%, -150%) rotate(var(--r)) scale(1.8); opacity: 0; } }

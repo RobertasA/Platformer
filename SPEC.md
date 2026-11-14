@@ -28,7 +28,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | Sentence Shore, capitals & digits trees, journal Writing tab (§7.2f) | [done] iter7 |
 | `tower` Teapot Tower + `js/tower.js` (§7.2g) | [done] iter8 |
 | Areas woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
-| `js/sandbox.js` playrooms | [todo] stub |
+| `js/sandbox.js` toy box + playrooms (potion, vet, dolls, art) + world map (§8) | [building] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
 
@@ -281,22 +281,28 @@ Accessibility: left-/right-handed toggle (pad offsets), generous tolerance setti
 
 ---
 
-## 8. Free-play sandboxes [todo]
+## 8. Free-play playrooms [building iter9: toy box + 4 rooms]
 
-No goals, no failure, gentle sounds. Each playroom = a scene with toys the avatar can pick up/place/drag; items are emoji/procedural sprites. State persists in `playsets`.
+No goals, no scores, no failure, gentle sounds. Opened from the HUD 🧸 button or the playroom door in the village (`G.SB.open()`).
 
-| Playroom | Toys / actions |
-|---|---|
-| Café | menu board, make tea/cakes, take orders (write them!), customers (animal folk), tills & coins |
-| Vet Clinic | animal patients (cat, dog, bunny, owl, dragon!), stethoscope, bandages, thermometer, feeding, wash, X-ray; they get better with sparkles |
-| Witch's Kitchen | cauldron, ingredients, mix potions (colours), spells with wand, pet toad/cat, broom |
-| Dolls' House | rooms, furniture, little people, move/arrange, day→night |
-| Bug Garden | place bugs/flowers, net, jar, magnifier |
-| Shop | scales, coins, price tags, shopping basket |
-| Art Studio | stylus easel (§7.3), stickers, stamps, save gallery |
-| Music Room | xylophone, drums, bells; record & replay; patterns |
-| Dress-up Wardrobe | the character creator on a stage with a mirror and quick jobs (§9) |
-| Builder's Yard | blocks, cars, train track |
+### 8.1 Framework — `js/sandbox.js` (`G.SB`)
+- `G.SB.register(id, { name, icon, col, blurb, mount(stage, api) })` — a room module registers itself at load. `mount` builds the room inside `stage` and may return `{ destroy() }` (stop timers/audio, remove window listeners).
+- `G.SB.open(id?)` — pauses the game, hides the HUD, fills the overlay with `.sbwrap`. No id → the **toy box**: one big card per room (icon, name, blurb), ✕ to leave. With an id → that room: a `.sbstage` div exactly **1280×720** logical px (the overlay is already scaled to fit the screen) with a ⬅ back button (top-left, 84×84; rooms keep the top-left 110×100 clear) that returns to the toy box.
+- `api`: `state` (plain object persisted at `G.S.playsets[id]`; mutate then call `api.save()`), `save()`, `say(text)`, `sfx(name)`, `W` 1280, `H` 720, `pos(evt)` → `{x, y}` in stage px from a pointer event, `spark(x, y, emoji?)` (a little burst of ✨ at stage x,y), `drag(el, { onStart, onMove(x, y), onEnd(x, y) })` (pointer-capture drag helper that reports stage px).
+- Rooms are plain DOM/canvas inside the stage; every interactive thing ≥ 64px; Pointer Events only; `touch-action:none` on draggable/drawable things. Each room has its own stylesheet `css/play-<id>.css` and script `js/play-<id>.js` (loaded after `sandbox.js`).
+
+### 8.2 Rooms [building iter9]
+| id | Room | What you can do |
+|---|---|---|
+| `potion` | **Potion Kitchen** 🧪 (witch) | Shelf of 8 ingredient jars (🍓 red, 🍋 yellow, 🫐 blue, 🍃 green, 🌸 pink, ⭐ sparkle, 🕷️ spooky, 🧊 ice). Drag or tap one into the big cauldron: plop, the liquid **mixes like paint** (red + yellow → orange, blue + yellow → green, red + blue → purple, everything → muddy brown; ice lightens, spooky darkens, sparkle adds glitter) and bubbles. Drag the spoon round to stir (swirl). Tap the wand ✨ to cast: the pet toad beside the cauldron gets a silly effect chosen from the potion (turns its colour, grows huge, shrinks, floats, spots, party hat, rainbow) and says a line ("Ribbit! I am orange!"). Tap an empty bottle to bottle the potion (up to 8 kept on a shelf, `state.bottles` = colours; tap a full bottle to pour it back / empty it). 🪣 empties the cauldron. `G.S.stats.potions++` per cast. |
+| `vet` | **Vet Clinic** 🩺 | Waiting bench of 5 patients (cat, dog, bunny, owl, dragon — drawn with `G.drawCreature` on small canvases), each with a thought bubble showing what is wrong: 🤒 poorly (thermometer, then medicine), 🩹 sore paw (bandage), 🦠 mucky (sponge → bubbles), 😋 hungry (food bowl), 💤 can't sleep (cuddle/blanket). Tap a patient → it hops onto the table. Tool tray: 🩺 stethoscope (heartbeat sound, a pulsing heart), 🌡️ thermometer (shows a number), 💊 medicine, 🩹 bandage (sticks where dropped), 🧼 sponge (rub for bubbles), 🥕 food, 🧸 cuddle. Any tool works on any patient and does something cute; the *helpful* tool clears the bubble: sparkles, "Thank you, vet!", patient goes back to the bench with 💖 and gets a new worry a little later. `G.S.stats.vet++` per cure. |
+| `dolls` | **Dolls' House** 🏠 | A cut-away house with 6 rooms (attic, bedroom, bathroom, kitchen, living room, garden). A scrolling drawer of ~36 stickers (furniture, people, pets, food, toys). Drag from the drawer into the house; drag to move; drop on the bin to remove; tap = wobble + its name spoken. 🌞/🌙 switch: night dims the house, windows and lamps glow, stars come out. Persisted `state.items` = `[{ch, x, y}]` (max 60), `state.night`. |
+| `art` | **Art Studio** 🎨 | A big paper canvas for the stylus: pressure-aware round brush, 12 colours, 3 sizes, 🌈 rainbow brush, ✨ glitter brush, eraser, 🪞 mirror (left-right symmetry) toggle, emoji stamps (12), 3 papers (white, cream, night-blue), ↩ undo (10 steps), 🗑 clear, 💾 save to gallery (6 slots, `state.gallery` = JPEG data URLs ≤ 640×360; tap a thumbnail to load it back). |
+
+Later rooms [todo]: café (free play), bug garden, shop, music room, builder's yard.
+
+### 8.3 World map [building iter9] — `G.UI.map()`
+HUD 🗺️ opens a picture map: one round badge per area on a winding path (village, Hush House, café, Bugglemead, Writing Wood, Teapot Tower, Whispering Woods, Crystal Caves, Cloudtop Kingdom). Visited areas (`S.areas[id]`) are in colour and can be tapped to travel there (arrive at the area's spawn); unvisited ones are grey with a 🔒 and say "Find the gate first!". The current area has a "You are here" bounce.
 
 ---
 
@@ -353,7 +359,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 7. **[done iter6] Bugglemead** + bug journal + science puzzles (§7.2e).
 8. **[done iter7] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[done iter8] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
-10. **[todo] Playrooms**: vet, witch kitchen, dolls' house, art easel.
+10. **[building iter9] Playrooms**: toy box, potion kitchen, vet, dolls' house, art studio; world map.
 11. **[todo] Woods, Caves, Clouds** + final gates, finale, golden crown.
 12. **[todo] Grown-up page**, offline PWA, accessibility settings, polish pass (juice, music, particles).
 
@@ -377,3 +383,10 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter7 — Sentence Shore, capitals & digits, writing stars.** Writing Wood widened to 80. New `'.'` glyph + recogniser rule (any small mark near the line). Pad draws a finger-tip oval in each word gap. `G.LS.run` takes `sentences` (2 per visit: trace then fade). New lessons: Capital castle (A–Z), Number nest (0–9), Sentence stone (6 short sentences) + blue gem on a leaf. 📖 journal now has 🐞 Bugs | ✏️ Writing tabs; Writing shows 0–3 stars per letter from `S.handwriting` (capitals/digits rows appear once tried). Scripted test: drew 'I can run.' stroke-by-stroke on a real pad → all 8 slots 1.00, ok; leaving out the full stop holds on the '.' slot; sentence stone gives a gem; no page errors. Feedback: none open. Next: #9 Teapot Tower.
 
 **iter8 — Teapot Tower.** New vertical area `tower` (32×48, five floors joined by zig-zag shelf steps) behind the meadow gate, with Mr Tuft (`G.PEOPLE.tuft`, progress-aware lines). `js/tower.js` (`G.TOWER`, written by a Sonnet sub-agent): odd-shoes memory pairs (3/4/6 pairs by patterns level, glow hint after 4 misses), postcard read-and-write-back (3 picture answers, then one word in fade mode), detective case (3 pattern puzzles → `hat:detective`), curio cabinet (6 curios touched to collect → `pet:tuft`). `S.curios` added to the save. Engine: curio pickup, furniture art with gem badges until the quest is done, `warp(x, row)` debug. Fix: emoji drawn after a translucent `fillStyle` inherit its alpha — reset `fillStyle` first. Scripted test: curio pickup + persistence, shoes win → purple gem, case → hat + yellow, all six → Little Tuft + green; no page errors. Feedback: none open. Next: #10 Playrooms.
+
+**Review after iter8 (owner asked for an ambitious review).** Method and findings:
+- *Reachability* — new `tools/reach.js` (run by `check.sh`): BFS over standable cells, then a bot drives the **real engine physics** to every entity in every area. All 98 entities reached (village 20, writing 18, house 10, café 12, meadow 21, tower 18). Keeps AIM's "every area reachable" true as levels are added.
+- *Stability* — new `tools/monkey.js` (150 s of random keys, taps, scribbles and area hops): no page errors, heap flat (~10 MB), gems still earnable.
+- *Content* — sampled ~680 generated puzzles across 5 subjects × 5 levels: answers sound; fixed "a elephant / a ant" (a → an before a vowel, in `CURR.make`).
+- *Performance* — `E.draw` averages 4–10 ms per frame in headless software rendering (Hush House heaviest). Fine for now; cache the tile layer if a real tablet stutters.
+- *Gaps against AIM* — (1) must-have #3 "lots of free-play sandboxes": none existed, and the HUD 🧸 and 🗺️ buttons plus the playroom door all said "still being built" → iter9. (2) Woods, Caves, Clouds gates open on nothing → iter10–11. (3) No grown-up page yet. (4) Handwriting is still untested with a real stylus — needs the owner's feedback.

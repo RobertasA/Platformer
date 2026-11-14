@@ -667,6 +667,7 @@
   });
 
   /* ================= API ================= */
+  const AN = /\b([Aa]) (?=(?:<b>)?(?!uni|use|one\b|once\b|euro|ukul)[aeiou][a-z])/g;   // a elephant → an elephant
   function make(subject, level, opts) {
     level = Math.max(0, Math.min(4, Math.round(+level || 0))); const gens = GENS[subject]; if (!gens) throw new Error('unknown subject ' + subject);
     const avoid = new Set((opts && opts.avoid) || []); const elig = gens.filter(g => level >= g.lo && level <= g.hi); let last = null;
@@ -675,7 +676,7 @@
       if (subject === 'words' && wg && Math.random() < 0.25) g = wg;
       else { const pool = []; for (const x of elig) if (x.id !== 'write' || subject !== 'words') for (let i = 0; i < x.w; i++) pool.push(x); g = pick(pool); }
       let p = null; if (CURR._debug) p = g.fn(level); else { try { p = g.fn(level); } catch (e) { p = null; } }
-      if (p) { p.subject = subject; p.level = level; if (!p.hint) p.hint = 'Take your time and have another look.'; if (!p.explain) p.explain = 'Well done!'; last = p; if (!avoid.has(p.key)) return p; }
+      if (p) { for (const f of ['q', 'say', 'explain', 'hint']) if (typeof p[f] === 'string') p[f] = p[f].replace(AN, '$1n '); p.subject = subject; p.level = level; if (!p.hint) p.hint = 'Take your time and have another look.'; if (!p.explain) p.explain = 'Well done!'; last = p; if (!avoid.has(p.key)) return p; }
     }
     return last || ch({ key: 'maths:fallback', q: 'What is 1 + 1?', say: 'What is one plus one?', subject, level, hint: 'Count on one.', explain: 'One and one make two.' }, 2, [1, 3, 4], 4);
   }

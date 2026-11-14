@@ -261,6 +261,31 @@
   };
 
   /* bug journal (SPEC §7.2e) */
+  /* ---------- world map (SPEC §8.3) ---------- */
+  UI.MAP = [['village', '🏡', 150, 430], ['house', '🏠', 330, 290], ['cafe', '☕', 500, 440], ['meadow', '🐞', 660, 300], ['writing', '✏️', 330, 130],
+    ['tower', '🫖', 840, 170], ['woods', '🌲', 840, 440], ['caves', '💎', 1000, 320], ['clouds', '☁️', 990, 90]];
+  UI.map = function () {
+    G.paused = true;
+    const ov = UI.overlay(true), card = U.el('div', 'card mapcard'), S = G.S;
+    const pts = UI.MAP.map(m => m[2] + ',' + (m[3] + 10)).join(' ');
+    card.innerHTML = '<div class="maptitle">🗺️ Hazelnut Hollow</div><svg class="mappath" viewBox="0 0 1120 560"><polyline points="' + pts + '" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 22" opacity=".9"/></svg>';
+    const shut = () => { G.hush(); UI.overlay(false); G.paused = false; };
+    const tip = U.el('div', 'maptip', 'Tap a place to go there.'); card.appendChild(tip);
+    for (const [id, ic, x, y] of UI.MAP) {
+      const been = !!S.areas[id] && !!G.AREAS[id], here = G.E.id === id, nm = id === 'village' ? 'Hazelnut Hollow' : G.AREA_NAMES[id];
+      const b = U.el('button', 'mapspot' + (been ? '' : ' locked') + (here ? ' here' : ''), '<span class="ic">' + ic + '</span><span class="nm">' + nm + '</span>' + (been ? '' : '<span class="lk">🔒</span>') + (here ? '<span class="pin">📍</span>' : ''));
+      b.style.left = x + 'px'; b.style.top = y + 'px';
+      b.onclick = () => {
+        if (here) { G.sfx('tap'); tip.textContent = 'You are here!'; G.say('You are here!', true); }
+        else if (been) { G.sfx('door'); shut(); G.E.travel(id); }
+        else { G.sfx('squeak'); b.classList.remove('wob'); void b.offsetWidth; b.classList.add('wob'); tip.textContent = G.AREAS[id] ? 'Find the gate to ' + nm + ' first!' : nm + ' is still a secret…'; G.say(tip.textContent, true); }
+      };
+      card.appendChild(b);
+    }
+    const x = U.el('button', 'closex', '✕'); x.onclick = () => { G.sfx('tap'); shut(); }; card.appendChild(x);
+    ov.appendChild(card);
+  };
+
   UI.journal = function (tab) {
     G.paused = true;
     const ov = UI.overlay(true), card = U.el('div', 'card journal'), n = G.MEAD.count();
@@ -315,8 +340,8 @@
       const a = b.dataset.act;
       if (a === 'wardrobe') UI.creator(false);
       else if (a === 'settings') UI.settings();
-      else if (a === 'map') UI.soon('The map');
-      else if (a === 'play') UI.soon('The playroom');
+      else if (a === 'map') UI.map();
+      else if (a === 'play') G.SB.open();
       else if (a === 'journal') UI.journal();
     }));
   };

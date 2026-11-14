@@ -1,0 +1,22 @@
+/* Art Studio playroom (SPEC §8.2) */
+.sb-art { background: linear-gradient(#ffe9c9, #f6cfa0); }
+.sb-art .easel { position: absolute; left: 128px; top: 16px; width: 960px; height: 540px; border-radius: 14px; box-shadow: 0 0 0 10px #b98352, 0 14px 0 10px rgba(0,0,0,.18); overflow: hidden; }
+.sb-art .paper { width: 960px; height: 540px; display: block; touch-action: none; cursor: crosshair; }
+.sb-art .mline { position: absolute; left: 50%; top: 0; bottom: 0; border-left: 3px dashed rgba(120,120,160,.5); pointer-events: none; display: none; }
+.sb-art .mline.show { display: block; }
+.sb-art .tools { position: absolute; left: 12px; top: 108px; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.sb-art .tb, .sb-art .sz, .sb-art .ab { border: 0; border-radius: 22px; background: #fff; box-shadow: 0 5px 0 rgba(0,0,0,.16); font-size: 40px; }
+.sb-art .tb { width: 84px; height: 84px; }
+.sb-art .sz { width: 84px; height: 64px; display: flex; align-items: center; justify-content: center; }
+.sb-art .sz i { display: block; border-radius: 50%; background: #3b3350; }
+.sb-art .on { outline: 6px solid #ff7eb6; outline-offset: 1px; transform: scale(1.04); }
+.sb-art .tray { position: absolute; left: 128px; top: 578px; width: 960px; display: flex; flex-direction: column; gap: 8px; }
+.sb-art .row { display: flex; justify-content: space-between; }
+.sb-art .sw { width: 64px; height: 60px; border-radius: 50%; border: 5px solid #fff; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
+.sb-art .stamp { width: 64px; height: 60px; border-radius: 18px; border: 0; background: #fff; font-size: 36px; box-shadow: 0 4px 0 rgba(0,0,0,.16); }
+.sb-art .side { position: absolute; left: 1106px; top: 16px; width: 162px; display: flex; flex-wrap: wrap; gap: 10px; }
+.sb-art .ab { width: 76px; height: 76px; }
+.sb-art .ab.wide { width: 162px; height: 72px; font-size: 30px; font-weight: 700; color: #3b3350; background: #a8ecbf; }
+.sb-art .gal { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 162px; }
+.sb-art .th { height: 64px; border-radius: 12px; border: 4px solid #fff; background: #fff center/cover; box-shadow: 0 4px 0 rgba(0,0,0,.16); font-size: 30px; color: #c9b9a2; }
+.sb-art .th.empty { background: rgba(255,255,255,.55); border-style: dashed; border-color: #d9b88f; box-shadow: none; }

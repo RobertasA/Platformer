@@ -181,7 +181,7 @@
     else if (e.k === 'door') {
       G.sfx('door');
       if (e.act === 'wardrobe') G.UI.creator(false);
-      else if (e.act === 'play') G.UI.soon('The playroom');
+      else if (e.act === 'play') G.SB.open();
       else if (e.to) E.travel(e.to, e.at);
     }
   };

@@ -71,7 +71,7 @@
     warp(tx, row = 12) { const P = G.E.player; P.x = tx * G.TILE; P.y = row * G.TILE; P.vx = P.vy = 0; G.E.cam.x = U.clamp(P.x - G.VW / 2, 0, G.E.area.w * G.TILE - G.VW); G.E.cam.y = U.clamp(P.y - G.VH * 0.6, 0, G.E.area.h * G.TILE - G.VH); },
     gem(col, subject, level) { return G.PZ.run({ colour: col, subject, level }); },
     give(col, n) { G.S.gems[col] += n; G.UI.gembar(); },
-    close() { G.UI.overlay(false); $('#dialogue').classList.add('hidden'); G.paused = false; },
+    close() { if (G.SB.close) G.SB.close(); G.UI.overlay(false); $('#dialogue').classList.add('hidden'); G.paused = false; },
   };
   G.debug.steps = [
     { name: 'walk', run: () => { G.debug.warp(20); } },
@@ -116,6 +116,13 @@
     { name: 'postcard', run: () => { G.debug.close(); G.TOWER.postcard(); } },
     { name: 'case', run: () => { G.debug.close(); G.TOWER.case(); } },
     { name: 'cabinet', run: () => { G.debug.close(); G.TOWER.cabinet(); } },
+    { name: 'map', run: () => { G.debug.close(); G.S.areas = { village: true, house: true, cafe: true, meadow: true }; G.E.load('village'); G.UI.map(); } },
+    { name: 'toybox', run: () => { G.debug.close(); G.SB.open(); } },
+    { name: 'play-potion', run: () => { G.SB.open('potion'); } },
+    { name: 'play-vet', run: () => { G.SB.open('vet'); } },
+    { name: 'play-dolls', run: () => { G.SB.open('dolls'); } },
+    { name: 'play-art', run: () => { G.SB.open('art'); } },
+    { name: 'play-end', run: () => { G.SB.close(); } },
     { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];
 })();

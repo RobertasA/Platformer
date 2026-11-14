@@ -225,3 +225,33 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 .cubby { min-height: 150px; border: 0; border-radius: 14px; font: inherit; background: #fff6e4; box-shadow: inset 0 6px 14px rgba(90,50,10,.35), 0 8px 0 #b0703a; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .cubby .ci { font-size: 64px; line-height: 1.1; } .cubby .cn { font-size: 26px; font-weight: 600; text-transform: capitalize; }
 .cubby.unk { background: #e6d3b3; } .cubby.unk .ci { color: #b9a07a; opacity: .6; }
+
+/* iter9: playrooms (SPEC §8) */
+.sbwrap { position: absolute; inset: 0; background: #fff7e8; overflow: hidden; }
+.sbwrap.toybox { background: radial-gradient(circle at 50% 0, #fff3d6, #ffd9a8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; }
+.sbtitle { font-size: 56px; font-weight: 700; color: #6b4226; }
+.sbgrid { display: flex; flex-wrap: wrap; gap: 26px; justify-content: center; max-width: 1180px; }
+.sbroom { width: 260px; height: 300px; border: 0; border-radius: 34px; background: var(--col); box-shadow: 0 10px 0 rgba(0,0,0,.18); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px; }
+.sbroom:active { transform: translateY(6px); box-shadow: 0 4px 0 rgba(0,0,0,.18); }
+.sbroom .ic { font-size: 110px; line-height: 1.1; }
+.sbroom .nm { font-size: 30px; font-weight: 700; color: #3b3350; }
+.sbroom .bl { font-size: 20px; color: #3b3350; opacity: .8; }
+.sbwrap .closex { right: 22px; top: 22px; }
+.sbstage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; overflow: hidden; }
+.sbback { position: absolute; left: 14px; top: 12px; width: 84px; height: 84px; border-radius: 50%; border: 0; background: #fff; font-size: 40px; box-shadow: 0 6px 0 rgba(0,0,0,.18); z-index: 50; }
+.sbspark { position: absolute; font-size: 30px; pointer-events: none; z-index: 40; animation: sbspark .8s ease-out forwards; transform: translate(-50%, -50%); }
+@keyframes sbspark { to { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.3); opacity: 0; } }
+/* iter9: world map (SPEC §8.3) */
+.mapcard { width: 1120px; height: 600px; padding: 0; overflow: visible; background: radial-gradient(circle at 20% 110%, #8fd97a 0 34%, transparent 35%), radial-gradient(circle at 70% 120%, #7cc96a 0 40%, transparent 41%), radial-gradient(circle at 95% 10%, #fff 0 9%, transparent 10%), linear-gradient(#aee3ff, #d9f4c9 60%, #a5dd8a); border: 10px solid #fff; box-sizing: content-box; }
+.maptitle { position: absolute; left: 30px; top: 18px; font-size: 38px; font-weight: 700; color: #3b3350; text-shadow: 0 3px 0 #fff; }
+.mappath { position: absolute; inset: 0; width: 1120px; height: 560px; pointer-events: none; }
+.maptip { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-size: 26px; color: #3b3350; }
+.mapspot { position: absolute; width: 130px; margin-left: -65px; margin-top: -58px; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; }
+.mapspot .ic { width: 96px; height: 96px; border-radius: 50%; background: #fff; box-shadow: 0 6px 0 rgba(0,0,0,.2); font-size: 56px; display: flex; align-items: center; justify-content: center; }
+.mapspot .nm { font-size: 19px; font-weight: 600; color: #3b3350; background: rgba(255,255,255,.85); border-radius: 12px; padding: 1px 10px; white-space: nowrap; }
+.mapspot.locked .ic { filter: grayscale(1); opacity: .6; }
+.mapspot .lk { position: absolute; right: 8px; top: 56px; font-size: 30px; }
+.mapspot .pin { position: absolute; top: -44px; font-size: 44px; animation: mapbob .8s ease-in-out infinite alternate; }
+.mapspot.here .ic { outline: 6px solid #ff7eb6; }
+.mapspot.wob { animation: wob .4s; }
+@keyframes mapbob { to { transform: translateY(-10px); } }

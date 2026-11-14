@@ -10,3 +10,4 @@ SRV=$!
 trap 'kill $SRV 2>/dev/null || true' EXIT
 sleep 0.7
 node tools/check.js "http://localhost:$PORT/${1:-index.html}"
+node tools/reach.js "http://localhost:$PORT/index.html"
