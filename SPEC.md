@@ -28,7 +28,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | Sentence Shore, capitals & digits trees, journal Writing tab (§7.2f) | [done] iter7 |
 | `tower` Teapot Tower + `js/tower.js` (§7.2g) | [done] iter8 |
 | Areas woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
-| `js/sandbox.js` toy box + playrooms (potion, vet, dolls, art) + world map (§8) | [building] iter9 |
+| `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
 
@@ -281,7 +281,7 @@ Accessibility: left-/right-handed toggle (pad offsets), generous tolerance setti
 
 ---
 
-## 8. Free-play playrooms [building iter9: toy box + 4 rooms]
+## 8. Free-play playrooms [done iter9: toy box + 4 rooms]
 
 No goals, no scores, no failure, gentle sounds. Opened from the HUD 🧸 button or the playroom door in the village (`G.SB.open()`).
 
@@ -291,7 +291,7 @@ No goals, no scores, no failure, gentle sounds. Opened from the HUD 🧸 button 
 - `api`: `state` (plain object persisted at `G.S.playsets[id]`; mutate then call `api.save()`), `save()`, `say(text)`, `sfx(name)`, `W` 1280, `H` 720, `pos(evt)` → `{x, y}` in stage px from a pointer event, `spark(x, y, emoji?)` (a little burst of ✨ at stage x,y), `drag(el, { onStart, onMove(x, y), onEnd(x, y) })` (pointer-capture drag helper that reports stage px).
 - Rooms are plain DOM/canvas inside the stage; every interactive thing ≥ 64px; Pointer Events only; `touch-action:none` on draggable/drawable things. Each room has its own stylesheet `css/play-<id>.css` and script `js/play-<id>.js` (loaded after `sandbox.js`).
 
-### 8.2 Rooms [building iter9]
+### 8.2 Rooms [done iter9]
 | id | Room | What you can do |
 |---|---|---|
 | `potion` | **Potion Kitchen** 🧪 (witch) | Shelf of 8 ingredient jars (🍓 red, 🍋 yellow, 🫐 blue, 🍃 green, 🌸 pink, ⭐ sparkle, 🕷️ spooky, 🧊 ice). Drag or tap one into the big cauldron: plop, the liquid **mixes like paint** (red + yellow → orange, blue + yellow → green, red + blue → purple, everything → muddy brown; ice lightens, spooky darkens, sparkle adds glitter) and bubbles. Drag the spoon round to stir (swirl). Tap the wand ✨ to cast: the pet toad beside the cauldron gets a silly effect chosen from the potion (turns its colour, grows huge, shrinks, floats, spots, party hat, rainbow) and says a line ("Ribbit! I am orange!"). Tap an empty bottle to bottle the potion (up to 8 kept on a shelf, `state.bottles` = colours; tap a full bottle to pour it back / empty it). 🪣 empties the cauldron. `G.S.stats.potions++` per cast. |
@@ -299,9 +299,11 @@ No goals, no scores, no failure, gentle sounds. Opened from the HUD 🧸 button 
 | `dolls` | **Dolls' House** 🏠 | A cut-away house with 6 rooms (attic, bedroom, bathroom, kitchen, living room, garden). A scrolling drawer of ~36 stickers (furniture, people, pets, food, toys). Drag from the drawer into the house; drag to move; drop on the bin to remove; tap = wobble + its name spoken. 🌞/🌙 switch: night dims the house, windows and lamps glow, stars come out. Persisted `state.items` = `[{ch, x, y}]` (max 60), `state.night`. |
 | `art` | **Art Studio** 🎨 | A big paper canvas for the stylus: pressure-aware round brush, 12 colours, 3 sizes, 🌈 rainbow brush, ✨ glitter brush, eraser, 🪞 mirror (left-right symmetry) toggle, emoji stamps (12), 3 papers (white, cream, night-blue), ↩ undo (10 steps), 🗑 clear, 💾 save to gallery (6 slots, `state.gallery` = JPEG data URLs ≤ 640×360; tap a thumbnail to load it back). |
 
+As built: bottling does not use up the potion (fill several bottles from one brew) and pouring a bottle back blends its colour in; casting on an empty pot only prompts "Add magic first!". The toad is its own SVG so CSS can tint/scale it. Cast effect by colour: red huge, orange tint, yellow/white float, green/brown spots, blue/black tiny, purple rainbow, pink party hat. In the vet a poorly pet's bubble turns to 💊 after the thermometer; medicine first makes the thermometer wiggle. Dolls' house: the garden is a strip beside the house, the drawer scrolls sideways and a sticker lifts out when dragged upwards; a new house starts with six stickers.
+
 Later rooms [todo]: café (free play), bug garden, shop, music room, builder's yard.
 
-### 8.3 World map [building iter9] — `G.UI.map()`
+### 8.3 World map [done iter9] — `G.UI.map()`
 HUD 🗺️ opens a picture map: one round badge per area on a winding path (village, Hush House, café, Bugglemead, Writing Wood, Teapot Tower, Whispering Woods, Crystal Caves, Cloudtop Kingdom). Visited areas (`S.areas[id]`) are in colour and can be tapped to travel there (arrive at the area's spawn); unvisited ones are grey with a 🔒 and say "Find the gate first!". The current area has a "You are here" bounce.
 
 ---
@@ -359,7 +361,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 7. **[done iter6] Bugglemead** + bug journal + science puzzles (§7.2e).
 8. **[done iter7] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[done iter8] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
-10. **[building iter9] Playrooms**: toy box, potion kitchen, vet, dolls' house, art studio; world map.
+10. **[done iter9] Playrooms**: toy box, potion kitchen, vet, dolls' house, art studio; world map.
 11. **[todo] Woods, Caves, Clouds** + final gates, finale, golden crown.
 12. **[todo] Grown-up page**, offline PWA, accessibility settings, polish pass (juice, music, particles).
 
@@ -390,3 +392,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 - *Content* — sampled ~680 generated puzzles across 5 subjects × 5 levels: answers sound; fixed "a elephant / a ant" (a → an before a vowel, in `CURR.make`).
 - *Performance* — `E.draw` averages 4–10 ms per frame in headless software rendering (Hush House heaviest). Fine for now; cache the tile layer if a real tablet stutters.
 - *Gaps against AIM* — (1) must-have #3 "lots of free-play sandboxes": none existed, and the HUD 🧸 and 🗺️ buttons plus the playroom door all said "still being built" → iter9. (2) Woods, Caves, Clouds gates open on nothing → iter10–11. (3) No grown-up page yet. (4) Handwriting is still untested with a real stylus — needs the owner's feedback.
+
+**iter9 — Playrooms and the world map.** `js/sandbox.js` framework (`G.SB.register/open/close`, 1280×720 stage, `api` with state/save/say/sfx/pos/spark/drag) and a toy box opened from the HUD 🧸 or the playroom door. Four rooms, one file + stylesheet each: Potion Kitchen, Vet Clinic, Dolls' House (three Sonnet sub-agents in parallel, each given §8 as the brief and told to verify with screenshots) and Art Studio (pressure-aware brush, rainbow, glitter, stamps, mirror, undo, 6-slot gallery). `G.UI.map()` replaces the "still being built" map: visited areas are fast-travel buttons. Learnt: one file + one scoped stylesheet per room lets agents work in parallel without conflicts. Scripted tests per room (real pointer events), no page errors at tablet and phone sizes. Feedback: none open. Next: #11 Woods + Caves.
