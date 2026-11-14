@@ -7,6 +7,8 @@ A kids' platformer/RPG for a 6-year-old on a tablet + stylus. No build step: ope
 2. `LOOP.md` — the iteration procedure. Follow it.
 3. `SPEC.md` — the living spec: architecture, content tables, status, backlog, iteration log. **Update it before and after changing code.**
 
+Design decisions about engagement, rewards, hints, praise or handwriting teaching: check `RESEARCH.md` (evidence summary, with caveats) first.
+
 Conventions
 - Develop on branch `claude/kids-platformer-game-ndef40`; push there. **Every deploy: merge into `main` and push `main`** (the owner asked for this) — only `main` deploys via the GitHub Pages workflow. Check the Actions run afterwards.
 - Plain browser JS in `js/`, shared namespace `window.G` (see SPEC § Architecture). Script load order is in `index.html`.
