@@ -19,9 +19,10 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `js/ui.js` HUD, toast, dialogue, gate card, creator/wardrobe, settings | [done] iter1 |
 | `js/puzzle.js` shell (choice / order / write) | [done] iter1 |
 | `js/handwriting.js` pad, glyphs a–z A–Z 0–9, recogniser, coach | [done] iter1 (synthetic tests only; untested with a real stylus) |
-| `js/curriculum.js` generators | see iteration log |
+| `js/curriculum.js` generators (80 generators over 5 subjects, L0–4, `selfTest()` clean) | [done] iter3 |
 | `js/lessons.js` + `writing` area (Writing Wood) | [done] iter2 |
-| Areas house, café, meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
+| `house` area (Hush House: noise meter, creaky boards, squeaky toys, maths doors, tuck Mum in) | [done] iter3 |
+| Areas café, meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -192,6 +193,14 @@ Area `writing` (woods theme, 64×15) reached through the village gate (blue×2).
 - First completion → blue gem (+ ⭐ on the board, `S.quests['lesson:<id>']` counts visits); repeat → +2 coins. Closing a puzzle ends the visit with no penalty. Lessons do not change `S.level.words` (`noAdapt`).
 - Area also has 5 ordinary gems (blue×2, purple, green in the ink pond, yellow) and a door 🏡 back to the village gate.
 
+### 7.2c Hush House (iter3) — built as `house` in world.js; rules live in engine.js `updateHush`
+- Area flag `hush:true` shows `#noisebar` (🤫 → 😴) and lowers top walking speed to 75% (tiptoe). `E.noise` runs 0…1.
+- Noise sources: walking on a `creak` span (x0..x1 tiles, +0.42/s, "creak!" pop-up), stepping on a `squeak` toy (+0.22, 1.5 s cool-down), any landing (+0.05, more for long falls). Quiet decays −0.07/s. Shelves above each creaky span are the quiet route.
+- At 0.7 a toast warns "Shh! Mum is stirring…" and Mum looks 😟. At 1.0 she murmurs, the screen fades, the player returns to the last 🌙 `check` night-light passed, noise → 0. No lives, no fail.
+- `mdoor` maths doors (3) are full-height walls until solved: ✋ → "Number lock" line → red maths puzzle (`G.PZ.run({colour:'red'})`, adaptive). Solved → `S.locks[id]`, stays open. Closing the puzzle leaves it shut.
+- Goal `mum` (bed with snoring Mum): ✋ → two lines → `S.quests.hush`, +1 yellow gem, +5 coins, unlocks `held:lantern`. Afterwards: "Sweet dreams, Mum."
+- Layout (64×15): kitchen → door1 → hall (duck, frog toy) → door2 → sitting room (bookcase climb) → door3 → bedroom. Gems: red×2, yellow, purple on shelves. Door 🏡 back to the village gate.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -265,7 +274,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 1. **[done iter1] Boot slice**: `style.css`, `main.js`, `engine.js`, `world.js` (village only), HUD, title + character creator → player can walk/jump around the village with the avatar. *Smoke test green.*
 2. **[done iter1] Gem + puzzle loop**: `curriculum.js` (maths L0–2, words L0–1), `puzzle.js` shell (choice/count), gem pickup → puzzle → HUD, first gate (village→house).
 3. **[done iter2] Handwriting v1 → Writing Wood**: `handwriting.js` is done (iter1); still needed: the `writing` area with Captain Quill, letter-family lessons (§7.3 ladder), handwriting progress in a journal; blue gems via writing; works with stylus pointer events.
-4. **[todo] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
+4. **[done iter3] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
 5. **[todo] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox.
 6. **[todo] Wardrobe/creator UI polish** with all presets and locked items.
 7. **[todo] Bugglemead** + bug journal + science puzzles.
@@ -284,3 +293,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter1 — playable village.** Wrote style.css, world.js (village), engine.js, ui.js (HUD, dialogue, gate recipe card, character creator with 14 tabs + 20 job presets, settings with 2-second hold to reset), puzzle.js (choice / order / write; never fails: hint → hint → reveal and keep the gem), main.js (letterbox fit, title over a panning village, debug steps). Sonnet agents wrote handwriting.js (62 glyphs, deterministic recogniser, coach messages, demo/fade guides, 310/310 synthetic tests) and curriculum.js. check.js now runs `G.debug.steps` and screenshots each (walk, talk, maths, words, write, gate, creator, settings). Feedback: 0 issues. Next: Writing Wood area (backlog #3), Hush House (#4).
 
 **iter2 — Writing Wood.** Feedback: 0 issues. Added `js/lessons.js` (letter-family trees + word stones, trace→fade→memory ladder per letter, gem on first completion, coins on repeat) and the `writing` area. Doors can carry `at` (arrival spot). Puzzles accept `noAdapt`. New debug steps: wood, wood2, lesson. Next: Hush House (#4), then café.
+
+**iter3 — Hush House + curriculum.** Feedback: 0 issues. Built the `house` area (§7.2c): noise meter, tiptoe speed, creaky boards, squeaky toys, night-light checkpoints, three maths doors, tuck-Mum-in ending with a lantern reward. Integrated `curriculum.js` from a Sonnet sub-agent (selfTest clean); fixed "1 pebbles" in story sums (min 2). New debug steps `house`, `house2`, `mdoor`, `mum`, `curr` (runs `G.CURR.selfTest()`, throws on problems). A scripted Playwright run checked noise rise, the wake → checkpoint reset, door blocking and the reward. Next: the café (backlog #5).

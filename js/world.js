@@ -123,6 +123,49 @@
         { id: 'ws-cvc2', k: 'lesson', x: 60, row: 12, icon: '🪨', title: 'Big word stone', words: [['fish', '🐟'], ['shop', '🏪'], ['ship', '🚢'], ['frog', '🐸'], ['duck', '🦆'], ['milk', '🥛'], ['tree', '🌳'], ['star', '⭐']], say: 'A big word stone! These words have four letters. Take your time.' },
       ],
     },
+    /* Hush House (SPEC §7.3): tiptoe to Mum's bed without waking her. hush:true turns on the noise meter.
+       creak = noisy floorboards (tile span x0..x1), squeak = toy that squeaks when stepped on,
+       check = night-light checkpoint, mdoor = maths door (red puzzle opens it), mum = the goal. */
+    house: {
+      name: 'Hush House', theme: 'house', music: 'house', w: 64, h: 15, hush: true,
+      fills: [
+        [0, 0, 0, 14, '#'], [63, 0, 63, 14, '#'],
+        [0, 12, 63, 14, '#'],
+        [7, 9, 12, 9, '='],                       // kitchen shelf over the creaky boards
+        [20, 9, 26, 9, '='],                      // hall shelf
+        [35, 10, 37, 10, '='], [38, 8, 41, 8, '='],   // bookcase climb
+        [52, 9, 56, 9, '='],                      // bedroom shelf
+      ],
+      spawn: { x: 3, row: 12 },
+      decor: [
+        { k: 'fridge', x: 120 }, { k: 'stove', x: 230 }, { k: 'window', x: 330, up: 170, night: true }, { k: 'clock', x: 560 }, { k: 'plant', x: 610 },
+        { k: 'picture', x: 780 }, { k: 'grandclock', x: 870 }, { k: 'rug', x: 1000, w: 120, col: '#b77bff' }, { k: 'picture', x: 1300, up: 150 }, { k: 'lamp', x: 1430 },
+        { k: 'sofa', x: 1620 }, { k: 'rug', x: 1650, w: 140 }, { k: 'bookshelf', x: 1840 }, { k: 'window', x: 2050, up: 170, night: true }, { k: 'plant', x: 2200 },
+        { k: 'wardrobe', x: 2420 }, { k: 'toybox', x: 2560 }, { k: 'window', x: 2700, up: 180, night: true }, { k: 'picture', x: 2930, up: 160 }, { k: 'cobweb', x: 3000 },
+      ],
+      ents: [
+        { id: 'hh-back', k: 'door', x: 1.6, row: 12, icon: '🏡', col: '#8d5a3b', to: 'village', at: { x: 33, row: 12 } },
+        { id: 'hh-sign', k: 'sign', x: 5, row: 12, text: 'Shh! Mum is fast asleep. Tiptoe to her bed and tuck her in. Creaky boards are noisy!' },
+        { id: 'hh-cp0', k: 'check', x: 3, row: 12 },
+        { id: 'hh-creak1', k: 'creak', x0: 8, x1: 11, x: 9.5, row: 12 },
+        { id: 'hh-red1', k: 'gem', col: 'red', x: 9.5, row: 9 },
+        { id: 'hh-door1', k: 'mdoor', x: 14, row: 12 },
+        { id: 'hh-cp1', k: 'check', x: 16, row: 12 },
+        { id: 'hh-duck', k: 'squeak', x: 18.5, row: 12, icon: '🐤' },
+        { id: 'hh-creak2', k: 'creak', x0: 21, x1: 25, x: 23, row: 12 },
+        { id: 'hh-yellow1', k: 'gem', col: 'yellow', x: 23, row: 9 },
+        { id: 'hh-teddy', k: 'squeak', x: 28, row: 12, icon: '🐸' },
+        { id: 'hh-door2', k: 'mdoor', x: 31, row: 12 },
+        { id: 'hh-cp2', k: 'check', x: 33, row: 12 },
+        { id: 'hh-creak3', k: 'creak', x0: 42, x1: 46, x: 44, row: 12 },
+        { id: 'hh-purple1', k: 'gem', col: 'purple', x: 40, row: 8 },
+        { id: 'hh-door3', k: 'mdoor', x: 48, row: 12 },
+        { id: 'hh-cp3', k: 'check', x: 50, row: 12 },
+        { id: 'hh-creak4', k: 'creak', x0: 52, x1: 56, x: 54, row: 12 },
+        { id: 'hh-red2', k: 'gem', col: 'red', x: 54, row: 9 },
+        { id: 'hh-mum', k: 'mum', x: 59.5, row: 12 },
+      ],
+    },
   };
   for (const id in G.AREAS) G.AREAS[id].map = G.buildMap(G.AREAS[id].w, G.AREAS[id].h, G.AREAS[id].fills);
 })();

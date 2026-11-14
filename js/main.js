@@ -85,5 +85,10 @@
     { name: 'wood2', run: () => { G.S.quests['lesson:lt-curly'] = 1; G.debug.warp(30); } },
     { name: 'lesson', run: () => { G.debug.close(); G.PZ.run({ colour: 'blue', noAdapt: true, puzzle: { q: '🐶 Write <b>dog</b>', say: 'Write dog', type: 'write', write: { text: 'dog', mode: 'fade' } } }); } },
     { name: 'settings', run: () => { G.debug.close(); G.UI.settings(); } },
+    { name: 'house', run: () => { G.debug.close(); G.E.load('house'); G.debug.warp(10); G.E.noise = 0.55; } },
+    { name: 'house2', run: () => { G.S.locks['hh-door1'] = G.S.locks['hh-door2'] = true; G.debug.warp(30); } },
+    { name: 'mdoor', run: () => { G.debug.warp(47); G.E.interact(G.E.ents.find(e => e.id === 'hh-door3')); } },
+    { name: 'mum', run: () => { G.debug.close(); G.S.locks['hh-door3'] = true; G.debug.warp(57); } },
+    { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];
 })();
