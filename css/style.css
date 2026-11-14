@@ -132,3 +132,29 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 .cfticket { font-size: 84px; font-weight: 600; background: #fff; padding: 6px 48px; border-radius: 12px; border: 3px solid #e3d6c3; transform: rotate(-2deg); box-shadow: 0 6px 0 rgba(0,0,0,.08); letter-spacing: 4px; }
 .cfpic { font-size: 64px; line-height: 1; }
 .cafecard .pad { height: 330px; }
+
+/* iter5: wardrobe polish + toy shop */
+.tabname { font-size: 24px; font-weight: 700; color: #b0703a; padding-left: 6px; }
+.tab { position: relative; }
+.tab.fresh::after, .chip.new::before { content: "✨NEW"; position: absolute; top: -4px; right: -4px; background: var(--pink); color: #fff; font-size: 12px; font-weight: 800; padding: 2px 6px; border-radius: 10px; }
+.tab.fresh::after { content: ""; width: 14px; height: 14px; padding: 0; top: 2px; right: 2px; }
+.chip.new::before { top: 3px; right: 3px; z-index: 1; }
+.chip.new { animation: wob 1.2s ease-in-out 2; }
+.hanger { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 6px 10px; }
+.chip.big { width: 200px; height: 240px; }
+.chip.big canvas { width: 200px; height: 240px; }
+.chip.empty { border: 4px dashed #ffd9a8; color: #b0703a; font-size: 22px; }
+.bigbtn.small { font-size: 22px; padding: 10px 18px; min-height: 56px; }
+.shop { width: 1040px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+.shop .top { display: flex; align-items: center; gap: 16px; }
+.shop .q { font-size: 34px; font-weight: 700; }
+.shop .q small { font-size: 20px; color: #b0703a; }
+.shopgrid { display: flex; gap: 16px; justify-content: center; flex-wrap: nowrap; }
+.shopitem { width: 200px; border: 4px solid transparent; border-radius: 24px; background: #fff6e8; box-shadow: 0 4px 0 rgba(0,0,0,.1); padding: 8px; display: flex; flex-direction: column; align-items: center; font-family: inherit; color: var(--ink); }
+.shopitem canvas { width: 160px; height: 178px; pointer-events: none; }
+.shopitem .nm { font-size: 20px; font-weight: 700; }
+.shopitem .pr { font-size: 24px; font-weight: 800; color: #b0703a; }
+.shopitem.on { border-color: var(--pink); background: #ffe7f2; }
+.shopitem.have .pr { color: #e0568f; }
+.shopact { display: flex; justify-content: center; min-height: 72px; }
+.creator .bigbtn { white-space: nowrap; padding: 0 22px; }

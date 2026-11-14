@@ -61,8 +61,9 @@
         { id: 'g-red1', k: 'gem', col: 'red', x: 12, row: 10 },
         { id: 'g-blue1', k: 'gem', col: 'blue', x: 16, row: 12 },
         { id: 'sign1', k: 'sign', x: 16.5, row: 12, text: 'Hazelnut Hollow. Please be kind to ducks.' },
-        { id: 'pip', k: 'npc', who: 'pip', x: 22.5, row: 12, talk: [
+        { id: 'pip', k: 'npc', who: 'pip', x: 22.5, row: 12, shop: true, talk: [
           'Hello! I am Pip. This is my toy shop.',
+          'You can spend your coins on lovely things. Come and look!',
           'The playroom door is next to me. Play with toys any time you like!',
         ] },
         { id: 'playdoor', k: 'door', x: 19.6, row: 12, icon: '🧸', col: '#ff9f43', act: 'play' },

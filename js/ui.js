@@ -75,7 +75,7 @@
     { id: 'jobs', i: '⭐', n: 'Jobs' }, { id: 'skin', i: '✋', n: 'Skin' }, { id: 'hair', i: '💇', n: 'Hair' }, { id: 'hairCol', i: '🎨', n: 'Hair colour', opt: 'hairCol' },
     { id: 'body', i: '👗', n: 'Clothes' }, { id: 'col1', i: '🔴', n: 'Colour', opt: 'col' }, { id: 'col2', i: '🔵', n: 'Second colour', opt: 'col' },
     { id: 'motif', i: '💖', n: 'Picture' }, { id: 'hat', i: '🎩', n: 'Hats' }, { id: 'back', i: '🦋', n: 'Wings and capes' }, { id: 'held', i: '🪄', n: 'Hold' },
-    { id: 'face', i: '👓', n: 'Face' }, { id: 'pet', i: '🐱', n: 'Pet' }, { id: 'shoes', i: '👟', n: 'Shoes', opt: 'col' },
+    { id: 'face', i: '👓', n: 'Face' }, { id: 'pet', i: '🐱', n: 'Pet' }, { id: 'shoes', i: '👟', n: 'Shoes', opt: 'col' }, { id: 'saved', i: '🧺', n: 'My outfits' },
   ];
   const COLOUR_TABS = { skin: 1, hairCol: 1, col1: 1, col2: 1, shoes: 1 };
 
@@ -89,10 +89,15 @@
       const nm = U.el('input', 'name'); nm.placeholder = 'Your name'; nm.maxLength = 14; nm.value = S.name || ''; left.appendChild(nm);
       const btns = U.el('div', ''); btns.style.cssText = 'display:flex;gap:12px';
       const dice = U.el('button', 'iconbtn', '🎲'); dice.style.cssText += ';width:72px;height:72px;font-size:36px';
+      const undo = U.el('button', 'iconbtn', '↩️'); undo.style.cssText += ';width:72px;height:72px;font-size:34px'; undo.title = 'Undo';
       const ok = U.el('button', 'bigbtn green', first ? 'Let’s go! ▶' : 'Done ✓');
-      btns.appendChild(dice); btns.appendChild(ok); left.appendChild(btns);
-      const tabs = U.el('div', 'tabs'), sw = U.el('div', 'swatches');
-      right.appendChild(tabs); right.appendChild(sw);
+      btns.appendChild(undo); btns.appendChild(dice); btns.appendChild(ok); left.appendChild(btns);
+      const tabs = U.el('div', 'tabs'), tname = U.el('div', 'tabname'), sw = U.el('div', 'swatches');
+      right.appendChild(tabs); right.appendChild(tname); right.appendChild(sw);
+      const hist = [], snap = () => { hist.push(JSON.stringify(av)); if (hist.length > 30) hist.shift(); };
+      undo.onclick = () => { if (!hist.length) { G.sfx('squeak'); return; } Object.assign(av, JSON.parse(hist.pop())); G.sfx('tap'); renderTab(); };
+      if (!Array.isArray(S.outfits)) S.outfits = [];
+      const tabFresh = id => Object.keys(S.fresh || {}).some(key => key.split(':')[0] === id);
       card.appendChild(left); card.appendChild(right); ov.appendChild(card);
       let tab = 'jobs', wave = 0, raf = 0, t0 = performance.now();
 
@@ -114,34 +119,50 @@
       };
       const renderTab = () => {
         tabs.innerHTML = ''; sw.innerHTML = '';
-        for (const tb of TABS) { const b = U.el('button', 'tab' + (tb.id === tab ? ' on' : ''), tb.i); b.title = tb.n; b.onclick = () => { tab = tb.id; G.sfx('tap'); G.say(tb.n, true); renderTab(); }; tabs.appendChild(b); }
+        tname.textContent = TABS.find(x => x.id === tab).n;
+        for (const tb of TABS) { const b = U.el('button', 'tab' + (tb.id === tab ? ' on' : '') + (tabFresh(tb.id) && tb.id !== tab ? ' fresh' : ''), tb.i); b.title = tb.n; b.onclick = () => { tab = tb.id; G.sfx('tap'); G.say(tb.n, true); renderTab(); }; tabs.appendChild(b); }
         if (tab === 'jobs') {
           for (const pr of G.PRESETS) {
             const ch = U.el('button', 'chip', '<div class="em">' + pr.i + '</div><div>' + pr.n + '</div>');
-            ch.onclick = () => { Object.assign(av, { back: 'none', held: 'none', face: 'none', hat: 'none' }, pr.a); for (const k of ['hat', 'back', 'held', 'pet']) if (!G.isOwned(k + ':' + av[k])) av[k] = 'none'; G.sfx('magic'); G.say('A ' + pr.n + '!', true); wave = performance.now() + 1200; };
+            ch.onclick = () => { snap(); Object.assign(av, { back: 'none', held: 'none', face: 'none', hat: 'none' }, pr.a); for (const k of ['hat', 'back', 'held', 'pet']) if (!G.isOwned(k + ':' + av[k])) av[k] = 'none'; G.sfx('magic'); G.say('A ' + pr.n + '!', true); wave = performance.now() + 1200; };
             sw.appendChild(ch);
+          }
+          return;
+        }
+        if (tab === 'saved') {
+          for (let i = 0; i < 3; i++) {
+            const o = S.outfits[i], slot = U.el('div', 'hanger');
+            const tile = U.el('button', 'chip big' + (o ? '' : ' empty'));
+            if (o) { const cv = U.el('canvas'); cv.width = 200; cv.height = 240; const c = cv.getContext('2d'); if (o.pet && o.pet !== 'none') G.drawCreature(c, o.pet, 160, 230, 1.1, { t: 1, face: -1 }); G.drawAvatar(c, o, 90, 230, 2.1, { t: 1, noShadow: true }); tile.appendChild(cv); }
+            else tile.innerHTML = '<div class="em">🧺</div><div>Empty</div>';
+            tile.onclick = () => { if (!o) { keep(); return; } snap(); Object.assign(av, o); for (const k of ['hat', 'back', 'held', 'pet']) if (!G.isOwned(k + ':' + av[k])) av[k] = 'none'; G.sfx('magic'); G.say('Ta-da!', true); wave = performance.now() + 1200; };
+            const keep = () => { S.outfits[i] = Object.assign({}, av); G.saveGame(); G.sfx('coin'); UI.toast('Outfit kept! 🧺', true); renderTab(); };
+            const kb = U.el('button', 'bigbtn small', o ? 'Keep this 💾' : 'Keep this 💾'); kb.onclick = keep;
+            slot.appendChild(tile); slot.appendChild(kb); sw.appendChild(slot);
           }
           return;
         }
         const k = tab, list = G.OPTS[TABS.find(x => x.id === tab).opt || tab];
         for (const v of list) {
           const key = k + ':' + v, owned = G.isOwned(key);
-          const ch = U.el('button', 'chip' + (COLOUR_TABS[k] ? ' col' : '') + (av[k] === v ? ' on' : '') + (owned ? '' : ' locked'));
+          const isNew = owned && S.fresh && S.fresh[key];
+          const ch = U.el('button', 'chip' + (COLOUR_TABS[k] ? ' col' : '') + (av[k] === v ? ' on' : '') + (owned ? '' : ' locked') + (isNew ? ' new' : ''));
           if (COLOUR_TABS[k]) ch.style.background = v;
           else if (k === 'pet') { if (v === 'none') ch.innerHTML = '<div class="em">🚫</div>'; else { const cv = U.el('canvas'); cv.width = 160; cv.height = 160; G.drawCreature(cv.getContext('2d'), v, 80, 140, 2.6, { t: 1 }); ch.appendChild(cv); } }
           else if (v === 'none') ch.innerHTML = '<div class="em">🚫</div>';
           else ch.appendChild(chipCanvas(chipAv(k, v), k === 'hat' || k === 'hair' || k === 'face'));
           ch.onclick = () => {
-            if (!owned) { G.sfx('squeak'); UI.toast(G.LOCKED[key] === 'shop' ? 'Find this in the toy shop!' : 'Help a friend to win this!', true); return; }
-            av[k] = v; G.sfx('pop'); sw.querySelectorAll('.chip').forEach(x => x.classList.remove('on')); ch.classList.add('on');
+            if (!owned) { G.sfx('squeak'); UI.toast(G.lockHint(key), true); return; }
+            snap(); av[k] = v; G.sfx('pop'); sw.querySelectorAll('.chip').forEach(x => x.classList.remove('on')); ch.classList.add('on');
             if (k !== 'skin' && k !== 'hairCol' && !COLOUR_TABS[k]) renderTabSoon();
           };
           sw.appendChild(ch);
         }
+        if (S.fresh) for (const key of Object.keys(S.fresh)) if (key.split(':')[0] === k) delete S.fresh[key];
       };
       let rt = 0; const renderTabSoon = () => { clearTimeout(rt); rt = setTimeout(renderTab, 50); };
       dice.onclick = () => {
-        const O = G.OPTS, pickOwned = k => U.pick(O[k].filter(v => G.isOwned(k + ':' + v)));
+        snap(); const O = G.OPTS, pickOwned = k => U.pick(O[k].filter(v => G.isOwned(k + ':' + v)));
         Object.assign(av, { skin: U.pick(O.skin.slice(0, 6)), hair: pickOwned('hair'), hairCol: U.pick(O.hairCol), body: pickOwned('body'), col1: U.pick(O.col), col2: U.pick(O.col), motif: pickOwned('motif'), hat: pickOwned('hat'), back: Math.random() < 0.5 ? 'none' : pickOwned('back'), held: pickOwned('held'), face: Math.random() < 0.6 ? 'none' : pickOwned('face'), pet: pickOwned('pet') });
         G.sfx('magic'); wave = performance.now() + 1200; renderTab();
       };
@@ -154,6 +175,59 @@
       nm.onkeydown = e => e.stopPropagation();
       renderTab();
       G.say(first ? 'Make your character! Pick a job, or change anything you like.' : 'Dressing-up time!', true);
+    });
+  };
+
+  /* ---------- Pip's toy shop (SPEC §9) ---------- */
+  UI.shop = function () {
+    return new Promise(done => {
+      G.paused = true;
+      const S = G.S, ov = UI.overlay(true), card = U.el('div', 'card shop');
+      const top = U.el('div', 'top'), face = document.createElement('canvas'); face.width = face.height = 110; face.className = 'cfface';
+      G.portrait(face, G.PEOPLE.pip.look, 1); top.appendChild(face);
+      const q = U.el('div', 'q'); top.appendChild(q);
+      const close = U.el('button', 'closex', '✕'); card.appendChild(close);
+      const grid = U.el('div', 'shopgrid'), msg = U.el('div', 'hint'), act = U.el('div', 'shopact');
+      card.appendChild(top); card.appendChild(grid); card.appendChild(msg); card.appendChild(act); ov.appendChild(card);
+      const items = Object.keys(G.LOCKED).filter(k => G.LOCKED[k] === 'shop').sort((a, b) => G.PRICE[a] - G.PRICE[b]);
+      const head = () => { q.innerHTML = '<small>Pip’s Toy Shop</small><br>You have <b>' + S.coins + '</b> 🪙'; };
+      const say = m => { msg.textContent = m; G.say(m, true); };
+      const finish = () => { G.hush(); UI.overlay(false); G.paused = false; G.saveGame(); UI.gembar(); done(); };
+      close.onclick = () => { G.sfx('tap'); finish(); };
+      const preview = key => {
+        const [k, v] = key.split(':'), cv = U.el('canvas'); cv.width = 180; cv.height = 200; const c = cv.getContext('2d');
+        if (k === 'pet') G.drawCreature(c, v, 90, 185, 2.4, { t: 1 });
+        else { const a = Object.assign({}, S.avatar); a[k] = v; G.drawAvatar(c, a, 90, k === 'hat' ? 330 : 195, k === 'hat' ? 3.2 : 1.7, { t: 1, noShadow: true }); }
+        return cv;
+      };
+      const pick = key => {
+        const name = G.ITEM_NAME[key] || 'This', price = G.PRICE[key], [k, v] = key.split(':');
+        grid.querySelectorAll('.shopitem').forEach(x => x.classList.toggle('on', x.dataset.key === key));
+        act.innerHTML = '';
+        const wear = () => { const b = U.el('button', 'bigbtn green', 'Wear it now ▶'); b.onclick = () => { S.avatar[k] = v; G.sfx('magic'); G.saveGame(); finish(); }; act.appendChild(b); };
+        if (S.owned[key]) { say('You have the ' + name.toLowerCase() + ' already! 💖'); if (S.avatar[k] !== v) wear(); return; }
+        if (S.coins < price) { G.sfx('squeak'); say('You have ' + S.coins + ' coins. It costs ' + price + '. You need ' + (price - S.coins) + ' more! Serve at the café to earn coins.'); return; }
+        say(name + ' costs ' + price + ' coins. Do you want it?');
+        const buy = U.el('button', 'bigbtn green', 'Buy for ' + price + ' 🪙');
+        buy.onclick = () => {
+          S.coins -= price; G.unlock(key); G.sfx('fanfare'); G.saveGame(); head(); UI.gembar(); render(); act.innerHTML = '';
+          say('Hooray! The ' + name.toLowerCase() + ' is yours!'); wear();
+        };
+        act.appendChild(buy);
+      };
+      const render = () => {
+        grid.innerHTML = '';
+        for (const key of items) {
+          const it = U.el('button', 'shopitem' + (S.owned[key] ? ' have' : '')); it.dataset.key = key;
+          it.appendChild(preview(key));
+          it.appendChild(U.el('div', 'nm', G.ITEM_NAME[key] || key));
+          it.appendChild(U.el('div', 'pr', S.owned[key] ? '💖 Yours' : G.PRICE[key] + ' 🪙'));
+          it.onclick = () => { G.sfx('tap'); pick(key); };
+          grid.appendChild(it);
+        }
+      };
+      head(); render();
+      say('Welcome to my toy shop! Tap a toy to look at it.');
     });
   };
 

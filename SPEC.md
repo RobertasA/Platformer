@@ -23,6 +23,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `js/lessons.js` + `writing` area (Writing Wood) | [done] iter2 |
 | `house` area (Hush House: noise meter, creaky boards, squeaky toys, maths doors, tuck Mum in) | [done] iter3 |
 | `cafe` area + `js/cafe.js` order cards (Twiggy Spoon Café, §7.2d) | [done] iter4 |
+| Wardrobe polish (NEW badges, lock hints, undo, My outfits) + Pip's toy shop `G.UI.shop` (§9) | [done] iter5 |
 | Areas meadow, tower, woods, caves, clouds | [todo] — gates open but travel shows "still being built" |
 | `js/sandbox.js` playrooms | [todo] stub |
 
@@ -261,6 +262,13 @@ No goals, no failure, gentle sounds. Each playroom = a scene with toys the avata
 Locked cosmetics (`G.LOCKED`) are unlocked via quests/shop/finale and live in `S.owned`.
 Creator UI: big preview with idle animation (wave on tap), category tabs with icon swatches, randomise 🎲, name entry (stylus handwriting optional), reachable any time from the 👗 HUD button.
 
+**iter5 wardrobe polish + toy shop** [done iter5]
+- `G.unlock(key)` sets `S.owned[key]` and marks it new in `S.fresh[key]`. A new item shows a ✨NEW badge on its chip (and a dot on its tab) until that tab is opened.
+- Locked chips say how to get them: shop items → "Pip sells this in the toy shop for N coins!"; quest items → `G.UNLOCK_HINT[key]` (chef hat: "Serve the customers at the café!", lantern: "Tuck Mum in at Hush House!", gold crown: "Finish the whole adventure!") else "Help a friend to win this!".
+- Tab name shown above the swatches. ↩️ Undo button (stack of avatar snapshots) next to 🎲.
+- 🧺 **My outfits** tab: 3 hangers in `S.outfits` (array of avatar objects). Tap a hanger to wear it; "Keep this" saves the current look onto it.
+- **Pip's toy shop** (`G.UI.shop()`): talk to Pip in the village (first time: intro lines, then the shop; afterwards the shop opens straight away). Items = keys with `G.LOCKED[key]==='shop'`, prices `G.PRICE` (unicorn horn 8, dragon wings 10, rainbow cape 12, baby unicorn 15). Each tile: preview, name, price. Tap → "Buy for N coins?" → coins go down, fanfare, "Wear it now ▶" button. Not enough → "You have A coins. It costs B. You need C more!" (subtraction practice) + tip "Serve at the café to earn coins."
+
 ---
 
 ## 10. UX for a 6-year-old on a tablet
@@ -297,7 +305,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 3. **[done iter2] Handwriting v1 → Writing Wood**: `handwriting.js` is done (iter1); still needed: the `writing` area with Captain Quill, letter-family lessons (§7.3 ladder), handwriting progress in a journal; blue gems via writing; works with stylus pointer events.
 4. **[done iter3] Hush House** level (noise meter, Mum snoring) with maths door puzzles.
 5. **[done iter4] Twiggy Spoon Café** story + order-taking (count/money/read/write) + Run-the-café sandbox (§7.2d). Cooking mini-game → later.
-6. **[todo] Wardrobe/creator UI polish** with all presets and locked items.
+6. **[done iter5] Wardrobe/creator UI polish** with locked-item hints, NEW badges, undo, saved outfits + Pip's toy shop (coins finally buy things) (§9).
 7. **[todo] Bugglemead** + bug journal + science puzzles.
 8. **[todo] Sentences on lines** (words done in iter2); handwriting progress page in the journal; capitals & digits trees.
 9. **[todo] Teapot Tower** vertical level; letters & curios; sorting/pattern puzzles.
@@ -318,3 +326,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter3 — Hush House + curriculum.** Feedback: 0 issues. Built the `house` area (§7.2c): noise meter, tiptoe speed, creaky boards, squeaky toys, night-light checkpoints, three maths doors, tuck-Mum-in ending with a lantern reward. Integrated `curriculum.js` from a Sonnet sub-agent (selfTest clean); fixed "1 pebbles" in story sums (min 2). New debug steps `house`, `house2`, `mdoor`, `mum`, `curr` (runs `G.CURR.selfTest()`, throws on problems). A scripted Playwright run checked noise rise, the wake → checkpoint reset, door blocking and the reward. Next: the café (backlog #5).
 
 **iter4 — Twiggy Spoon Café.** Feedback: 0 issues. Built the `cafe` area (§7.2d): Mrs Bramble, Wilf, four customers with order cards in `js/cafe.js` — count cakes onto a plate, read an order ticket, pay with coins into a purse, write the order on a notepad (handwriting pad). Never-fail rules and adaptive levels as for puzzles. Serving all four → blue gem + chef hat, then "Run the café" free play (customers re-order with random kinds). New decor: counter with cake dome and till, chalkboard menu; new theme `cafe` (gingham wallpaper). Debug steps `cafe`, `order-count/read/money/write`, `cafe2`; a scripted run checked rewards and re-orders. Next: wardrobe polish (#6), Bugglemead (#7).
+
+**iter5 — wardrobe polish + Pip's toy shop.** Feedback: 0 issues. Coins now buy things: Pip's shop sells the four shop-locked items (8–15 coins) with a "you need N more" subtraction message. Wardrobe: `G.unlock` + ✨NEW badges, lock hints that say where to win an item, tab names, ↩️ undo, 🧺 My outfits (3 hangers). Fixed the Done button wrapping and the shop wrapping on phone. Debug steps `shop`, `shop-poor`, `wardrobe-new`, `outfits`; a scripted run checked buy → wear → NEW badge → undo. Next: Bugglemead (#7).

@@ -95,6 +95,10 @@
     { name: 'order-money', run: () => { G.debug.close(); G.S.level.maths = 2; G.CAFE.order({ who: 'hoot', kind: 'money' }); } },
     { name: 'order-write', run: () => { G.debug.close(); G.CAFE.order({ who: 'ogden', kind: 'write' }); } },
     { name: 'cafe2', run: () => { G.debug.close(); G.debug.warp(38); } },
+    { name: 'shop', run: () => { G.debug.close(); G.E.load('village'); G.debug.warp(22); G.S.coins = 11; G.UI.shop(); setTimeout(() => document.querySelectorAll('.shopitem')[1].click(), 50); } },
+    { name: 'shop-poor', run: () => { document.querySelectorAll('.shopitem')[3].click(); } },
+    { name: 'wardrobe-new', run: () => { G.debug.close(); G.unlock('hat:chef'); G.UI.creator(false); setTimeout(() => document.querySelectorAll('.tabs .tab')[8].click(), 50); } },
+    { name: 'outfits', run: () => { G.S.outfits = [Object.assign(G.defaultAvatar(), { hat: 'chef', body: 'robe', col1: '#6c4bd8' })]; document.querySelectorAll('.tabs .tab')[14].click(); } },
     { name: 'curr', run: () => { const r = G.CURR ? G.CURR.selfTest() : ['no CURR']; if (r.length) throw new Error('selfTest: ' + r.slice(0, 3).join('; ')); G.debug.gem('yellow', 'shapes', 2); } },
   ];
 })();

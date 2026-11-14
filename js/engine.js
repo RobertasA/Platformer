@@ -155,7 +155,7 @@
   };
 
   E.interact = function (e) {
-    if (e.k === 'npc') { G.S.seen['talk:' + e.id] = true; G.UI.talk(G.PEOPLE[e.who], e.talk); }
+    if (e.k === 'npc') { const again = G.S.seen['talk:' + e.id]; G.S.seen['talk:' + e.id] = true; if (e.shop && again) G.UI.shop(); else { const p = G.UI.talk(G.PEOPLE[e.who], e.talk); if (e.shop && p && p.then) p.then(() => G.UI.shop()); } }
     else if (e.k === 'lesson') G.LS.run(e);
     else if (e.k === 'sign') G.UI.toast('📜 ' + e.text, true);
     else if (e.k === 'gate') G.UI.gate(e);
@@ -182,7 +182,7 @@
     const S = G.S, me = { name: S.name || 'You', look: { av: S.avatar } };
     if (S.quests.hush) { G.UI.toast('Sweet dreams, Mum. 💤', true); return; }
     await G.UI.talk(me, ['Night-night, Mum. Here is your blanket.', 'Mum smiles in her sleep. You were as quiet as a mouse!']);
-    S.quests.hush = true; S.gems.yellow++; S.coins += 5; S.owned['held:lantern'] = true;
+    S.quests.hush = true; S.gems.yellow++; S.coins += 5; G.unlock('held:lantern');
     G.sfx('fanfare'); E.burst(e.px, e.py - 60, '#ffc93c', 30);
     G.UI.flyGem('yellow', e.px - E.cam.x, e.py - 80 - E.cam.y);
     G.UI.banner('You did it! 🌙'); G.saveGame();
@@ -204,7 +204,7 @@
     if (!S.quests.cafe) {
       S.quests['cafe:' + e.id] = true;
       if (E.ents.filter(x => x.k === 'cust').every(x => S.quests['cafe:' + x.id])) {
-        S.quests.cafe = true; S.gems.blue++; S.owned['hat:chef'] = true;
+        S.quests.cafe = true; S.gems.blue++; G.unlock('hat:chef');
         for (const x of E.ents) if (x.k === 'cust' && x !== e) x.again = 8;
         G.sfx('fanfare'); G.UI.flyGem('blue', e.px - E.cam.x, e.py - 110 - E.cam.y); G.UI.banner('Super waiter! ☕');
         setTimeout(() => G.UI.toast('You won a chef hat! Find it in the dressing-up cottage. 👩‍🍳 Customers will keep coming — run the café!', true), 2400);

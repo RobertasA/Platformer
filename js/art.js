@@ -45,6 +45,12 @@
   /* items that must be earned (quest reward) or bought in the toy shop */
   G.LOCKED = { 'hat:goldcrown': 'finale', 'back:rainbowcape': 'shop', 'pet:dragon': 'quest', 'pet:unicorn': 'shop', 'pet:tuft': 'quest', 'hat:antennae': 'quest', 'back:beewings': 'quest', 'hat:detective': 'quest', 'hat:chef': 'quest', 'held:lantern': 'quest', 'back:dragonwings': 'shop', 'hat:unicorn': 'shop' };
   G.isOwned = key => !G.LOCKED[key] || (G.S && G.S.owned[key]);
+  G.PRICE = { 'hat:unicorn': 8, 'back:dragonwings': 10, 'back:rainbowcape': 12, 'pet:unicorn': 15 };
+  G.ITEM_NAME = { 'hat:unicorn': 'Unicorn horn', 'back:dragonwings': 'Dragon wings', 'back:rainbowcape': 'Rainbow cape', 'pet:unicorn': 'Baby unicorn', 'hat:chef': 'Chef hat', 'held:lantern': 'Night lantern' };
+  G.UNLOCK_HINT = { 'hat:chef': 'Serve the customers at the café!', 'held:lantern': 'Tuck Mum in at Hush House!', 'hat:goldcrown': 'Finish the whole adventure!' };
+  G.lockHint = key => G.LOCKED[key] === 'shop' ? 'Pip sells this in the toy shop for ' + G.PRICE[key] + ' coins!' : G.UNLOCK_HINT[key] || 'Help a friend to win this!';
+  /* win an item: owned + NEW badge in the wardrobe */
+  G.unlock = key => { G.S.owned[key] = true; (G.S.fresh = G.S.fresh || {})[key] = true; };
 
   G.PRESETS = [
     { n: 'Witch', i: '🧙‍♀️', a: { body: 'robe', col1: '#6c4bd8', col2: '#ffe066', motif: 'moon', hat: 'witch', back: 'none', held: 'broom', pet: 'cat' } },
