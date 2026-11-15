@@ -71,7 +71,7 @@
         const first = !G.S.bugs[kind]; G.S.bugs[kind] = true;
         if (first) { G.S.coins++; G.UI.gembar && G.UI.gembar(); }
         box.innerHTML = '';
-        hint.innerHTML = (revealed ? '' : U.pick(['Well spotted!', 'Brilliant!', 'Yes!']) + ' ') + b.fact + (first ? '<br><b>New bug for your journal! 📖 +1 🪙</b>' : '');
+        hint.innerHTML = (revealed ? '' : U.pick(['Well spotted!', 'You looked closely!', 'You counted them!']) + ' ') + b.fact + (first ? '<br><b>New bug for your journal! 📖 +1 🪙</b>' : '');
         G.say(hint.textContent.replace(/[📖🪙+]/gu, ''), true);
         const go = U.el('button', 'bigbtn green', 'Let it go 🍃');
         go.onclick = () => { G.sfx('tap'); finish({ ok: true, first }); M.rewards(); };
@@ -139,7 +139,7 @@
         return el;
       });
       const place = (bt, hoopEl, good) => {
-        if (good) { G.sfx('right'); hint.textContent = U.pick(['Yes!', 'Good sorting!', 'Well done!']); G.say(hint.textContent, true); }
+        if (good) { G.sfx('right'); hint.textContent = U.pick(['Good sorting!', 'You checked its legs!', 'You looked closely!']); G.say(hint.textContent, true); }
         bt.classList.remove('sel'); bt.onclick = null; bt.classList.add('placed'); hoopEl.appendChild(bt); sel = null;
         if (--left === 0) setTimeout(win, 700);
       };

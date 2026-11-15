@@ -30,6 +30,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `woods` + `js/woods.js`, `caves` + `js/caves.js`, bounce/raft/pick/dark (§7.2h) | [done] iter10 |
 | `clouds` + `js/clouds.js`, finale `js/finale.js`, grown-ups page (§7.2i) | [done] iter11 |
 | Installable + offline (manifest, `sw.js`, icons) (§7.2j); Music Room | [done] iter12 |
+| Feedback quality: praise, write tiers, hint ladder, music duck, letter sounds (§7.2k) | [done] iter13 |
 | `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -305,6 +306,13 @@ New engine pieces (all in `engine.js`):
 - Registered from `main.js` on https or localhost, never with `?debug` (so the smoke test always sees fresh files).
 - Grown-ups page gains "Play offline": says whether the game is saved for offline use and how to add it to the home screen.
 
+### 7.2k Feedback quality (iter13; feedback #1 #2 #3 #9 #12) [done]
+- **Praise names the action (#1).** `PZ.PRAISE[subject]` — maths "You worked it out!" / "You counted carefully!"; words "You sounded it out!" / "You read it carefully!"; nature "You thought about it!" / "You looked carefully!"; shapes "You looked carefully!" / "You checked it!"; patterns "You spotted the pattern!" / "You looked carefully!". Order puzzles: "You put them in order!". Solved after a miss: "You kept trying!". No praise of the child ("Clever you!" is gone). Bug cards use "Well spotted!", "You looked closely!", "You counted them!".
+- **Writing celebration follows formation (#2).** In a write puzzle the pad's result picks a tier, all of which pass: *good* (ok and score ≥ 0.85) → fanfare, confetti and a named strength ("You started in the right place!"); *ok* (≥ 0.5) → a small sparkle, "Good try! Next time, start at the green dot."; *forced* (the pad had to let a letter through) → no confetti, "Let's do that one again soon.", and those letters are added to `S.hwQueue` (max 12, for the review queue in #6).
+- **Hint ladder (#3).** First miss: the cue (`hint`). Second miss: more help — the puzzle's own `hint2` if it has one, else a worked demonstration from `PZ.demo(p)` (addition "Start at 8. Count on 2: 9, 10."; subtraction counts back; missing number counts up; first sounds "Listen: kuh, kuh, key."), else "Nearly!" + the cue; in a choice with five or more answers one wrong answer is also taken away, and in an order puzzle the first tile is placed and locked ("I put the first one in for you."). Third miss: reveal. Cards with three picture answers (café, meadow, tower, woods, clouds) keep cue → cue → reveal, because after two misses only the right answer is left.
+- **Music ducks (#9).** `G.duck(on)`: music gain 0.16 → 0.04 while the overlay is open (any puzzle, pad, card or playroom), back on close; called from `UI.overlay`.
+- **Letter sounds (#12).** When the pad accepts a letter in a single-word or single-letter text it says the sound (`G.HW.soundOf`: say-as spellings for a–z such as "sss", "mmm", "kuh"; "capital A" for capitals; number names for digits); a word of two or more lower-case letters is then said whole ("kuh, a, tuh … cat"), and `onResult` waits for it (1.7 s for a word, 1 s for a letter). Sentences are not sounded letter by letter. Grown-ups page: "Say letter sounds while writing: on/off" (`settings.letterSounds`). Not built: the pencil sound; the say-as table is unchecked by ear.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -406,6 +414,13 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 12. **[done iter11] Grown-up page**. **[done iter12]** offline PWA + Music Room. **[todo]** accessibility settings, polish pass (juice, music, particles), tile-layer cache.
 13. **[todo] More playrooms** (café free play, bug garden, shop, music room, builder's yard) and a second visit reason for finished areas (daily surprises).
 
+14. **[done iter13] Feedback quality** — process praise (#1), writing celebration tiers (#2), hint ladder (#3), music ducking (#9), letter sounds (#12).
+15. **[todo] Handwriting ladder** — a "copy it" mode between fade and memory (#7); bring tricky letters and sums back later and next day (#6, uses `S.hwQueue`).
+16. **[todo] Rewards** — stop announcing "+2 coins" each time; surprise finds and thank-you presents instead (#4).
+17. **[todo] Grown-up moments** — "Show a grown-up" gallery of her own writing and a question to ask her (#5); a cosy place to stop after a grown-up-set time (#10).
+18. **[todo] Pet companion** — name it; it reacts to what she does (#11).
+19. **[todo] Skill in the world** — writing and counting that change the level itself, not a pop-up card (#8). Biggest design change; needs its own slice.
+
 ---
 
 ## 14. Iteration log
@@ -441,3 +456,5 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter11 — Cloudtop Kingdom, the finale and the grown-ups page.** The last area: cloud platforms and three cloud bounces up to the Cloud Castle, Luna the unicorn, weather station (dress Teddy for the weather), star counter (tens and ones in ten-frames), rainbow maker (colour order; the rainbow then arcs over the castle). The castle needs 5/5/5/5/4 gems; inside is the party with every friend, "sign the royal book" (her own name on the handwriting pad) and the golden crown. Settings → "For grown-ups" (hold 2 s): levels per subject in plain words, handwriting letters to practise, adventure and playroom counts, handwriting strictness. The whole story is now playable from the first gate to the crown. Note: both Sonnet sub-agents were cut off by the usage limit before they could verify; the files they left were complete, and I tested every card to its reward and the party to the crown myself (fixed: crown covered the face, invisible ✕ on the star card, a doubled crown badge). Check: 13 cloud entities reached by the physics bot; no page errors at tablet and phone sizes. Feedback: none open. Next: #12 polish/offline, #13 more playrooms — and real-tablet feedback on handwriting.
 
 **iter12 — Install it, play offline, and a Music Room.** `manifest.webmanifest` + `sw.js` + icons generated from the game's own art (`tools/icons.js`): the game can be added to the tablet's home screen, opens full screen in landscape, and works with no internet after one online visit (the worker caches every file `index.html` references and refreshes them in the background). Test: loaded once, went offline, reloaded — the game booted with all 9 areas from 41 cached files. Grown-ups page says whether offline play is ready. Fifth playroom, the Music Room (Sonnet sub-agent): rainbow xylophone with glissando, drums, bells, record/play, 3 saved tunes, and a song book of three nursery tunes that waits for each note. Toy box cards shrunk so five fit in one row. Feedback: none open. Next: real-tablet feedback (handwriting, install), tile-layer cache, more playrooms.
+
+**iter13 — Feedback quality (first feedback issues).** Twelve research-based feedback issues (#1–#12) arrived; all queued as backlog 14–19. Shipped five that change what she hears and sees after every answer: praise for the action not the child (#1), writing celebrated by how well it was formed with forced letters queued for another go (#2), a second hint that gives more help — worked counting demonstrations, a tile placed for her (#3), music turned down under any card or pad (#9), and the letter's sound spoken as each letter is accepted, then the whole word (#12). Scripted tests: both hint ladders, all three write tiers, and "cat" on a real pad → spoken "kuh, a, tuh, cat". Not verifiable here: how the tablet's voice pronounces "sss"/"mmm" — there is an off switch on the grown-ups page. Next: #7 copy mode + #6 review queue.

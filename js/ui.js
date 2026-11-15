@@ -6,7 +6,7 @@
   G.AREA_NAMES = { house: 'Hush House', cafe: 'The Twiggy Spoon Café', meadow: 'Bugglemead', writing: 'Writing Wood', tower: 'Teapot Tower', woods: 'Whispering Woods', caves: 'Crystal Caves', clouds: 'Cloudtop Kingdom' };
 
   /* ---------- overlay / HUD ---------- */
-  UI.overlay = on => { const o = $('#overlay'); o.innerHTML = ''; o.classList.toggle('hidden', !on); return o; };
+  UI.overlay = on => { const o = $('#overlay'); o.innerHTML = ''; o.classList.toggle('hidden', !on); if (G.duck) G.duck(!!on); return o; };
   UI.hud = on => { $('#hud').classList.toggle('hidden', !on); $('#touch').classList.toggle('hidden', !on); };
   UI.gembar = function (bump) {
     const S = G.S, bar = $('#gembar');
@@ -291,6 +291,7 @@
     const tolBtn = U.el('button', 'gbtn'), TOL = [[1.3, 'gentle'], [1, 'normal'], [0.8, 'strict']];
     const tolShow = () => { const cur = S.settings.writeTol || 1, i = cur > 1.1 ? 0 : cur < 0.9 ? 2 : 1; tolBtn.textContent = 'Handwriting checks: ' + TOL[i][1]; return i; };
     tolBtn.onclick = () => { S.settings.writeTol = TOL[(tolShow() + 1) % 3][0]; tolShow(); G.saveGame(); }; tolShow(); set.appendChild(tolBtn);
+    const ls = U.el('button', 'gbtn'); const lsShow = () => ls.textContent = 'Say letter sounds while writing: ' + (S.settings.letterSounds === false ? 'off' : 'on'); ls.onclick = () => { S.settings.letterSounds = S.settings.letterSounds === false; lsShow(); G.saveGame(); }; lsShow(); set.appendChild(ls);
     const lh = U.el('button', 'gbtn'); const lhShow = () => lh.textContent = 'Writing hand: ' + (S.settings.leftHanded ? 'left' : 'right'); lh.onclick = () => { S.settings.leftHanded = !S.settings.leftHanded; lhShow(); G.saveGame(); }; lhShow(); set.appendChild(lh);
     const close = U.el('button', 'closex', '✕'); close.onclick = () => { G.sfx('tap'); UI.overlay(false); G.paused = false; }; card.appendChild(close);
     ov.appendChild(card);

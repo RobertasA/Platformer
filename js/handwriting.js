@@ -590,12 +590,17 @@
       sfx(forcedAccept ? 'pop' : 'right');
       results.push({ ch: it.ch, score: forcedAccept ? Math.min(res.score, 0.3) : res.score, issue: forcedAccept ? (res.issue || 'gave-up') : null });
       if (forcedAccept) forced = true;
+      /* say the sound of the letter just written; a whole word is blended at the end (#12) */
+      const sounds = opts.sounds !== false && G.S && G.S.settings.letterSounds !== false, text = String(opts.text || ''), oneWord = !/\s/.test(text);
+      if (sounds && oneWord) say(HW.soundOf(it.ch));
       const k = letterIdx.indexOf(cur);
       if (k + 1 < letterIdx.length) { cur = letterIdx[k + 1]; if (opts.mode === 'trace' && items.length > 1) { /* gentle: no auto demo for later letters */ } }
       else {
         cur = -1; finished = true;
         const score = results.reduce((s, r) => s + r.score, 0) / Math.max(1, results.length);
-        setTimeout(() => { if (destroyed) return; try { if (opts.onResult) opts.onResult({ ok: !forced && score >= 0.5, score, perChar: results.slice() }); } catch (e) { } }, 700);
+        const blend = sounds && oneWord && /^[a-z]{2,}$/.test(text);
+        if (blend) setTimeout(() => { if (!destroyed) say(text); }, 650);
+        setTimeout(() => { if (destroyed) return; try { if (opts.onResult) opts.onResult({ ok: !forced && score >= 0.5, score, perChar: results.slice() }); } catch (e) { } }, blend ? 1700 : sounds && oneWord ? 1000 : 700);
       }
     }
     function fail(res) {
@@ -633,6 +638,12 @@
   }
 
   const HW = { GLYPHS: GL, mount, analyse, resample };
+  /* what the voice says for a letter just written: the phonics sound for a–z (say-as spellings for the en-GB voice),
+     "capital A" for capitals, the number name for digits, nothing for punctuation */
+  const SOUND = { a: 'a', b: 'buh', c: 'kuh', d: 'duh', e: 'eh', f: 'fff', g: 'guh', h: 'huh', i: 'ih', j: 'juh', k: 'kuh', l: 'lll', m: 'mmm', n: 'nnn', o: 'o', p: 'puh', q: 'kwuh', r: 'rrr', s: 'sss', t: 'tuh', u: 'uh', v: 'vvv', w: 'wuh', x: 'ks', y: 'yuh', z: 'zzz' };
+  const NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  HW.SOUND = SOUND;
+  HW.soundOf = ch => SOUND[ch] || (/[A-Z]/.test(ch) ? 'capital ' + ch : /[0-9]/.test(ch) ? NUM[+ch] : '');
   G.HW = HW;
   if (typeof module !== 'undefined' && module.exports) module.exports = HW;
 })();

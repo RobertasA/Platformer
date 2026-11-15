@@ -76,6 +76,8 @@
   };
   let timer = null, step = 0, mood = null, pat = [];
   const newPattern = () => { pat = []; let p = U.irnd(2, 5); for (let i = 0; i < 16; i++) { p = U.clamp(p + U.irnd(-2, 2), 0, 7); pat.push(Math.random() < 0.62 ? p : -1); } };
+  /* quieter music while a card, pad or playroom is open (#9) */
+  G.duck = on => { try { if (musicGain && ac) musicGain.gain.setTargetAtTime(on ? 0.04 : 0.16, ac.currentTime, 0.25); } catch (e) { } };
   G.music = {
     play(name) {
       if (mood === MOODS[name] && timer) return;
