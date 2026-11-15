@@ -280,7 +280,8 @@
     h += '<h3>Learning</h3><p>Puzzles solved: <b>' + S.stats.solved + '</b>. The game moves each subject up or down a level by itself.</p><table>';
     for (const k in SUBJ) { const lv = Math.min(4, S.level[k] || 0); h += '<tr><td>' + SUBJ[k][0] + '</td><td><b>Level ' + (lv + 1) + ' of 5</b></td><td>' + SUBJ[k][1][lv] + '</td></tr>'; }
     h += '</table><h3>Handwriting</h3><p>Letters practised: <b>' + keys.length + '</b>. Formed well (2–3 stars): <b>' + keys.filter(k => stars(k) >= 2).length + '</b>.'
-      + (weak.length ? ' Worth practising: <b class="gl">' + weak.join(' &nbsp;') + '</b>.' : keys.length ? ' Nothing stands out as weak.' : ' Nothing written yet — try Writing Wood.') + '</p>';
+      + (weak.length ? ' Worth practising: <b class="gl">' + weak.join(' &nbsp;') + '</b>.' : keys.length ? ' Nothing stands out as weak.' : ' Nothing written yet — try Writing Wood.')
+      + (G.LS && G.LS.queue().length ? ' Coming back soon: <b class="gl">' + G.LS.queue().map(q => q.ch).join(' &nbsp;') + '</b>.' : '') + '</p>';
     h += '</div><div><h3>Adventure</h3><p>Places visited: <b>' + areas + ' of ' + Object.keys(G.AREAS).length + '</b>. Quests and firsts finished: <b>' + quests + '</b>.' + (S.quests.finale ? ' The Cloud Castle is open — the story is complete.' : '') + '</p>'
       + '<p>Gems: ' + G.GEMS.map(c => G.gemSVG(c, 22) + ' ' + S.gems[c]).join(' &nbsp;') + ' &nbsp;🪙 ' + S.coins + '</p>'
       + '<h3>Playroom</h3><p>Potions cast: <b>' + (S.stats.potions || 0) + '</b>. Pets made better: <b>' + cured + '</b>. Pictures saved: <b>' + pics + '</b>.</p>'

@@ -23,7 +23,14 @@
   PZ.run = function (o) {
     const subject = o.subject || G.GEM_INFO[o.colour].subj, colour = o.colour || G.GEMS.find(c => G.GEM_INFO[c].subj === subject);
     const level = o.level !== undefined ? o.level : G.S.level[subject];
-    let p = o.puzzle || PZ.make(subject, level);
+    /* come-back queue (#6): a gem puzzle that needed the reveal returns later, looking like any other */
+    const S = G.S, rq = S.review = S.review || [], today = new Date().toDateString();
+    let rev = null;
+    if (!o.puzzle) {
+      S.pzCount = (S.pzCount || 0) + 1;
+      rev = rq.find(r => r.subj === subject && (r.stage < 2 ? S.pzCount >= r.at : r.day !== today)) || null;
+    }
+    let p = o.puzzle || (rev ? rev.p : PZ.make(subject, level));
     if (p.type === 'write' && !G.HW) p = PZ.make(subject, level === 0 ? 1 : level);   // safety: no pad loaded
     if (p.key) { recent.push(p.key); if (recent.length > 30) recent.shift(); }
     const info = G.GEM_INFO[colour];
@@ -43,7 +50,20 @@
       const close = U.el('button', 'closex', '✕'); card.appendChild(close);
       ov.appendChild(card);
       let wrong = 0, done = false, pad = null;
-      const finish = ok => { if (pad) pad.destroy(); G.hush(); G.UI.overlay(false); G.paused = false; resolve(ok); };
+      const finish = ok => {
+        if (pad) pad.destroy(); G.hush(); G.UI.overlay(false); G.paused = false;
+        if (!o.puzzle && ok && ok.ok) {
+          if (ok.revealed) {
+            if (rev) rev.at = S.pzCount + 3;
+            else if (p.type !== 'write') { rq.push({ p: p, subj: subject, stage: 0, at: S.pzCount + 3, day: '' }); if (rq.length > 12) rq.shift(); }
+          } else if (rev) {
+            rev.stage++;
+            if (rev.stage === 1) rev.at = S.pzCount + 8; else if (rev.stage === 2) rev.day = today; else rq.splice(rq.indexOf(rev), 1);
+          }
+          G.saveGame();
+        }
+        resolve(ok);
+      };
       close.onclick = () => { if (done) return; done = true; G.sfx('tap'); finish({ ok: false }); };
 
       /* praise names what she did, never what she is (#1); tier = how well a write puzzle was formed (#2) */
@@ -123,8 +143,10 @@
             const hw = G.S.handwriting = G.S.handwriting || {};
             for (const pc of (r.perChar || [])) { const h = hw[pc.ch] = hw[pc.ch] || { best: 0, tries: 0 }; h.tries++; h.best = Math.max(h.best, pc.score || 0); }
             if (!r.ok) wrong = 1;
-            const forcedCh = (r.perChar || []).filter(pc => pc.issue).map(pc => pc.ch);
-            if (forcedCh.length) { const q = G.S.hwQueue = G.S.hwQueue || []; for (const ch of forcedCh) if (!q.includes(ch)) q.push(ch); if (q.length > 12) q.splice(0, q.length - 12); }
+            for (const pc of (r.perChar || [])) {
+              if (p.write.mode === 'copy' && !pc.issue && pc.score >= 0.7) hw[pc.ch].copied = (hw[pc.ch].copied || 0) + 1;
+              if (G.LS && /[a-zA-Z0-9]/.test(pc.ch)) G.LS.note(pc.ch, pc.score || 0, !!pc.issue);
+            }
             success(!r.ok ? 'forced' : r.score >= 0.85 ? 'good' : 'ok');
           },
         });

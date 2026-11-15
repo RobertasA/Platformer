@@ -5,7 +5,24 @@
   'use strict';
   const G = window.G, U = G.U;
   const LS = G.LS = {};
-  LS.modeFor = ch => { const h = (G.S.handwriting || {})[ch]; const b = h ? h.best : 0; return b >= 0.85 && h.tries >= 3 ? 'memory' : b >= 0.7 ? 'fade' : 'trace'; };
+  /* ladder: trace → fade → copy → memory (#7); a letter in the come-back queue never gets memory (#6) */
+  LS.modeFor = ch => {
+    const h = (G.S.handwriting || {})[ch], b = h ? h.best : 0, queued = LS.queue().some(q => q.ch === ch);
+    if (b >= 0.85 && h.tries >= 3) return (h.copied || 0) >= 2 && !queued ? 'memory' : 'copy';
+    return b >= 0.7 ? 'fade' : 'trace';
+  };
+  LS.today = () => new Date().toDateString();
+  LS.queue = () => { const q = G.S.hwQueue = (G.S.hwQueue || []).map(x => typeof x === 'string' ? { ch: x, stage: 0, day: '' } : x); return q; };
+  LS.due = () => LS.queue().filter(q => q.stage === 0 || q.day !== LS.today()).map(q => q.ch);
+  /* after a letter is written: join the queue if it went badly, step through it if it went well */
+  LS.note = function (ch, score, forced) {
+    const q = LS.queue(), i = q.findIndex(x => x.ch === ch), good = !forced && score >= 0.7;
+    if (!good) { if (i < 0) { q.push({ ch, stage: 0, day: '' }); if (q.length > 12) q.shift(); } else { q[i].stage = 0; q[i].day = ''; } return; }
+    if (i < 0) return;
+    if (q[i].stage === 0) { q[i].stage = 1; q[i].day = LS.today(); }
+    else if (q[i].day !== LS.today()) q.splice(i, 1);
+  };
+  const VERB = { trace: 'Trace', fade: 'Trace', copy: 'Copy', memory: 'Write' };
   LS.done = id => !!(G.S.quests['lesson:' + id]);
 
   LS.run = async function (e) {
@@ -14,15 +31,16 @@
       await G.UI.talk(G.PEOPLE.quill, [e.say]);
       const steps = [];
       if (e.letters) {
-        const pool = U.shuffle(e.letters.split('')).slice(0, 4);
+        const due = LS.due(), fam = U.shuffle(e.letters.split(''));
+        const pool = fam.filter(ch => due.includes(ch)).concat(fam.filter(ch => !due.includes(ch))).slice(0, 4);
         for (const ch of pool) {
           const m = LS.modeFor(ch);
-          steps.push({ q: (m === 'memory' ? 'Write the letter <b>' + ch + '</b>' : 'Trace the letter <b>' + ch + '</b>'), say: (m === 'memory' ? 'Write the letter ' : 'Trace the letter ') + ch + '.', write: { text: ch, mode: m } });
+          steps.push({ q: VERB[m] + ' the letter <b>' + ch + '</b>', say: VERB[m] + ' the letter ' + ch + '.' + (m === 'copy' ? ' Look at it, then write your own.' : ''), write: { text: ch, mode: m } });
         }
       } else if (e.words) {
         U.shuffle(e.words).slice(0, 3).forEach(([w, pic], i) => {
-          const m = i === 0 ? 'trace' : 'fade';
-          steps.push({ q: pic + ' Write <b>' + w + '</b>', say: 'Write the word ' + w + '. ' + w.split('').join(', ') + '.', write: { text: w, mode: m } });
+          const m = ['trace', 'fade', 'copy'][i] || 'fade';
+          steps.push({ q: pic + (m === 'copy' ? ' Copy <b>' : ' Write <b>') + w + '</b>', say: 'Write the word ' + w + '. ' + w.split('').join(', ') + '.', write: { text: w, mode: m } });
         });
       } else if (e.sentences) {
         U.shuffle(e.sentences).slice(0, 2).forEach(([t, pic], i) => {

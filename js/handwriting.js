@@ -312,6 +312,11 @@
     let cur = letterIdx.length ? letterIdx[0] : -1;
 
     const S = { s: 2, x0: 0, base: 0 };
+    const copyOne = opts.mode === 'copy' && letterIdx.length === 1 && items.length === 1;
+    let modelX = 0;
+    /* the copy model is drawn in a slightly different hand each time (#7) */
+    const hand = { slant: (Math.random() - 0.5) * 0.24, wide: 0.9 + Math.random() * 0.2, lw: 5 + Math.random() * 3, ph: Math.random() * 6.3, amp: 1 + Math.random() * 1.5 };
+    const handPt = (px, py) => [px * hand.wide + py * hand.slant + Math.sin(py * 0.07 + hand.ph) * hand.amp, py + Math.sin(px * 0.09 + hand.ph * 2) * hand.amp];
     const X = wx => S.x0 + wx * S.s, Y = wy => S.base - wy * S.s;
     function layout() {
       W = container.clientWidth || 900;
@@ -320,7 +325,13 @@
       cvs.width = Math.round(W * dpr); cvs.height = Math.round(H * dpr); cvs.style.height = H + 'px';
       const top = 74;
       S.s = Math.max(0.6, Math.min(2.2, (W - 110) / Math.max(1, TW), (H - top - 12) / 140));
-      S.x0 = (W - TW * S.s) / 2; S.base = top + 100 * S.s;
+      if (copyOne) {   // copy mode, one letter: model and slot side by side (#7)
+        S.s = Math.max(0.6, Math.min(2.2, (W - 110) / (TW * 2 + 50), (H - top - 12) / 140));
+        const pair = (TW * 2 + 50) * S.s, left = (W - pair) / 2;
+        S.x0 = opts.leftHanded ? left : left + (TW + 50) * S.s;
+        modelX = opts.leftHanded ? left + (TW + 50) * S.s : left;
+      } else S.x0 = (W - TW * S.s) / 2;
+      S.base = top + 100 * S.s;
     }
     layout();
 
@@ -338,7 +349,7 @@
     }
     const inR = (p, r) => p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h;
 
-    const effMode = () => (opts.mode === 'memory' && fails >= 2) ? 'fade' : opts.mode;
+    const effMode = () => ((opts.mode === 'memory' || opts.mode === 'copy') && fails >= 2) ? 'fade' : opts.mode;
 
     function coach(msg) {
       bubble = { text: msg, t0: performance.now() };
@@ -376,7 +387,7 @@
         let alpha;
         if (em === 'trace') alpha = isCur ? 0.6 : 0.3;
         else if (em === 'fade') alpha = isCur ? 0.15 : 0;
-        else alpha = 0;
+        else alpha = 0;   // copy and memory: nothing under the pen
         if (!alpha) return;
         c.save(); c.globalAlpha = alpha; c.strokeStyle = '#7d8aa3'; c.fillStyle = '#7d8aa3'; c.lineCap = 'round'; c.lineJoin = 'round';
         c.lineWidth = Math.max(6, 5 * S.s); c.setLineDash([0.1, Math.max(10, 7 * S.s)]);
@@ -492,8 +503,26 @@
         c.fillStyle = '#1d4ed8'; c.font = 'bold 20px system-ui,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(label, r.x + r.w / 2, r.y + r.h / 2 + 1);
       }
     }
+    function drawCopy() {
+      if (opts.mode !== 'copy' || finished) return;
+      const ms = copyOne ? S.s : Math.min(0.5, (W * 0.34) / Math.max(1, TW)), base = copyOne ? S.base : 62;
+      const bx = copyOne ? modelX : (opts.leftHanded ? W - 18 - TW * ms : 18);
+      c.save();
+      if (!copyOne) { c.fillStyle = 'rgba(255,255,255,.92)'; c.strokeStyle = '#d6c6f5'; c.lineWidth = 2; rrect(c, bx - 10, 4, TW * ms + 20, 78, 12); c.fill(); c.stroke(); }
+      else { c.fillStyle = 'rgba(122,74,208,.07)'; rrect(c, bx - 6, Y(100) - 6, TW * S.s + 12, 146 * S.s + 12, 12); c.fill(); c.fillStyle = '#7a4ad0'; c.font = 'bold 18px system-ui,sans-serif'; c.textAlign = 'center'; c.textBaseline = 'bottom'; c.fillText('look', bx + TW * S.s / 2, Y(100) - 10); }
+      c.strokeStyle = '#7a4ad0'; c.fillStyle = '#7a4ad0'; c.lineCap = 'round'; c.lineJoin = 'round'; c.lineWidth = copyOne ? hand.lw : 3;
+      for (const it of items) {
+        if (it.space) continue;
+        for (const st of it.g.strokes) {
+          const pts = st.map(q => { const h = handPt(q[0], q[1]); return [bx + (it.ox + h[0]) * ms, base - h[1] * ms]; });
+          if (pts.length === 1) { c.beginPath(); c.arc(pts[0][0], pts[0][1], copyOne ? hand.lw * 0.8 : 2.5, 0, 6.3); c.fill(); continue; }
+          polyPath(pts, x => x, y => y); c.stroke();
+        }
+      }
+      c.restore();
+    }
     function drawModel() {
-      if (!showModel || cur < 0 || finished) return;
+      if (!showModel || cur < 0 || finished || opts.mode === 'copy') return;
       const it = items[cur], ms = 0.5, w = it.w * ms, bx = opts.leftHanded ? W - 16 - w - 8 : 16, base = 64;
       c.save(); c.fillStyle = 'rgba(255,255,255,.9)'; c.strokeStyle = '#d6c6f5'; c.lineWidth = 2; rrect(c, bx - 8, 6, w + 16, 74, 10); c.fill(); c.stroke();
       c.strokeStyle = '#7a4ad0'; c.lineWidth = 3; c.lineCap = 'round'; c.lineJoin = 'round';
@@ -514,6 +543,7 @@
       c.clearRect(0, 0, W, H);
       drawPaper();
       drawGuides(now);
+      drawCopy();
       for (const d of doneInk) drawInk(d.strokes, GREEN, 1);
       for (let i = fading.length - 1; i >= 0; i--) {
         const f = fading[i], age = now - f.t0, a = age < 600 ? 1 : 1 - (age - 600) / 400;

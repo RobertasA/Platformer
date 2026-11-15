@@ -31,6 +31,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | `clouds` + `js/clouds.js`, finale `js/finale.js`, grown-ups page (§7.2i) | [done] iter11 |
 | Installable + offline (manifest, `sw.js`, icons) (§7.2j); Music Room | [done] iter12 |
 | Feedback quality: praise, write tiers, hint ladder, music duck, letter sounds (§7.2k) | [done] iter13 |
+| Handwriting copy mode; hidden come-back queue for tricky puzzles and letters (§7.2l) | [done] iter14 |
 | `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -197,7 +198,7 @@ For a drawn stroke S and the expected stroke E (resampled to N=32 points, scaled
 Area `writing` (woods theme, 64×15) reached through the village gate (blue×2). Captain Quill explains. Entities `k:'lesson'`:
 - **Letter trees** (UK letter families): Curly caterpillar `cadgoqe` 🐛, Long ladder `litujy` 🪜, One-armed robot `rnmhbkp` 🤖, Zig-zag monster `zvwxsf` ⚡. A visit = 4 random letters from the family.
 - **Word stones** 🪨: CVC words (cat, dog, sun…) and CCVC/CVCC words (fish, ship, frog…) with a picture emoji; 3 words a visit, first traced, then fading guide.
-- Per-letter mode (`G.LS.modeFor`): `trace` → `fade` once best score ≥ 0.7 → `memory` once best ≥ 0.85 over ≥ 3 tries (`S.handwriting[ch]`).
+- Per-letter mode (`G.LS.modeFor`): `trace` → `fade` → `copy` → `memory`; thresholds in §7.2l.
 - First completion → blue gem (+ ⭐ on the board, `S.quests['lesson:<id>']` counts visits); repeat → +2 coins. Closing a puzzle ends the visit with no penalty. Lessons do not change `S.level.words` (`noAdapt`).
 - Area also has 5 ordinary gems (blue×2, purple, green in the ink pond, yellow) and a door 🏡 back to the village gate.
 
@@ -313,6 +314,14 @@ New engine pieces (all in `engine.js`):
 - **Music ducks (#9).** `G.duck(on)`: music gain 0.16 → 0.04 while the overlay is open (any puzzle, pad, card or playroom), back on close; called from `UI.overlay`.
 - **Letter sounds (#12).** When the pad accepts a letter in a single-word or single-letter text it says the sound (`G.HW.soundOf`: say-as spellings for a–z such as "sss", "mmm", "kuh"; "capital A" for capitals; number names for digits); a word of two or more lower-case letters is then said whole ("kuh, a, tuh … cat"), and `onResult` waits for it (1.7 s for a word, 1 s for a letter). Sentences are not sounded letter by letter. Grown-ups page: "Say letter sounds while writing: on/off" (`settings.letterSounds`). Not built: the pencil sound; the say-as table is unchecked by ear.
 
+### 7.2l Copy step and the come-back queue (iter14; feedback #7 #6) [done]
+- **Copy mode (#7).** Pad `mode:'copy'`: no guide under the pen, only the start dots; a purple **model** of the text sits beside the writing slot. One letter: the model is drawn full size on the same lines, left of the slot (right of it for left-handers; the slot moves off-centre to make room). A word: the model word sits small in the top corner away from the buttons. The model is drawn in a slightly different "hand" each time the pad opens (random slant ±0.12, width 0.9–1.1, a gentle wobble of up to 2.5 units, line 5–8 px) so she copies the letter, not one exact picture. Two misses in copy (or memory) mode bring the faint guide back.
+- **Ladder** (`G.LS.modeFor(ch)`, from `S.handwriting[ch] = {best, tries, copied}`): `trace` → `fade` once best ≥ 0.7 → `copy` once best ≥ 0.85 over ≥ 3 tries → `memory` once `copied` ≥ 2 (`copied` counts copy-mode goes that were accepted unforced with score ≥ 0.7). A letter in the come-back queue never gets `memory`. Prompts: "Trace the letter a" / "Copy the letter a" (say: "Copy the letter a. Look at it, then write your own.") / "Write the letter a". Word stones: first word trace, second fade, third copy.
+- **Come-back queue (#6), hidden.** She is never told a puzzle is a review; it looks like any other.
+  - *Puzzles:* `S.review = [{p, subj, stage, at, day}]` (max 12; `p` is the whole generated puzzle). A gem puzzle that needed the reveal joins at stage 0, due after 3 more gem puzzles (`S.pzCount`). `PZ.run` without a given puzzle first looks for a due entry of the same subject and plays that instead of a new one. Solved without the reveal → next stage: stage 1 is due 8 puzzles later; stage 2 is due the next calendar day she plays; after stage 2 it leaves the queue. Revealed again → same stage, due after 3 more.
+  - *Letters:* `S.hwQueue = [{ch, stage, day}]` (max 12; old saves holding plain letters are upgraded). A letter joins when the pad had to let it through or it scored under 0.7. Letter trees pick due queued letters from their own family first, then fill up at random. Written well (unforced, ≥ 0.7) → stage 1, due on the next day; written well again → leaves the queue. Stage 0 is due at once.
+  - Grown-ups page lists "Coming back soon" letters.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -415,7 +424,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 13. **[todo] More playrooms** (café free play, bug garden, shop, music room, builder's yard) and a second visit reason for finished areas (daily surprises).
 
 14. **[done iter13] Feedback quality** — process praise (#1), writing celebration tiers (#2), hint ladder (#3), music ducking (#9), letter sounds (#12).
-15. **[todo] Handwriting ladder** — a "copy it" mode between fade and memory (#7); bring tricky letters and sums back later and next day (#6, uses `S.hwQueue`).
+15. **[done iter14] Handwriting ladder** — a "copy it" mode between fade and memory (#7); bring tricky letters and sums back later and next day (#6, uses `S.hwQueue`).
 16. **[todo] Rewards** — stop announcing "+2 coins" each time; surprise finds and thank-you presents instead (#4).
 17. **[todo] Grown-up moments** — "Show a grown-up" gallery of her own writing and a question to ask her (#5); a cosy place to stop after a grown-up-set time (#10).
 18. **[todo] Pet companion** — name it; it reacts to what she does (#11).
@@ -458,3 +467,9 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 **iter12 — Install it, play offline, and a Music Room.** `manifest.webmanifest` + `sw.js` + icons generated from the game's own art (`tools/icons.js`): the game can be added to the tablet's home screen, opens full screen in landscape, and works with no internet after one online visit (the worker caches every file `index.html` references and refreshes them in the background). Test: loaded once, went offline, reloaded — the game booted with all 9 areas from 41 cached files. Grown-ups page says whether offline play is ready. Fifth playroom, the Music Room (Sonnet sub-agent): rainbow xylophone with glissando, drums, bells, record/play, 3 saved tunes, and a song book of three nursery tunes that waits for each note. Toy box cards shrunk so five fit in one row. Feedback: none open. Next: real-tablet feedback (handwriting, install), tile-layer cache, more playrooms.
 
 **iter13 — Feedback quality (first feedback issues).** Twelve research-based feedback issues (#1–#12) arrived; all queued as backlog 14–19. Shipped five that change what she hears and sees after every answer: praise for the action not the child (#1), writing celebrated by how well it was formed with forced letters queued for another go (#2), a second hint that gives more help — worked counting demonstrations, a tile placed for her (#3), music turned down under any card or pad (#9), and the letter's sound spoken as each letter is accepted, then the whole word (#12). Scripted tests: both hint ladders, all three write tiers, and "cat" on a real pad → spoken "kuh, a, tuh, cat". Not verifiable here: how the tablet's voice pronounces "sss"/"mmm" — there is an off switch on the grown-ups page. Next: #7 copy mode + #6 review queue.
+
+### iter14 — copy it, and tricky things come back (feedback #7 #6)
+- **Shipped:** handwriting `copy` mode (model beside the slot, drawn in a slightly different hand each time; ladder is now trace → fade → copy → memory; third word on a word stone is copied); hidden come-back queue for gem puzzles that needed the reveal (after 3 puzzles, again 8 later, again the next day) and for letters the pad let through or that scored under 0.7 (letter trees pick them first; they return the next day once written well); grown-ups page lists "Coming back soon" letters. §7.2l.
+- **Learnt:** letters already at `memory` in an old save drop back to `copy` until copied well twice — intended, it gives them the new step. The word model in copy mode is small (top corner); fine for 3–4 letter words, would need its own row for sentences, so sentences stay trace/fade.
+- **Not verified:** whether the varied "hand" reads as friendly on a real tablet; copy mode with a real stylus.
+- **Next:** backlog 16 (rewards without "+2 coins", #4) and 17 (show a grown-up, #5; cosy stop, #10).
