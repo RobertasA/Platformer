@@ -52,6 +52,7 @@
       let wrong = 0, done = false, pad = null;
       const finish = ok => {
         if (pad) pad.destroy(); G.hush(); G.UI.overlay(false); G.paused = false;
+        if (G.GM && ok && ok.ok) G.GM.did('puzzle', subject);
         if (!o.puzzle && ok && ok.ok) {
           if (ok.revealed) {
             if (rev) rev.at = S.pzCount + 3;
@@ -143,6 +144,7 @@
             const hw = G.S.handwriting = G.S.handwriting || {};
             for (const pc of (r.perChar || [])) { const h = hw[pc.ch] = hw[pc.ch] || { best: 0, tries: 0 }; h.tries++; h.best = Math.max(h.best, pc.score || 0); }
             if (!r.ok) wrong = 1;
+            if (G.GM) G.GM.wrote(p.write.text, r);
             for (const pc of (r.perChar || [])) {
               if (p.write.mode === 'copy' && !pc.issue && pc.score >= 0.7) hw[pc.ch].copied = (hw[pc.ch].copied || 0) + 1;
               if (G.LS && /[a-zA-Z0-9]/.test(pc.ch)) G.LS.note(pc.ch, pc.score || 0, !!pc.issue);

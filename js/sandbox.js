@@ -9,7 +9,7 @@
   SB.register = function (id, room) { room.id = id; SB.rooms[id] = room; if (!SB.order.includes(id)) SB.order.push(id); };
 
   const leave = () => { if (live && live.destroy) { try { live.destroy(); } catch (e) { console.error(e); } } live = null; G.hush(); };
-  SB.close = function () { leave(); G.UI.overlay(false); G.UI.hud(true); G.paused = false; G.saveGame(); };
+  SB.close = function () { if (G.GM) G.GM.did('play'); leave(); G.UI.overlay(false); G.UI.hud(true); G.paused = false; G.saveGame(); };
 
   SB.open = function (id) {
     leave(); G.paused = true; G.UI.hud(false);

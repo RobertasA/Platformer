@@ -277,6 +277,7 @@
     const quests = Object.keys(S.quests).filter(k => S.quests[k]).length, areas = Object.keys(S.areas).filter(k => S.areas[k] && G.AREAS[k]).length;
     const ps = S.playsets || {}, pics = ps.art && ps.art.gallery ? ps.art.gallery.length : 0, cured = ps.vet && ps.vet.cured || S.stats.vet || 0;
     let h = '<div class="gtitle">For grown-ups</div><div class="gcols"><div>';
+    if (G.GM) h += G.GM.todayHTML();
     h += '<h3>Learning</h3><p>Puzzles solved: <b>' + S.stats.solved + '</b>. The game moves each subject up or down a level by itself.</p><table>';
     for (const k in SUBJ) { const lv = Math.min(4, S.level[k] || 0); h += '<tr><td>' + SUBJ[k][0] + '</td><td><b>Level ' + (lv + 1) + ' of 5</b></td><td>' + SUBJ[k][1][lv] + '</td></tr>'; }
     h += '</table><h3>Handwriting</h3><p>Letters practised: <b>' + keys.length + '</b>. Formed well (2–3 stars): <b>' + keys.filter(k => stars(k) >= 2).length + '</b>.'
@@ -294,6 +295,7 @@
     tolBtn.onclick = () => { S.settings.writeTol = TOL[(tolShow() + 1) % 3][0]; tolShow(); G.saveGame(); }; tolShow(); set.appendChild(tolBtn);
     const ls = U.el('button', 'gbtn'); const lsShow = () => ls.textContent = 'Say letter sounds while writing: ' + (S.settings.letterSounds === false ? 'off' : 'on'); ls.onclick = () => { S.settings.letterSounds = S.settings.letterSounds === false; lsShow(); G.saveGame(); }; lsShow(); set.appendChild(ls);
     const lh = U.el('button', 'gbtn'); const lhShow = () => lh.textContent = 'Writing hand: ' + (S.settings.leftHanded ? 'left' : 'right'); lh.onclick = () => { S.settings.leftHanded = !S.settings.leftHanded; lhShow(); G.saveGame(); }; lhShow(); set.appendChild(lh);
+    const REST = [0, 10, 20, 30], rs = U.el('button', 'gbtn'); const rsShow = () => { const m = S.settings.restMins === undefined ? 20 : S.settings.restMins; rs.textContent = 'Suggest a rest after: ' + (m ? m + ' minutes' : 'off'); return REST.indexOf(m); }; rs.onclick = () => { S.settings.restMins = REST[(rsShow() + 1) % REST.length]; rsShow(); G.saveGame(); }; rsShow(); set.appendChild(rs);
     const close = U.el('button', 'closex', '✕'); close.onclick = () => { G.sfx('tap'); UI.overlay(false); G.paused = false; }; card.appendChild(close);
     ov.appendChild(card);
   };
@@ -358,6 +360,7 @@
         cell.onclick = () => { G.sfx('pop'); tell(hw[ch] ? (st === 3 ? 'Super ' + ch + '! Three stars!' : 'Your ' + ch + '. Practise in Writing Wood for more stars!') : 'Try ' + ch + ' in Writing Wood!'); };
         wrap.appendChild(cell);
       }
+      if (G.GM) { const sb = U.el('button', 'bigbtn small alt', 'Show a grown-up 👀'); sb.style.marginTop = '10px'; sb.onclick = () => { G.sfx('tap'); G.GM.showcase(); }; body.appendChild(sb); }
       return total ? 'Tap a letter. Practise for more stars!' : 'Write letters in Writing Wood to earn stars!';
     };
     const show = which => {

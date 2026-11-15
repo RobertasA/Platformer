@@ -63,6 +63,7 @@
         G.S.coins += 2; G.UI.gembar(); G.sfx('coin'); G.UI.toast('Great practice! +2 🪙', true);
       }
       G.saveGame();
+      if (G.GM) G.GM.offerShow();
     } finally { LS.busy = false; }
   };
 })();

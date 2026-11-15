@@ -630,7 +630,7 @@
         const score = results.reduce((s, r) => s + r.score, 0) / Math.max(1, results.length);
         const blend = sounds && oneWord && /^[a-z]{2,}$/.test(text);
         if (blend) setTimeout(() => { if (!destroyed) say(text); }, 650);
-        setTimeout(() => { if (destroyed) return; try { if (opts.onResult) opts.onResult({ ok: !forced && score >= 0.5, score, perChar: results.slice() }); } catch (e) { } }, blend ? 1700 : sounds && oneWord ? 1000 : 700);
+        setTimeout(() => { if (destroyed) return; try { if (opts.onResult) opts.onResult({ ok: !forced && score >= 0.5, score, perChar: results.slice(), tw: TW, ink: [].concat.apply([], doneInk.map(d => d.strokes.map(st => st.pts.map(q => [Math.round(q.x * 10) / 10, Math.round(q.y * 10) / 10])))) }); } catch (e) { } }, blend ? 1700 : sounds && oneWord ? 1000 : 700);
       }
     }
     function fail(res) {

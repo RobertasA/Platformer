@@ -32,6 +32,7 @@ Status keys: `[done]` `[building]` `[todo]` `[idea]`.
 | Installable + offline (manifest, `sw.js`, icons) (§7.2j); Music Room | [done] iter12 |
 | Feedback quality: praise, write tiers, hint ladder, music duck, letter sounds (§7.2k) | [done] iter13 |
 | Handwriting copy mode; hidden come-back queue for tricky puzzles and letters (§7.2l) | [done] iter14 |
+| Kept ink + "Show a grown-up" gallery; Today and a question to ask; cosy place to stop (§7.2m, `js/grown.js`) | [done] iter15 |
 | `js/sandbox.js` toy box + `js/play-*.js` playrooms (potion, vet, dolls, art) + world map (§8) | [done] iter9 |
 
 Deploy URL: GitHub Pages for `RobertasA/Platformer` (set Pages source = "GitHub Actions" once in repo settings).
@@ -70,6 +71,7 @@ Target: iPad/Android tablet landscape ≥ 1024×700, stylus or finger; also work
 | `world.js` | area definitions: tile maps, entities, doors, NPCs, quests (§5) |
 | `engine.js` | physics, camera, entities, collisions, interaction, area loading (§4) |
 | `ui.js` | HUD, dialogue, journal, map, wardrobe/creator, settings, grown-up page |
+| `grown.js` | kept ink, "Show a grown-up" gallery, Today and a question to ask, rest card and cosy scene (loads after `ui.js`) |
 | `sandbox.js` | free-play playrooms (§8) |
 | `main.js` | boot, title screen, loop, scaling |
 
@@ -322,6 +324,12 @@ New engine pieces (all in `engine.js`):
   - *Letters:* `S.hwQueue = [{ch, stage, day}]` (max 12; old saves holding plain letters are upgraded). A letter joins when the pad had to let it through or it scored under 0.7. Letter trees pick due queued letters from their own family first, then fill up at random. Written well (unforced, ≥ 0.7) → stage 1, due on the next day; written well again → leaves the queue. Stage 0 is due at once.
   - Grown-ups page lists "Coming back soon" letters.
 
+### 7.2m Grown-up moments (iter15; feedback #5 #10) [done] — `js/grown.js` (`G.GM`)
+- **Her ink is kept (#5).** The pad's result carries `ink` (strokes in text units) and `tw` (text width). After a write puzzle that passed unforced, `GM.keep(text, r)` stores `S.inks = [{t, sc, w, k:[[x,y,x,y…],…], d}]` — one entry per text, replaced only by an equal or better score, 24 at most (oldest dropped); each stroke is thinned to about 60 points.
+- **"Show a grown-up! 👀" (#5).** `GM.showcase()`: card "Look what I wrote!" — a grid of her own letters and words in green ink on mini lines (newest first, text label under each), then her collections in one row (bugs found, curios found, pictures saved). No scores, no stars. Empty: "Write in Writing Wood and your writing will live here!". Offered by a button that floats above the HUD for 12 s after a finished lesson (`GM.offerShow()`), and always from the journal's Writing tab.
+- **Today, and a question to ask (#5).** `S.today = {day, letters:{ch:n}, words:[…], puzzles:n, subj:{subject:n}, play:n}`, reset on a new calendar day. Grown-ups page opens with "Today": puzzles solved, letters and words written, playroom visits; and "Something to ask her": if she wrote letters today, "Ask her to show you how she writes ‘a’. Where does it start?" (her most-written letter); otherwise one question from `GM.ASK[subject]` for the subject she did most (else by day of month), each with its answer in brackets, e.g. "Ask her how many legs a spider has. (Eight.)".
+- **A cosy place to stop (#10).** `settings.restMins` (default 20; grown-ups page button cycles off / 10 / 20 / 30). Once that much time has passed since the game opened, the next time an activity has finished and she is back in the world (not mid-lesson, no card or talk open) a card says "What a busy day! Shall we have a rest?" with **Bye for now 🌙** and **A little longer** (asks again 10 minutes later). Bye shows a cosy night scene — her character and pet by her bed, moon in the window — with "Today you…" lines drawn from `S.today` and a small "Play again" button. Next launch: a wordless 👋🌞 toast. No streaks, no countdown, nothing lost, nobody sad.
+
 ### 7.3 Challenge modes (ladder; each is also a puzzle `type:'write'`)
 1. **Watch & trace** — animated pen shows the stroke order; child traces over a dotted guide; green ink on success; start dots pulse.
 2. **Fading guide** — guide fades to start dot only.
@@ -426,7 +434,7 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 14. **[done iter13] Feedback quality** — process praise (#1), writing celebration tiers (#2), hint ladder (#3), music ducking (#9), letter sounds (#12).
 15. **[done iter14] Handwriting ladder** — a "copy it" mode between fade and memory (#7); bring tricky letters and sums back later and next day (#6, uses `S.hwQueue`).
 16. **[todo] Rewards** — stop announcing "+2 coins" each time; surprise finds and thank-you presents instead (#4).
-17. **[todo] Grown-up moments** — "Show a grown-up" gallery of her own writing and a question to ask her (#5); a cosy place to stop after a grown-up-set time (#10).
+17. **[done iter15] Grown-up moments** — "Show a grown-up" gallery of her own writing and a question to ask her (#5); a cosy place to stop after a grown-up-set time (#10).
 18. **[todo] Pet companion** — name it; it reacts to what she does (#11).
 19. **[todo] Skill in the world** — writing and counting that change the level itself, not a pop-up card (#8). Biggest design change; needs its own slice.
 
@@ -473,3 +481,9 @@ Creator UI: big preview with idle animation (wave on tap), category tabs with ic
 - **Learnt:** letters already at `memory` in an old save drop back to `copy` until copied well twice — intended, it gives them the new step. The word model in copy mode is small (top corner); fine for 3–4 letter words, would need its own row for sentences, so sentences stay trace/fade.
 - **Not verified:** whether the varied "hand" reads as friendly on a real tablet; copy mode with a real stylus.
 - **Next:** backlog 16 (rewards without "+2 coins", #4) and 17 (show a grown-up, #5; cosy stop, #10).
+
+### iter15 — show a grown-up, and a cosy place to stop (feedback #5 #10)
+- **Shipped:** `js/grown.js`. Her best ink of each letter and word is kept and shown in a "Look what I wrote!" gallery (button floats up after a lesson; always in the journal's Writing tab). Grown-ups page opens with "Today" and "Something to ask her". After a grown-up-set time (default 20 minutes; off / 10 / 20 / 30) the next finished activity brings "Shall we have a rest?"; "Bye for now" shows a cosy night scene with today's doings; next launch gets a wordless wave. §7.2m.
+- **Learnt:** only write puzzles feed the gallery (lessons, gems); café, postcard and finale pads still bypass it, same gap as #2. The rest timer counts from page load, not from active play.
+- **Not verified:** on a real tablet; whether she reads "Bye for now" as kind rather than as being told off.
+- **Next:** backlog 16 (rewards, #4), then 18 (pet companion, #11), 19 (skill in the world, #8); finish #2 and #12 by routing the other pads through the same result handler.

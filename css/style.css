@@ -269,3 +269,26 @@ button { font-family: inherit; color: inherit; cursor: pointer; touch-action: ma
 .grown .gbtn { min-height: 56px; padding: 0 20px; border-radius: 14px; border: 2px solid #c9c9dc; background: #fff; font-size: 19px; font-family: inherit; }
 .grown .gfb { font-size: 16px; color: #6a6a80; margin-top: 14px; }
 .card.grown .closex { right: 10px; top: 10px; }
+
+/* grown-up moments (SPEC §7.2m) */
+#showgrown { position: absolute; left: 50%; bottom: 210px; transform: translateX(-50%); z-index: 5; animation: pop .3s; white-space: nowrap; }
+.card.showcase { width: 1080px; max-height: 640px; overflow-y: auto; touch-action: pan-y; text-align: center; }
+.card.showcase h2 { margin: 0 0 12px; font-size: 38px; }
+.shgrid { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.shcell { background: #fffdf5; border-radius: 18px; padding: 8px 8px 4px; box-shadow: 0 3px 0 rgba(0,0,0,.12); }
+.shcell canvas { display: block; }
+.shname { font-size: 22px; font-weight: 600; color: #6b4a2e; }
+.shempty { font-size: 28px; padding: 40px; }
+.shrow { margin-top: 16px; font-size: 26px; }
+.card.rest { text-align: center; padding: 30px 60px 36px; }
+.card.rest .yawn { font-size: 90px; line-height: 1; }
+.card.rest h2 { font-size: 40px; margin: 10px 0 24px; }
+.restrow { display: flex; gap: 26px; justify-content: center; }
+.card.cosy { display: flex; gap: 30px; align-items: center; background: #3b3350; color: #fff; padding: 24px 34px 24px 24px; }
+.card.cosy canvas { border-radius: 24px; width: 620px; height: 520px; }
+.cosyside { min-width: 330px; }
+.cosyside h2 { font-size: 44px; margin: 0 0 14px; }
+.cosyside p { font-size: 26px; margin: 10px 0; }
+.cosyline { font-size: 28px; margin: 8px 0; }
+.cosysee { margin: 22px 0 26px !important; opacity: .9; }
+.grown .gask { font-size: 21px; background: #fff6d6; border-radius: 12px; padding: 10px 14px; }
